@@ -4,7 +4,7 @@ import {
   Bot, Send, Mic, MicOff, Volume2, VolumeX, Sparkles, X, 
   ChevronRight, ArrowRight, RefreshCw, Minimize2, Maximize2, 
   BookOpen, Users, Key, ShieldCheck, Tv, Download, Brain, 
-  GitBranch, MapPin, Columns, Languages, HelpCircle, Zap
+  GitBranch, MapPin, Columns, Languages, HelpCircle, Zap, Trash2
 } from 'lucide-react';
 import { toolExpertService, type ToolAction, type ToolExpertResponse } from '../../services/toolExpertService';
 import { speechService } from '../../services/speechService';
@@ -271,6 +271,21 @@ export const ToolExpertChat: React.FC<ToolExpertChatProps> = ({
         </div>
 
         <div className="flex items-center space-x-1">
+          {messages.length > 1 && (
+            <button
+              onClick={() => {
+                speechService.stop();
+                setIsSpeakingId(null);
+                setMessages([messages[0]]);
+              }}
+              className="p-1.5 text-rose-400 hover:text-rose-300 rounded-lg hover:bg-rose-500/15 transition-colors flex items-center space-x-1 text-xs cursor-pointer mr-1"
+              title="Apagar mensagens e reiniciar conversa"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline text-[11px] font-medium">Limpar</span>
+            </button>
+          )}
+
           {isFloating && (
             <button
               onClick={() => setIsMinimized(!isMinimized)}

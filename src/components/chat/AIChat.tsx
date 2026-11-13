@@ -13,7 +13,8 @@ import {
   ShieldCheck, 
   BookOpen, 
   AlertCircle,
-  HelpCircle
+  HelpCircle,
+  Trash2
 } from 'lucide-react';
 import { queryBibliaKnowledge, type AIResponse, type ResponseLevel } from '../../services/aiService';
 import { speechService } from '../../services/speechService';
@@ -188,6 +189,12 @@ export const AIChat: React.FC<AIChatProps> = ({ initialQuery = '', isOfflineMode
     }
   };
 
+  const handleClearChat = () => {
+    speechService.stop();
+    setIsSpeaking(null);
+    setMessages([]);
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col h-[calc(100vh-6rem)]">
       {/* Cabeçalho do Chat & Seleção de Nível */}
@@ -209,21 +216,36 @@ export const AIChat: React.FC<AIChatProps> = ({ initialQuery = '', isOfflineMode
           </div>
         </div>
 
-        {/* Níveis de Profundidade */}
-        <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl text-xs">
-          {(['simples', 'aprofundado', 'academico'] as const).map((level) => (
+        {/* Ações do Cabeçalho: Apagar Conversa & Níveis de Profundidade */}
+        <div className="flex items-center space-x-2 self-end sm:self-auto">
+          {/* Botão de Apagar Conversa */}
+          {messages.length > 0 && (
             <button
-              key={level}
-              onClick={() => setResponseLevel(level)}
-              className={`px-3 py-1.5 rounded-lg capitalize font-medium transition-all ${
-                responseLevel === level
-                  ? 'bg-[#1E3E62] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-white'
-              }`}
+              onClick={handleClearChat}
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 dark:text-rose-400 border border-rose-500/30 hover:border-rose-400 transition-all cursor-pointer shadow-xs active:scale-95 animate-in fade-in"
+              title="Apagar todo o histórico de mensagens desta conversa"
             >
-              {level}
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Apagar Conversa</span>
             </button>
-          ))}
+          )}
+
+          {/* Níveis de Profundidade */}
+          <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl text-xs">
+            {(['simples', 'aprofundado', 'academico'] as const).map((level) => (
+              <button
+                key={level}
+                onClick={() => setResponseLevel(level)}
+                className={`px-3 py-1.5 rounded-lg capitalize font-medium transition-all ${
+                  responseLevel === level
+                    ? 'bg-[#1E3E62] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-white'
+                }`}
+              >
+                {level}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
