@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-navy-dark: #0B192C;
+    --color-navy-card: #1E3E62;
+    --color-navy-light: #2A4F77;
+    --color-gold: #D4AF37;
+    --color-gold-hover: #E5C358;
+    --color-gold-muted: #B8972E;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .font-scripture {
+    font-family: 'Lora', Georgia, Cambria, serif;
+  }
+
+  .font-title {
+    font-family: 'Cinzel', serif;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* Ticker Contínuo estilo Televisão (Broadcast News Marquee) */
+@keyframes tvTickerScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.tv-ticker-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: tvTickerScroll var(--ticker-duration, 45s) linear infinite;
+}
+
+.tv-ticker-track:hover,
+.tv-ticker-track.paused,
+.tv-ticker-paused {
+  animation-play-state: paused !important;
+}

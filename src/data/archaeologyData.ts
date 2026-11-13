@@ -1,0 +1,117 @@
+// src/data/archaeologyData.ts
+import type { ArchaeologicalFinding } from '../types';
+
+export const ARCHAEOLOGY_FINDINGS: ArchaeologicalFinding[] = [
+  {
+    id: 'tel_dan',
+    title: 'Inscrição de Tel Dan ("A Casa de Davi")',
+    discoveryYear: '1993',
+    locationFound: 'Tel Dan, norte de Israel',
+    currentLocation: 'Museu de Israel, Jerusalém',
+    period: 'Século 9 a.C.',
+    biblicalCorrelation: 'Menciona explicitamente a dinastia do rei Davi ("Beit David") e o rei de Israel, confirmando a monarquia davídica.',
+    keyVerses: ['1 Reis 12:16', '2 Samuel 7:16'],
+    description: 'Fragmento de estela de basalto escrita em aramaico antigo encomendada por um rei arameu (provavelmente Hazael de Damasco) celebrando vitórias sobre o "rei de Israel" e o "rei da Casa de Davi".',
+    significance: 'Foi o primeiro achado arqueológico extrabíblico incontestável a documentar o nome de David como fundador de uma dinastia régia histórica real.',
+    iconSymbol: '🏛️',
+    mapPlaceId: 'jerusalem'
+  },
+  {
+    id: 'cilindro_ciro',
+    title: 'Cilindro de Ciro, o Grande',
+    discoveryYear: '1879',
+    locationFound: 'Ruínas de Babilônia (atual Iraque)',
+    currentLocation: 'British Museum, Londres',
+    period: '539 a.C.',
+    biblicalCorrelation: 'Harmoniza-se perfeitamente com o decreto de Ciro registrado em Esdras 1:1-4 e Isaías 44:28.',
+    keyVerses: ['Esdras 1:1-4', 'Isaías 45:1'],
+    description: 'Cilindro de argila com inscrições cuneiformes babilônicas comemorando a conquista pacífica de Babilônia por Ciro e a sua política oficial de repatriar povos cativos e reconstruir os seus santuários.',
+    significance: 'Comprova a precisão histórica extraordinária da Bíblia ao narrar que Ciro libertou os judeus exilados para retornarem a Jerusalém.',
+    iconSymbol: '📜',
+    mapPlaceId: 'babilonia'
+  },
+  {
+    id: 'pedra_mesa',
+    title: 'Estela de Moabe (Pedra de Mesa)',
+    discoveryYear: '1868',
+    locationFound: 'Dibon, antiga Moabe (atual Jordânia)',
+    currentLocation: 'Museu do Louvre, Paris',
+    period: 'c. 840 a.C.',
+    biblicalCorrelation: 'Relata o conflito entre Moabe e Israel registrado em 2 Reis 3:4-27 sob o rei Mesa e a dinastia de Onri.',
+    keyVerses: ['2 Reis 3:4, 5', 'Salmos 83:18'],
+    description: 'Monólito de basalto negro gravado na língua moabita arcaica pelo rei Mesa de Moabe.',
+    significance: 'Contém o registro mais antigo e proeminente do Tetragrama sagrado (YHWH / Jeová) num monumento erguido fora de Israel.',
+    iconSymbol: '🗿',
+    mapPlaceId: 'jerusalem'
+  },
+  {
+    id: 'prisma_senaqueribe',
+    title: 'Prisma de Senaqueribe (Prisma de Taylor)',
+    discoveryYear: '1830',
+    locationFound: 'Nínive, capital da Assíria (atual Mossul, Iraque)',
+    currentLocation: 'British Museum e Oriental Institute de Chicago',
+    period: '691 a.C.',
+    biblicalCorrelation: 'Descreve a campanha de Senaqueribe contra Judá nos dias do rei Ezequias (2 Reis 18 e 19; Isaías 36 e 37).',
+    keyVerses: ['2 Reis 18:13-17', 'Isaías 37:36-38'],
+    description: 'Prisma hexagonal de argila cozida que lista 8 campanhas militares do rei assírio Senaqueribe.',
+    significance: 'O rei assírio se gaba de ter encurralado "Ezequias, o judeu, como um pássaro numa gaiola", mas silencia sobre a conquista de Jerusalém, confirmando que o anjo de Jeová aniquilou 185.000 soldados assírios numa só noite.',
+    iconSymbol: '⬢',
+    mapPlaceId: 'ninive'
+  },
+  {
+    id: 'pedra_pilatos',
+    title: 'Inscrição de Pôncio Pilatos',
+    discoveryYear: '1961',
+    locationFound: 'Teatro Romano de Cesareia Marítima, Israel',
+    currentLocation: 'Museu de Israel, Jerusalém',
+    period: 'c. 26–36 d.C.',
+    biblicalCorrelation: 'Confirma o título e mandato de Pôncio Pilatos como Prefeito da Judeia, conforme citado nos quatro Evangelhos.',
+    keyVerses: ['Mateus 27:2', 'Lucas 3:1'],
+    description: 'Bloco de calcário esculpido em latim que fazia parte do Tibérieum dedicado pelo "Prefeito da Judeia, Pôncio Pilatos".',
+    significance: 'Refutou definitivamente a tese cética de que Pilatos era um mito literário.',
+    iconSymbol: '🏛️',
+    mapPlaceId: 'jerusalem'
+  },
+  {
+    id: 'tunel_ezequias',
+    title: 'Inscrição do Túnel de Siloé',
+    discoveryYear: '1880',
+    locationFound: 'Aqueduto subterrâneo de Siloé, Jerusalém',
+    currentLocation: 'Museu Arqueológico de Istambul',
+    period: 'c. 701 a.C.',
+    biblicalCorrelation: 'Comprova a colossal obra de engenharia de Ezequias para canalizar a água da fonte de Giom para dentro da cidade antes do cerco assírio.',
+    keyVerses: ['2 Crônicas 32:30', '2 Reis 20:20'],
+    description: 'Inscrição hebraica monumental no interior do túnel de 533 metros escavado em rocha viva por duas equipas que se encontraram no meio.',
+    significance: 'Uma das mais antigas e admiráveis inscrições em hebraico clássico intactas da monarquia israelita.',
+    iconSymbol: '💧',
+    mapPlaceId: 'jerusalem'
+  },
+  {
+    id: 'rolos_mar_morto',
+    title: 'O Grande Rolo de Isaías (1QIsaᵃ)',
+    discoveryYear: '1947',
+    locationFound: 'Caverna 1 de Qumran, próximo ao Mar Morto',
+    currentLocation: 'Santuário do Livro, Jerusalém',
+    period: 'c. 125 a.C.',
+    biblicalCorrelation: 'Contém todos os 66 capítulos do livro de Isaías praticamente intactos.',
+    keyVerses: ['Isaías 40:8', 'Isaías 53:1-12'],
+    description: 'Manuscrito em couro com 7,34 metros de comprimento, copiado mais de 1.000 anos antes dos manuscritos massoréticos medievais.',
+    significance: 'Demonstrou que, apesar de um milênio de cópias manuais sucessivas, o texto de Isaías foi preservado com fidelidade inacreditável, provando que a Palavra de Deus permanece para sempre.',
+    iconSymbol: '📜',
+    mapPlaceId: 'belem'
+  },
+  {
+    id: 'ossuario_caifas',
+    title: 'Ossuário da Família de Caifás',
+    discoveryYear: '1990',
+    locationFound: 'Floresta da Paz, Jerusalém',
+    currentLocation: 'Museu de Israel, Jerusalém',
+    period: 'Século 1 d.C.',
+    biblicalCorrelation: 'Identifica a linhagem do sumo sacerdote José Caifás que presidiu ao julgamento de Jesus Cristo.',
+    keyVerses: ['Mateus 26:3, 57', 'João 18:13, 14'],
+    description: 'Caixa mortuária de calcário ricamente ornamentada com a inscrição aramaica "José, filho de Caifás".',
+    significance: 'Evidência física direta da residência e liderança sacerdotal da família de Caifás em Jerusalém no primeiro século.',
+    iconSymbol: '🏺',
+    mapPlaceId: 'jerusalem'
+  }
+];
