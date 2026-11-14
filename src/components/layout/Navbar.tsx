@@ -422,6 +422,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
+          {/* Alternador de Tema Claro/Escuro Mobile */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-200 hover:text-[#D4AF37] transition-colors cursor-pointer"
+          >
+            <div className="flex items-center space-x-2">
+              {isDarkMode ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-slate-300" />}
+              <span className="font-medium">{isDarkMode ? 'Mudar para Tema Claro' : 'Mudar para Tema Escuro'}</span>
+            </div>
+            <span className="text-[11px] font-semibold text-[#D4AF37] bg-slate-900/60 px-2 py-0.5 rounded border border-slate-700">
+              {isDarkMode ? 'Escuro' : 'Claro'}
+            </span>
+          </button>
+
           <div className="pt-3 border-t border-slate-700/80 flex items-center justify-between">
             <div className="flex items-center space-x-1.5 text-xs text-emerald-400 font-semibold px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
               <span className="relative flex h-2 w-2">

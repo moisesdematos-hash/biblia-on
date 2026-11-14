@@ -51,6 +51,21 @@
         "inLanguage": ["pt", "en", "es", "fr"]
       }
     </script>
+
+    <!-- Script de sincronização imediata de tema (Claro / Escuro) -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('biblia_on_theme');
+          var isDark = saved ? saved === 'dark' : true;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body class="bg-slate-50 text-slate-900 dark:bg-[#0B192C] dark:text-slate-100 min-h-screen font-sans antialiased transition-colors duration-200">
     <div id="root"></div>
