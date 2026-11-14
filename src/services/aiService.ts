@@ -59,6 +59,11 @@ export function auditBiblicalContent(text: string): { passed: boolean; warnings:
     warnings.push('Alerta de conformidade: As Escrituras distinguem o Pai Jeová ("o único Deus verdadeiro", João 17:3) do seu Filho gerado Jesus Cristo.');
   }
 
+  // 5. Verificação de quem vai para o céu (Apenas 144.000 + Jesus Cristo)
+  if (lower.includes('todos os bons vão para o céu') || lower.includes('todos os salvos vão para o céu') || lower.includes('toda a humanidade justa vai para o céu')) {
+    warnings.push('Alerta de conformidade: Conforme a TNM e as Escrituras (Apocalipse 7:4; 14:1-3; 5:10), apenas os 144.000 e Jesus vão para o céu para governar sobre a terra; os demais herdarão a Terra paradisíaca.');
+  }
+
   return {
     passed: warnings.length === 0,
     warnings

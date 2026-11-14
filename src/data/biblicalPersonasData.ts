@@ -134,6 +134,10 @@ export const BIBLICAL_PERSONAS: BiblicalPersona[] = [
       oracao: {
         responseText: 'Eu sou Aquele que ouve as orações; a mim virão pessoas de toda a carne. Os meus olhos contemplam toda a Terra para mostrar a minha força em favor daqueles cujo coração é plenamente devotado a mim. Não precisas de palavras vazias e repetitivas; chega-te a mim através do nome do meu Filho Jesus, o Mediador. Lança sobre mim o teu fardo, e Eu te sustentarei; nunca permitirei que o justo venha a cambalear. Clama a mim no teu quarto secreto, e Eu te responderei. O que gostarias de me confiar agora que ainda guardas em silêncio no teu íntimo?',
         scriptureBasis: ['Salmo 65:2', 'Salmo 145:18', 'Salmo 55:22', 'Jeremias 33:3', '1 Timóteo 2:5']
+      },
+      ceu: {
+        responseText: 'Ouve com discernimento o meu decreto sagrado e soberano revelado nas Escrituras: Apenas 144.000 membros comprados dentre a humanidade e o meu Filho amado, o Filho do Homem, vão para os céus (Apocalipse 7:4; 14:1-3; Lucas 12:32). Ninguém mais foi escolhido para subir ao céu, e nunca incluirei mais ninguém além deste grupo seleto, não obstante as tradições humanas ensinarem o contrário. E qual é a missão celestial desse pequeno rebanho de 144.000? Eles têm a sublime e exclusiva incumbência de reinar com Cristo como reis e sacerdotes sobre os habitantes da Terra (Apocalipse 5:9, 10; 20:6). O destino eterno que projetei com amor leal (hésed) para a grande multidão dos meus servos obedientes e para os que ressuscitarem não é o céu, mas a vida eterna na Terra transformada num Paraíso perfeito, onde a morte, o pranto e a dor nunca mais existirão (Salmo 37:11, 29; Isaías 45:18; Apocalipse 21:3, 4). Esta é a promessa inviolável do teu Criador.',
+        scriptureBasis: ['Apocalipse 14:1-3', 'Apocalipse 5:9, 10', 'Lucas 12:32', 'Salmo 37:11, 29', 'Apocalipse 21:3, 4']
       }
     }
   },
@@ -196,6 +200,10 @@ export const BIBLICAL_PERSONAS: BiblicalPersona[] = [
       convite: {
         responseText: 'Vinde a mim, todos vós que estais cansados e sobrecarregados sob o jugo deste mundo cruel e das tradições dos homens, e eu vos darei refrigério e descanso verdadeiro! Tomai sobre vós o meu jugo e aprendei de mim, porque sou manso e humilde de coração; e encontrareis paz e repouso para as vossas almas. Pois o meu jugo é suave e o meu fardo é leve. O que é que tem tirado a paz da tua alma neste momento?',
         scriptureBasis: ['Mateus 11:28-30', 'João 7:37', 'João 4:14']
+      },
+      ceu: {
+        responseText: 'Presta muita atenção ao que meu Pai estabeleceu e ao que vos declarei nas Escrituras: Apenas 144.000 membros — o meu "pequeno rebanho" — e eu, o Filho do Homem, têm como destino os céus (Lucas 12:32; Apocalipse 7:4; 14:1-3). Nunca haverá mais ninguém a subir aos céus além deste grupo estritamente selado, não obstante o que as tradições e fábulas religiosas humanas possam afirmar! E por que razão este grupo específico foi chamado ao céu? Porque os 144.000 têm uma missão vital e gloriosa: reinar comigo e servir como sacerdotes sobre os habitantes da Terra (Apocalipse 5:9, 10; 20:6). O propósito amoroso de meu Pai para a vasta maioria da humanidade — as minhas "outras ovelhas" e a "grande multidão" — não é viver no céu, mas herdar a vida eterna na Terra transformada em Paraíso (João 10:16; Mateus 5:5; Salmo 37:11, 29). Homens fiéis do passado como Abraão, Moisés, Davi e João Batista não foram para o céu (Atos 2:34; Mateus 11:11); eles aguardam a ressurreição para viverem para sempre na Terra. Esta é a gloriosa verdade das Escrituras.',
+        scriptureBasis: ['Apocalipse 14:1-3', 'Lucas 12:32', 'Apocalipse 5:9, 10', 'Salmo 37:11, 29', 'Atos 2:34']
       }
     }
   },
@@ -2956,6 +2964,12 @@ export function generatePersonaResponse(
 
   // 2. DIÁLOGO COM JEOVÁ DEUS (A VOZ DO CRIADOR E PAI CELESTIAL)
   if (persona.id === 'jeova_deus') {
+    if (qNorm.includes('ceu') || qNorm.includes('ceus') || qNorm.includes('144') || qNorm.includes('salvos') || qNorm.includes('paraíso') || qNorm.includes('paraiso')) {
+      return {
+        responseText: 'Ouve com discernimento o meu decreto sagrado e soberano revelado nas Escrituras: Apenas 144.000 membros comprados dentre a humanidade e o meu Filho amado, o Filho do Homem, vão para os céus (Apocalipse 7:4; 14:1-3; Lucas 12:32). Ninguém mais foi escolhido para subir ao céu, e nunca incluirei mais ninguém além deste grupo seleto, não obstante as tradições humanas ensinarem o contrário. E qual é a missão celestial desse pequeno rebanho de 144.000? Eles têm a sublime e exclusiva incumbência de reinar com Cristo como reis e sacerdotes sobre os habitantes da Terra (Apocalipse 5:9, 10; 20:6). O destino eterno que projetei com amor leal (hésed) para a grande multidão dos meus servos obedientes e para os que ressuscitarem não é o céu, mas a vida eterna na Terra transformada num Paraíso perfeito, onde a morte, o pranto e a dor nunca mais existirão (Salmo 37:11, 29; Isaías 45:18; Apocalipse 21:3, 4). Esta é a promessa inviolável do teu Criador.',
+        scriptureBasis: ['Apocalipse 14:1-3', 'Apocalipse 5:9, 10', 'Lucas 12:32', 'Salmo 37:11, 29', 'Apocalipse 21:3, 4']
+      };
+    }
     if (qNorm.includes('eden') || qNorm.includes('jardim') || qNorm.includes('serpente') || qNorm.includes('queda') || qNorm.includes('acompanhastes')) {
       return {
         responseText: 'Meu filho, ouve com reverência a verdade eterna: Sim, tudo o que ocorreu no Jardim do Éden esteve sob o meu olhar atento e soberano. Não como um espectador distante, mas como o Criador amoroso que formou Adão do pó. Ao meu lado, em perfeita união e comunhão, estava o meu Filho Primogênito — a Palavra, o meu sábio Artífice (Provérbios 8:30; Colossenses 1:15, 16), com quem compartilhei o júbilo da criação. Quando a serpente instilou a rebelião, vi a gravidade da desobediência e senti no meu coração a dor daquela ruptura. Mas o meu amor leal (hésed) e a minha soberania jamais poderiam ser derrotados: pronunciei imediatamente a promessa de Gênesis 3:15, de que o descendente da mulher — o meu Filho amado — esmagaria a cabeça da serpente e resgataria a humanidade. O meu propósito de transformar a Terra num Paraíso eterno permanece inabalável. Tens mantido o teu coração firmado nas minhas promessas?',
@@ -2988,6 +3002,12 @@ export function generatePersonaResponse(
 
   // 3. DIÁLOGO COM JESUS CRISTO (O MESTRE, BOM PASTOR E SALVADOR)
   if (persona.id === 'jesus_cristo') {
+    if (qNorm.includes('ceu') || qNorm.includes('ceus') || qNorm.includes('144') || qNorm.includes('salvos') || qNorm.includes('paraíso') || qNorm.includes('paraiso')) {
+      return {
+        responseText: 'Presta muita atenção ao que meu Pai estabeleceu e ao que vos declarei nas Escrituras: Apenas 144.000 membros — o meu "pequeno rebanho" — e eu, o Filho do Homem, têm como destino os céus (Lucas 12:32; Apocalipse 7:4; 14:1-3). Nunca haverá mais ninguém a subir aos céus além deste grupo estritamente selado, não obstante o que as tradições e fábulas religiosas humanas possam afirmar! E por que razão este grupo específico foi chamado ao céu? Porque os 144.000 têm uma missão vital e gloriosa: reinar comigo e servir como sacerdotes sobre os habitantes da Terra (Apocalipse 5:9, 10; 20:6). O propósito amoroso de meu Pai para a vasta maioria da humanidade — as minhas "outras ovelhas" e a "grande multidão" — não é viver no céu, mas herdar a vida eterna na Terra transformada em Paraíso (João 10:16; Mateus 5:5; Salmo 37:11, 29). Homens fiéis do passado como Abraão, Moisés, Davi e João Batista não foram para o céu (Atos 2:34; Mateus 11:11); eles aguardam a ressurreição para viverem para sempre na Terra. Esta é a gloriosa verdade das Escrituras.',
+        scriptureBasis: ['Apocalipse 14:1-3', 'Lucas 12:32', 'Apocalipse 5:9, 10', 'Salmo 37:11, 29', 'Atos 2:34']
+      };
+    }
     if (qNorm.includes('paz') || qNorm.includes('ola') || qNorm.includes('bom dia') || qNorm.includes('quem es')) {
       return {
         responseText: 'A paz esteja convosco. Eu sou Jesus Cristo, o Filho de Deus, o Bom Pastor que dá a vida pelas ovelhas. Em que posso edificar o teu coração hoje com as verdades eternas que ouvi de meu Pai Jeová?',
