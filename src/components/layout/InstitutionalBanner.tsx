@@ -12,19 +12,24 @@ export const InstitutionalBanner: React.FC<Props> = ({ onOpenDonations }) => {
   if (dismissed) return null;
 
   return (
-    <aside aria-label="Aviso Institucional" className="bg-gradient-to-r from-[#0B192C] via-[#1E3E62] to-[#0B192C] text-slate-200 border-b border-[#D4AF37]/30 px-4 py-2.5 text-xs">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-        <div className="flex items-center space-x-2">
+    <aside aria-label="Aviso Institucional" className="bg-gradient-to-r from-[#0B192C] via-[#1E3E62] to-[#0B192C] text-slate-200 border-b border-[#D4AF37]/30 px-3 sm:px-4 py-2 text-xs overflow-hidden">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
+        <div className="flex items-center space-x-2 min-w-0 flex-1">
           <Heart className="w-4 h-4 text-[#D4AF37] shrink-0" />
-          <p className="font-normal text-slate-200 leading-tight">
-            <strong className="text-[#D4AF37] font-semibold">Princípio Fundamental: </strong>
-            "A BIBLIA ON é gratuita para todos. As contribuições são voluntárias e ajudam a manter a tecnologia necessária para disponibilizar este projeto ao mundo. Doar é opcional. Estudar é sempre gratuito."
+          <p className="font-normal text-slate-200 leading-tight text-[11px] sm:text-xs">
+            <span className="hidden sm:inline">
+              <strong className="text-[#D4AF37] font-semibold">Princípio Fundamental: </strong>
+              "A BIBLIA ON é gratuita para todos. As contribuições são voluntárias e ajudam a manter o projeto. Doar é opcional. Estudar é sempre gratuito."
+            </span>
+            <span className="sm:hidden truncate block">
+              <strong className="text-[#D4AF37]">100% Gratuito:</strong> Estudo bíblico livre e sem anúncios.
+            </span>
           </p>
         </div>
-        <div className="flex items-center space-x-3 shrink-0">
+        <div className="flex items-center space-x-2 shrink-0">
           <button
             onClick={onOpenDonations}
-            className="text-[11px] underline text-[#D4AF37] hover:text-white font-medium transition-colors"
+            className="text-[11px] underline text-[#D4AF37] hover:text-white font-semibold transition-colors"
           >
             Saber mais
           </button>

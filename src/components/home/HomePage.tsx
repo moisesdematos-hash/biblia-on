@@ -140,15 +140,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Pergunta em linguagem natural ou digita uma passagem (ex: Melquisedeque, Salmo 83:18, alma)..."
-              className="w-full px-4 py-3.5 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 text-sm sm:text-base focus:outline-none"
+              placeholder="Pesquisa qualquer passagem, personagem ou pergunta bíblica..."
+              className="w-full px-2 sm:px-4 py-2.5 sm:py-3.5 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 text-xs sm:text-base focus:outline-none"
             />
 
             {/* Botão de Voz */}
             <button
               type="button"
               onClick={handleVoiceSearch}
-              className={`p-2.5 rounded-xl mr-1 transition-colors ${
+              className={`p-2 sm:p-2.5 rounded-xl mr-1 transition-colors shrink-0 ${
                 isListening 
                   ? 'bg-rose-500 text-white animate-pulse' 
                   : 'text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/60'
@@ -156,15 +156,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
               title="Perguntar por voz (Microfone)"
               aria-label="Pesquisar por voz"
             >
-              <Mic className="w-5 h-5" />
+              <Mic className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
             {/* Botão Pesquisar */}
             <button
               type="submit"
-              className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#0B192C] to-[#1E3E62] dark:from-[#D4AF37] dark:to-amber-500 text-white dark:text-[#0B192C] font-semibold text-sm hover:opacity-95 transition-all shadow-md flex items-center space-x-1.5 shrink-0"
+              className="px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-[#0B192C] to-[#1E3E62] dark:from-[#D4AF37] dark:to-amber-500 text-white dark:text-[#0B192C] font-semibold text-xs sm:text-sm hover:opacity-95 transition-all shadow-md flex items-center space-x-1 sm:space-x-1.5 shrink-0"
             >
-              <span>Explorar</span>
+              <span className="hidden xs:inline">Explorar</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

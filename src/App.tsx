@@ -25,6 +25,7 @@ import { TranslationComparator } from './components/translations/TranslationComp
 import { LivingCodexView } from './components/codex/LivingCodexView';
 import { CharacterDialogView } from './components/characters/CharacterDialogView';
 import { ToolExpertChat } from './components/assistant/ToolExpertChat';
+import { BottomNav } from './components/layout/BottomNav';
 import { Bot } from 'lucide-react';
 import type { LanguageCode } from './data/i18nData';
 
@@ -43,6 +44,7 @@ export const App: React.FC = () => {
   const [chatInitialQuery, setChatInitialQuery] = useState<string>('');
   const [explorerTarget, setExplorerTarget] = useState<{ bookId?: string; chapter?: number }>({});
   const [isFloatingExpertOpen, setIsFloatingExpertOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Sincroniza tema no elemento html
   useEffect(() => {
@@ -91,7 +93,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B192C] text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B192C] text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200 overflow-x-hidden w-full max-w-full">
       {/* Banner Institucional Obrigatório de Gratuidade */}
       <InstitutionalBanner onOpenDonations={() => handleNavigate('donations')} />
 
@@ -106,10 +108,12 @@ export const App: React.FC = () => {
         isOfflineMode={isOffline}
         currentLang={currentLang}
         setCurrentLang={setCurrentLang}
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
       />
 
       {/* Conteúdo Dinâmico */}
-      <main className="flex-1">
+      <main className="flex-1 pb-20 md:pb-8 w-full max-w-full">
         {activeTab === 'home' && (
           <HomePage
             onNavigate={handleNavigate}
@@ -211,6 +215,17 @@ export const App: React.FC = () => {
           }}
         />
       )}
+
+      {/* Barra de Navegação Inferior Mobile (PWA & Ergonomia) */}
+      <BottomNav
+        activeTab={activeTab}
+        onSelectTab={(tab) => {
+          handleNavigate(tab);
+          setIsMobileMenuOpen(false);
+        }}
+        onOpenMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        isMobileMenuOpen={isMobileMenuOpen}
+      />
     </div>
   );
 };
