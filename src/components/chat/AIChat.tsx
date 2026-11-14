@@ -14,11 +14,13 @@ import {
   BookOpen, 
   AlertCircle,
   HelpCircle,
-  Trash2
+  Trash2,
+  Key
 } from 'lucide-react';
 import { queryBibliaKnowledge, type AIResponse, type ResponseLevel } from '../../services/aiService';
 import { speechService } from '../../services/speechService';
 import { db } from '../../db/bibliaOnDb';
+import { AIKeyConfigModal } from './AIKeyConfigModal';
 
 interface ChatMessage {
   id: string;
@@ -43,6 +45,7 @@ export const AIChat: React.FC<AIChatProps> = ({ initialQuery = '', isOfflineMode
   const [isSpeaking, setIsSpeaking] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [micNotice, setMicNotice] = useState<string | null>(null);
+  const [showKeyModal, setShowKeyModal] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -216,8 +219,18 @@ export const AIChat: React.FC<AIChatProps> = ({ initialQuery = '', isOfflineMode
           </div>
         </div>
 
-        {/* Ações do Cabeçalho: Apagar Conversa & Níveis de Profundidade */}
-        <div className="flex items-center space-x-2 self-end sm:self-auto">
+        {/* Ações do Cabeçalho: Chaves de IA, Apagar Conversa & Níveis de Profundidade */}
+        <div className="flex flex-wrap items-center gap-2 self-end sm:self-auto">
+          {/* Botão de Configurar Chaves de IA */}
+          <button
+            onClick={() => setShowKeyModal(true)}
+            className="px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-[#D4AF37] border border-slate-300 dark:border-slate-700 transition-all cursor-pointer shadow-xs"
+            title="Inserir ou gerir a sua chave gratuita de IA (Groq ou Gemini)"
+          >
+            <Key className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span className="hidden sm:inline">Chaves IA</span>
+          </button>
+
           {/* Botão de Apagar Conversa */}
           {messages.length > 0 && (
             <button
@@ -520,6 +533,12 @@ export const AIChat: React.FC<AIChatProps> = ({ initialQuery = '', isOfflineMode
           </button>
         </div>
       </div>
+
+      {/* Modal de Configuração de Chaves de IA */}
+      <AIKeyConfigModal
+        isOpen={showKeyModal}
+        onClose={() => setShowKeyModal(false)}
+      />
     </div>
   );
 };

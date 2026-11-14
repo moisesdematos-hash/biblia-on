@@ -26,11 +26,13 @@ import {
   MessageSquare,
   Download,
   Smartphone,
-  Bot
+  Bot,
+  Key
 } from 'lucide-react';
 import { I18N_TRANSLATIONS, type LanguageCode } from '../../data/i18nData';
 import { pwaService } from '../../services/pwaService';
 import { readerCounterService, type ReaderStats } from '../../services/readerCounterService';
+import { AIKeyConfigModal } from '../chat/AIKeyConfigModal';
 
 export type ActiveTab = 
   | 'home' 
@@ -83,6 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [pwaState, setPwaState] = useState(pwaService.getState());
   const [readerStats, setReaderStats] = useState<ReaderStats>(() => readerCounterService.getStats());
+  const [showAIKeysModal, setShowAIKeysModal] = useState(false);
 
   useEffect(() => {
     const unsubPwa = pwaService.subscribe((s) => setPwaState(s));
@@ -240,6 +243,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Bot className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span className="hidden md:inline">Especialista</span>
+            </button>
+
+            {/* Configuração de Chaves IA */}
+            <button
+              onClick={() => setShowAIKeysModal(true)}
+              className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-800/80 border border-slate-700 text-xs text-slate-300 hover:text-[#D4AF37] hover:border-[#D4AF37] transition-colors"
+              title="Configurar Chaves Gratuitas de IA (Groq / Gemini)"
+            >
+              <Key className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="hidden xl:inline">Chaves IA</span>
             </button>
 
             {/* Contador de Leitores Ativos no Topo */}
@@ -409,6 +422,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Global de Configuração de Chaves de IA */}
+      <AIKeyConfigModal
+        isOpen={showAIKeysModal}
+        onClose={() => setShowAIKeysModal(false)}
+      />
     </header>
   );
 };
