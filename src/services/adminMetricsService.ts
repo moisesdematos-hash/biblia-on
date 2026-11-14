@@ -124,8 +124,8 @@ class AdminMetricsService {
 
   public getTopPersonas(): PersonaMetrics[] {
     return [
-      { id: 'jesus_cristo', name: 'Jesus Cristo', title: 'O Filho de Deus, Instrutor & Messias', queriesCount: 942, audioPlaysCount: 820, modernQuestionsCount: 450, sharePercent: 28.5 },
-      { id: 'jeova_deus', name: 'Jeová Deus', title: 'O Soberano Senhor & Pai Celestial', queriesCount: 810, audioPlaysCount: 690, modernQuestionsCount: 380, sharePercent: 24.2 },
+      { id: 'jesus_cristo', name: 'Jesus Cristo', title: 'O Filho de Deus, Instrutor & Messias', queriesCount: 1240, audioPlaysCount: 980, modernQuestionsCount: 520, sharePercent: 34.5 },
+      { id: 'moises_libertador', name: 'Moisés', title: 'O Homem Mais Manso & Mediador da Lei', queriesCount: 780, audioPlaysCount: 610, modernQuestionsCount: 340, sharePercent: 21.6 },
       { id: 'davi_rei', name: 'Davi', title: 'Rei de Israel & Salmista de Fé', queriesCount: 430, audioPlaysCount: 350, modernQuestionsCount: 210, sharePercent: 12.8 },
       { id: 'paulo_apostolo', name: 'Apóstolo Paulo', title: 'Missionário & Doutor das Nações', queriesCount: 390, audioPlaysCount: 290, modernQuestionsCount: 195, sharePercent: 11.6 },
       { id: 'salomao_rei', name: 'Rei Salomão', title: 'Rei Sábio & Construtor do Templo', queriesCount: 280, audioPlaysCount: 210, modernQuestionsCount: 140, sharePercent: 8.4 },

@@ -38,7 +38,7 @@ interface DialogMessage {
 }
 
 export const CharacterDialogView: React.FC = () => {
-  const [selectedPersona, setSelectedPersona] = useState<BiblicalPersona>(BIBLICAL_PERSONAS[0]); // Jeová Deus
+  const [selectedPersona, setSelectedPersona] = useState<BiblicalPersona>(BIBLICAL_PERSONAS[0]); // Jesus Cristo
   const [filterMode, setFilterMode] = useState<'most_requested' | 'prophets' | 'disciples' | 'archetype' | 'era'>('most_requested');
   const [selectedArchetype, setSelectedArchetype] = useState<PersonaArchetype | 'all'>('all');
   const [selectedEra, setSelectedEra] = useState<BiblicalEra | 'all'>('all');
@@ -88,7 +88,7 @@ export const CharacterDialogView: React.FC = () => {
     {
       id: 'init_welcome',
       sender: 'persona',
-      text: `A paz seja contigo, meu filho. Eu sou Jeová, o Soberano Senhor do Universo e teu Pai Celestial. Como Criador que estendeu os céus e formou a Terra para ser habitada em paz eterna, estou pronto a ouvir a tua alma. O que gostarias de inquirir da minha Palavra sagrada hoje?\n\n💬 **E diz-me uma coisa sobre o vosso tempo moderno:**\n${initialInquiry.question}`,
+      text: `A paz esteja convosco. Eu sou Jesus Cristo, o Filho Primogênito de Deus e o Bom Pastor. Quem me segue nunca andará em escuridão, mas terá a luz da vida. O que gostarias de aprender comigo hoje?\n\n💬 **E diz-me uma coisa sobre o vosso tempo moderno:**\n${initialInquiry.question}`,
       scriptures: BIBLICAL_PERSONAS[0].scriptureSources,
       timestamp: Date.now()
     }
@@ -218,9 +218,7 @@ export const CharacterDialogView: React.FC = () => {
         const inquiry = personaAIService.getModernEraInquiry(selectedPersona);
         let greeting = `A paz seja contigo. Eu sou ${selectedPersona.name} (${selectedPersona.archetypeLabel}). Como testemunha dos propósitos sagrados de Deus durante ${selectedPersona.historicalPeriod}, estou pronto para conversar contigo. O que tens no coração para inquirir hoje?`;
         
-        if (selectedPersona.id === 'jeova_deus') {
-          greeting = `A paz seja contigo, meu filho. Eu sou Jeová, o Soberano Senhor do Universo e teu Pai Celestial. Como Criador que estendeu os céus e formou a Terra para ser habitada em paz eterna, estou pronto a ouvir a tua alma. O que gostarias de inquirir da minha Palavra sagrada hoje?`;
-        } else if (selectedPersona.id === 'jesus_cristo') {
+        if (selectedPersona.id === 'jesus_cristo') {
           greeting = `A paz esteja convosco. Eu sou Jesus Cristo, o Filho Primogênito de Deus e o Bom Pastor. Quem me segue nunca andará em escuridão, mas terá a luz da vida. O que gostarias de aprender comigo hoje?`;
         }
 
@@ -337,9 +335,7 @@ export const CharacterDialogView: React.FC = () => {
     setSuggestedReplies(inquiry.replies);
 
     let greeting = `A paz seja contigo. Eu sou ${p.name}, ${p.title} (${p.historicalPeriod}). O que gostarias de me perguntar sobre a minha caminhada nas Escrituras?`;
-    if (p.id === 'jeova_deus') {
-      greeting = `A paz seja contigo, meu filho. Eu sou Jeová, o Soberano Senhor do Universo e teu Pai Celestial. O que gostarias de me perguntar hoje?`;
-    } else if (p.id === 'jesus_cristo') {
+    if (p.id === 'jesus_cristo') {
       greeting = `A paz esteja convosco. Eu sou Jesus Cristo, o Filho de Deus e o Bom Pastor. Em que posso edificar o teu coração com as palavras que ouvi de meu Pai?`;
     }
 
@@ -515,9 +511,7 @@ export const CharacterDialogView: React.FC = () => {
 
   const handleTestVoice = () => {
     let testPhrase = `A paz seja contigo. Eu sou ${selectedPersona.name}, ${selectedPersona.title}. Esta é a minha voz personalizada nas Escrituras.`;
-    if (selectedPersona.id === 'jeova_deus') {
-      testPhrase = `Eu sou Jeová, o Deus Altíssimo sobre toda a terra, teu Criador e Pai. Ouve a minha voz na minha Palavra inspirada.`;
-    } else if (selectedPersona.id === 'jesus_cristo') {
+    if (selectedPersona.id === 'jesus_cristo') {
       testPhrase = `A paz esteja convosco. Eu sou Jesus Cristo, o Bom Pastor que dá a vida pelas ovelhas.`;
     }
     speechService.speakPersona(testPhrase, selectedPersona);
@@ -531,7 +525,6 @@ export const CharacterDialogView: React.FC = () => {
 
   const archetypesList: Array<{ id: PersonaArchetype | 'all'; label: string; icon: string }> = [
     { id: 'all', label: 'Todos os Papéis', icon: '✨' },
-    { id: 'deus', label: 'Jeová Deus', icon: '☀️' },
     { id: 'filho_de_deus', label: 'Jesus Cristo', icon: '🕊️' },
     { id: 'anjo_celestial', label: 'Mensageiros Celestiais (Anjos)', icon: '✨' },
     { id: 'profeta', label: 'Profetas', icon: '🔥' },
@@ -545,7 +538,6 @@ export const CharacterDialogView: React.FC = () => {
 
   const eras: Array<{ id: BiblicalEra | 'all'; label: string; icon: string }> = [
     { id: 'all', label: 'Todas as Eras', icon: '✨' },
-    { id: 'soberano', label: 'Jeová Deus', icon: '☀️' },
     { id: 'messias', label: 'Jesus Cristo', icon: '🕊️' },
     { id: 'origens', label: 'Origens & Éden', icon: '🌿' },
     { id: 'patriarcas', label: 'Patriarcas', icon: '⛺' },
@@ -920,7 +912,7 @@ export const CharacterDialogView: React.FC = () => {
             {filteredPersonas.length > 0 ? (
               filteredPersonas.map((persona) => {
                 const isSelected = selectedPersona.id === persona.id;
-                const isDivine = persona.id === 'jeova_deus' || persona.id === 'jesus_cristo';
+                const isMessianic = persona.id === 'jesus_cristo';
                 return (
                   <button
                     key={persona.id}
@@ -928,7 +920,7 @@ export const CharacterDialogView: React.FC = () => {
                     className={`w-full text-left p-3 rounded-xl text-xs transition-all flex items-start space-x-3 ${
                       isSelected
                         ? 'bg-[#1E3E62] text-[#D4AF37] font-semibold border border-[#D4AF37]/50 shadow-sm'
-                        : isDivine
+                        : isMessianic
                           ? 'bg-amber-500/5 dark:bg-amber-500/10 text-slate-900 dark:text-white hover:bg-amber-500/15 border border-[#D4AF37]/20'
                           : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 border border-transparent'
                     }`}

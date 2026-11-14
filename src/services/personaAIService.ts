@@ -28,14 +28,6 @@ export interface InteractivePersonaResponse {
 
 // Banco estruturado de indagações profundas sobre o século XXI (o nosso tempo)
 const MODERN_ERA_QUESTIONS: Record<string, { question: string; replies: string[] }> = {
-  jeova_deus: {
-    question: 'Diz-me, meu filho: no meio de tantas vozes, aparelhos luminosos e ruídos do teu século, tens encontrado tempo para te recolheres em silêncio perante mim e escutar a minha Palavra inspirada com reverência?',
-    replies: [
-      'Pai celestial, reconheço que as telas e a pressa da rotina muitas vezes me distraem, mas anseio por mais silêncio contigo.',
-      'Tenho me esforçado para orar todos os dias e ler a Bíblia antes que os afazeres comecem.',
-      'Como posso blindar a minha mente das dúvidas e do ceticismo que cercam a sociedade moderna?'
-    ]
-  },
   jesus_cristo: {
     question: 'Eu subia aos montes de madrugada para orar a meu Pai no silêncio da noite. No meio das notificações incessantes, pressões de trabalho e ansiedades da vossa era moderna, quando foi a última vez que estiveste a sós com Deus derramando o teu coração?',
     replies: [

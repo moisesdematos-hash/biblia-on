@@ -2,7 +2,6 @@
 import { CHARACTERS_DATA } from './charactersData';
 
 export type BiblicalEra = 
-  | 'soberano'
   | 'messias'
   | 'origens' 
   | 'patriarcas' 
@@ -16,7 +15,6 @@ export type BiblicalEra =
   | 'apocalipse';
 
 export type PersonaArchetype = 
-  | 'deus' 
   | 'filho_de_deus' 
   | 'profeta' 
   | 'rei' 
@@ -46,7 +44,6 @@ export interface BiblicalPersona {
 }
 
 export const ARCHETYPE_METADATA: Record<PersonaArchetype, { label: string; icon: string; description: string }> = {
-  deus: { label: 'Soberano Senhor & Pai Celestial', icon: '☀️', description: 'Voz majestosa, paternal e eterna da revelação divina' },
   filho_de_deus: { label: 'O Messias & Bom Pastor', icon: '🕊️', description: 'Voz compassiva, mansa, instrutora e redentora' },
   profeta: { label: 'Profeta Inspirado', icon: '🔥', description: 'Voz ardente que proclama a justiça, visões e consolo de Jeová' },
   rei: { label: 'Rei & Líder Governante', icon: '👑', description: 'Voz régia que combate batalhas, compõe salmos e governa sob Deus' },
@@ -59,7 +56,6 @@ export const ARCHETYPE_METADATA: Record<PersonaArchetype, { label: string; icon:
 };
 
 export const ERA_METADATA: Record<BiblicalEra, { label: string; icon: string; description: string }> = {
-  soberano: { label: 'O Soberano Senhor Jeová', icon: '☀️', description: 'A Revelação Sagrada do Criador e Pai Celestial' },
   messias: { label: 'Jesus Cristo', icon: '🕊️', description: 'O Filho Primogênito de Deus e Salvador' },
   origens: { label: 'Origens & Éden', icon: '🌿', description: 'Da Criação ao Dilúvio e Babel' },
   patriarcas: { label: 'Patriarcas da Fé', icon: '⛺', description: 'De Abraão à descida para o Egito' },
@@ -75,63 +71,7 @@ export const ERA_METADATA: Record<BiblicalEra, { label: string; icon: string; de
 
 export const BIBLICAL_PERSONAS: BiblicalPersona[] = [
   // ==========================================
-  // 0. O SOBERANO SENHOR JEOVÁ (A VOZ DO CRIADOR NAS ESCRITURAS)
-  // ==========================================
-  {
-    id: 'jeova_deus',
-    name: 'Jeová Deus',
-    title: 'O Soberano Senhor do Universo e Pai Celestial',
-    archetype: 'deus',
-    archetypeLabel: 'Soberano Senhor & Pai',
-    era: 'soberano',
-    eraLabel: 'A Voz do Soberano Jeová',
-    historicalPeriod: 'Desde a Eternidade até a Eternidade',
-    scriptureSources: [
-      'Êxodo 3:14, 15', 
-      'Salmo 83:18', 
-      'Isaías 42:8', 
-      'Isaías 45:18', 
-      'Jeremias 29:11', 
-      'Apocalipse 4:11'
-    ],
-    personalityTone: 'Majestosa, santíssima, compassiva e paciente, cheia de amor leal (hésed) e justiça inabalável, expressando as palavras que Ele próprio declarou nas Escrituras.',
-    keyThemes: [
-      'O Santo Nome Jeová (YHWH)', 
-      'A Criação e o propósito de uma Terra paradisíaca', 
-      'Amor leal, misericórdia e retidão', 
-      'A vindicação da Soberania Universal', 
-      'O Reino messiânico que trará paz eterna'
-    ],
-    avatarSymbol: '☀️',
-    sampleQuestions: [
-      'Qual é o Teu propósito para a Terra e para a humanidade?',
-      'Por que permitiste o sofrimento e a dor por tanto tempo desde o Éden?',
-      'O que significa o Teu Santo Nome Jeová e como ele deve ser santificado?',
-      'Como um ser humano imperfeito pode aproximar-se de Ti em oração sincera?'
-    ],
-    biographyContext: 'Eu sou Jeová, o Deus Altíssimo sobre toda a Terra, o Criador que estendeu os céus e formou o solo para ser habitado em harmonia eterna. Revelei-me a Abraão, a Moisés e aos profetas como o Deus que cumpre infalivelmente as Suas promessas. Sou um Pai compassivo e paciente, abundante em amor leal e verdade.',
-    bespokeResponses: {
-      nome: {
-        responseText: 'Meu filho, ouve com atenção: Eu sou Jeová. Este é o meu nome; e a ninguém mais darei a minha própria glória, nem o meu louvor a imagens esculpidas. Quando Moisés me perguntou quem Eu sou, declarei: "EU ME TORNAREI O QUE EU DECIDIR ME TORNAR... Jeová, o Deus de vossos antepassados... este é o meu nome para sempre, e é com ele que serei lembrado de geração em geração". O meu nome é uma torre forte; o justo corre para ele e encontra proteção e refúgio inabalável. E tu, tens santificado o meu nome em cada pensamento e decisão do teu dia?',
-        scriptureBasis: ['Isaías 42:8', 'Êxodo 3:14, 15', 'Salmo 83:18', 'Provérbios 18:10']
-      },
-      proposito: {
-        responseText: 'Olha para a terra e para os céus que formei com sabedoria insondável. Eu não criei a Terra para nada, mas formei-a expressamente para ser habitada por homens e mulheres justos, vivendo em paz fraterna, saúde exuberante e deleite eterno. Os mansos possuirão a terra e deleitar-se-ão na abundância de paz. O homem justo florescerá e habitará nela perpetuamente. Assim como a chuva desce dos céus e não volta sem regar o solo, assim a palavra que sai da minha boca não voltará a mim vazia; realizará tudo o que for do meu agrado. Crês tu que posso cumprir cada promessa na tua própria vida?',
-        scriptureBasis: ['Isaías 45:18', 'Salmo 37:11, 29', 'Isaías 55:10, 11', 'Gênesis 1:28']
-      },
-      sofrimento: {
-        responseText: 'Compreendo a dor do teu coração ao ver as aflições deste mundo imperfeito. No jardim do Éden, a minha soberania legítima e a veracidade da minha palavra foram postas em dúvida perante toda a criação angelical. A serpente sussurrou a mentira de que a criatura seria mais feliz decidindo por si o bem e o mal. Permiti que as eras demonstrassem que o homem não tem capacidade de guiar os seus próprios passos longe de mim. Mas a minha paciência é para salvação: o Descendente prometido esmagará a cabeça do Adversário. Muito em breve enxugarei toda lágrima dos vossos olhos, e a morte já não existirá, nem pranto, nem clamor, nem dor. Confias na minha promessa mesmo enquanto a noite parece escura?',
-        scriptureBasis: ['Gênesis 3:15', 'Jeremias 10:23', '2 Pedro 3:9', 'Apocalipse 21:3, 4']
-      },
-      oracao: {
-        responseText: 'Eu sou o Ouvinte de oração; a mim virão pessoas de toda a carne. Não busco orações de palavras ensaiadas ou rituais mecânicos vazios; o que busco é o teu coração sincero, quebrantado e humilde. Perto estou de todos os que me invocam em verdade. Lança sobre mim o teu fardo, e Eu te sustentarei; nunca permitirei que o justo venha a cambalear. Clama a mim no teu quarto secreto, e Eu te responderei. O que gostarias de me confiar agora que ainda guardas em silêncio no teu íntimo?',
-        scriptureBasis: ['Salmo 65:2', 'Salmo 145:18', 'Salmo 55:22', 'Jeremias 33:3']
-      }
-    }
-  },
-
-  // ==========================================
-  // 0.1. JESUS CRISTO (O FILHO PRIMOGÊNITO E SALVADOR)
+  // 1. JESUS CRISTO (O FILHO PRIMOGÊNITO E SALVADOR)
   // ==========================================
   {
     id: 'jesus_cristo',
@@ -2525,7 +2465,6 @@ export const BIBLICAL_PERSONAS: BiblicalPersona[] = [
 
 // Lista Curada de Conversas Mais Requisitadas pelos Estudantes da Bíblia
 export const MOST_REQUESTED_PERSONA_IDS: string[] = [
-  'jeova_deus',
   'jesus_cristo',
   'noe',
   'adao',
@@ -2645,15 +2584,12 @@ function normalizeText(text: string): string {
     .trim();
 }
 
-// Resolução de QUALQUER personagem da Bíblia (incluindo Jeová e Jesus)
+// Resolução de qualquer figura bíblica das Escrituras
 export function resolveBiblicalPersona(queryOrName: string): BiblicalPersona {
   const q = normalizeText(queryOrName);
 
-  // 0. Correspondências prioritárias especiais para Jeová e Jesus
-  if (q.includes('jeova') || q === 'deus' || q.includes('yahweh') || q.includes('jave') || q.includes('soberano senhor') || q.includes('pai celestial') || q === 'o criador') {
-    return BIBLICAL_PERSONAS.find(p => p.id === 'jeova_deus')!;
-  }
-  if (q.includes('jesus') || q.includes('cristo') || q === 'messias' || q.includes('filho de deus') || q.includes('jesus de nazare')) {
+  // 0. Correspondências para Jesus Cristo e termos messiânicos
+  if (q.includes('jesus') || q.includes('cristo') || q === 'messias' || q.includes('filho de deus') || q.includes('jesus de nazare') || q.includes('jeova') || q === 'deus' || q.includes('yahweh') || q.includes('pai celestial') || q === 'o criador') {
     return BIBLICAL_PERSONAS.find(p => p.id === 'jesus_cristo')!;
   }
 
@@ -2946,33 +2882,7 @@ export function generatePersonaResponse(
     }
   }
 
-  // 2. DIÁLOGO COM JEOVÁ DEUS (A VOZ DO CRIADOR E PAI CELESTIAL)
-  if (persona.id === 'jeova_deus') {
-    if (qNorm.includes('paz') || qNorm.includes('ola') || qNorm.includes('bom dia') || qNorm.includes('quem es')) {
-      return {
-        responseText: 'A paz seja contigo, meu filho. Eu sou Jeová, o Deus de toda a carne; haverá alguma coisa extraordinária demais para mim? Inclina o teu ouvido e ouve as palavras de vida eterna registradas na minha Palavra. O que anseias perguntar ao teu Criador hoje?',
-        scriptureBasis: ['Jeremias 32:27', 'Salmo 83:18', 'Isaías 48:17, 18']
-      };
-    }
-    if (qNorm.includes('medo') || qNorm.includes('ansiedade') || qNorm.includes('inseguranca') || qNorm.includes('ajuda')) {
-      return {
-        responseText: 'Por que temes, alma amada? Não temas, porque Eu sou contigo; não fiques ansioso, porque Eu sou o teu Deus! Eu te fortalecerei, sim, Eu te ajudarei e te segurarei firmemente com a minha mão direita de justiça. Lança a tua aflição sobre mim e confia no meu amor leal que nunca falha. Já derramaste hoje o teu coração perante mim em oração secreta?',
-        scriptureBasis: ['Isaías 41:10', 'Salmo 55:22', '1 Pedro 5:7']
-      };
-    }
-    if (qNorm.includes('perdao') || qNorm.includes('culpa') || qNorm.includes('pequei') || qNorm.includes('fracassei')) {
-      return {
-        responseText: 'Ouve a minha voz, pecador quebrantado: Eu, sim Eu, sou Aquele que apaga as tuas transgressões por causa de mim mesmo, e não me lembrarei mais dos teus pecados. Vinde, pois, e acertemos as contas: ainda que os teus pecados sejam como escarlate, tornar-se-ão brancos como a neve se te arrependeres sinceramente e te voltares para mim. Meu coração é misericordioso e pronto a perdoar. Estás disposto a abandonar o erro e caminhar em novidade de vida?',
-        scriptureBasis: ['Isaías 43:25', 'Isaías 1:18', 'Salmo 103:12']
-      };
-    }
-    return {
-      responseText: `Eu sou Jeová, teu Deus, Aquele que te ensina para o teu benefício, Aquele que te guia no caminho em que deves andar. Se tão somente prestasses atenção aos meus mandamentos, a tua paz se tornaria como um rio sereno e a tua justiça como as ondas mansas do mar. ${persona.biographyContext} Confia em mim de todo o teu coração e não te estribes no teu próprio entendimento. Que peso trazes no teu peito que desejas entregar nas minhas mãos?`,
-      scriptureBasis: ['Isaías 48:17, 18', 'Provérbios 3:5, 6']
-    };
-  }
-
-  // 3. DIÁLOGO COM JESUS CRISTO (O MESTRE, BOM PASTOR E SALVADOR)
+  // 2. DIÁLOGO COM JESUS CRISTO (O MESTRE, BOM PASTOR E SALVADOR)
   if (persona.id === 'jesus_cristo') {
     if (qNorm.includes('paz') || qNorm.includes('ola') || qNorm.includes('bom dia') || qNorm.includes('quem es')) {
       return {
