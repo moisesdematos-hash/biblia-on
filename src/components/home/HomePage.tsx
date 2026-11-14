@@ -18,7 +18,6 @@ import {
   MessageSquare,
   Gamepad2,
   GraduationCap,
-  Mic2,
   TreePine,
   MapPin,
   FileText,
@@ -148,7 +147,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
       category: 'Ensino, Genealogias & Ministério Prático',
       items: [
         { id: 'tutor' as ActiveTab, title: 'Professor Adaptativo', desc: 'Método pedagógico "Ensina-me até eu compreender" em 3 níveis + flashcards', icon: GraduationCap, color: 'text-indigo-400' },
-        { id: 'speeches' as ActiveTab, title: 'Preparador de Discursos', desc: 'Esboços cronometrados (5, 10, 15 e 30 min) com impressão em folha/PDF', icon: Mic2, color: 'text-amber-500' },
         { id: 'genealogy' as ActiveTab, title: 'Genealogias Bíblicas', desc: 'Árvore genealógica de Adão a Jesus Cristo e as 12 Tribos de Israel', icon: TreePine, color: 'text-emerald-500' },
         { id: 'atlas' as ActiveTab, title: 'Atlas & Cronologia', desc: 'Mapas vectoriais, rotas do Êxodo e viagens apostólicas de Paulo', icon: MapPin, color: 'text-red-400' },
         { id: 'timeline' as ActiveTab, title: 'Linha do Tempo Mundial', desc: 'Cronologia histórica universal desde a criação até ao século I d.C.', icon: Clock, color: 'text-yellow-400' },

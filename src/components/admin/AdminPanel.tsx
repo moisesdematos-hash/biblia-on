@@ -894,7 +894,7 @@ export const AdminPanel: React.FC = () => {
                 <span className="text-xl font-bold font-title text-emerald-400">{dbStats.plansCount}</span>
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 text-center">
-                <span className="text-[10px] font-mono text-slate-400 block">Discursos</span>
+                <span className="text-[10px] font-mono text-slate-400 block">Estudos</span>
                 <span className="text-xl font-bold font-title text-sky-400">{dbStats.speechesCount}</span>
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 text-center">

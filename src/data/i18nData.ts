@@ -25,7 +25,6 @@ export interface TranslationDictionary {
     quizzes: string;
     library: string;
     plans: string;
-    speeches: string;
     tutor: string;
     compare: string;
     genealogy: string;
@@ -64,7 +63,6 @@ export const I18N_TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
       quizzes: 'Desafios',
       library: 'Minhas Notas',
       plans: 'Planos de Leitura',
-      speeches: 'Discursos & Ensino',
       tutor: 'Professor Adaptativo',
       compare: 'Comparar Traduções',
       genealogy: 'Genealogias',
@@ -101,7 +99,6 @@ export const I18N_TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
       quizzes: 'Quizzes',
       library: 'My Notes',
       plans: 'Reading Plans',
-      speeches: 'Speeches & Teaching',
       tutor: 'Adaptive Tutor',
       compare: 'Compare Versions',
       genealogy: 'Genealogies',
@@ -138,7 +135,6 @@ export const I18N_TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
       quizzes: 'Cuestionarios',
       library: 'Mis Notas',
       plans: 'Planes de Lectura',
-      speeches: 'Discursos y Enseñanza',
       tutor: 'Profesor Adaptativo',
       compare: 'Comparar Versiones',
       genealogy: 'Genealogías',
@@ -175,7 +171,6 @@ export const I18N_TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
       quizzes: 'Défis',
       library: 'Mes Notes',
       plans: 'Plans de Lecture',
-      speeches: 'Discours & Enseignement',
       tutor: 'Tuteur Adaptatif',
       compare: 'Comparer Versions',
       genealogy: 'Généalogies',

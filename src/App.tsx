@@ -19,7 +19,6 @@ import { AdminPanel } from './components/admin/AdminPanel';
 // Novos módulos integrados
 import { GenealogyTree } from './components/genealogy/GenealogyTree';
 import { ReadingPlansView } from './components/readingPlans/ReadingPlansView';
-import { SpeechPreparer } from './components/teaching/SpeechPreparer';
 import { AdaptiveTutor } from './components/tutor/AdaptiveTutor';
 import { TranslationComparator } from './components/translations/TranslationComparator';
 import { LivingCodexView } from './components/codex/LivingCodexView';
@@ -145,8 +144,6 @@ export const App: React.FC = () => {
         {activeTab === 'plans' && (
           <ReadingPlansView onOpenExplorer={handleOpenExplorerFromPlan} />
         )}
-
-        {activeTab === 'speeches' && <SpeechPreparer />}
 
         {activeTab === 'tutor' && <AdaptiveTutor />}
 

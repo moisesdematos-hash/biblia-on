@@ -131,7 +131,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               <section className="space-y-2">
                 <h3 className="font-title font-bold text-base text-[#D4AF37]">5. Propriedade Intelectual e Uso Pessoal</h3>
                 <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm">
-                  O utilizador tem o direito de utilizar todo o material disponibilizado para o seu estudo pessoal, ensino familiar, pregação bíblica e preparação de discursos sem custos ou taxas de licenciamento.
+                  O utilizador tem o direito de utilizar todo o material disponibilizado para o seu estudo pessoal, ensino familiar e pregação bíblica sem custos ou taxas de licenciamento.
                 </p>
               </section>
             </div>
@@ -206,8 +206,8 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                   a: 'A Tradução do Novo Mundo das Escrituras Sagradas (Edição de Estudo), reconhecida pela sua fidelidade aos manuscritos hebraicos, aramaicos e gregos mais antigos, incluindo o restabelecimento do nome divino Jeová (Tetragrama YHWH) nos seus devidos lugares.'
                 },
                 {
-                  q: 'Posso usar a ferramenta para preparar discursos e reuniões congregacionais?',
-                  a: 'Sim. O módulo "Discursos & Ensino" possui um preparador de esboços cronometrados (5, 10, 15 e 30 minutos) com textos-chave explicados, ilustrações práticas e botão de impressão direta em folha ou PDF.'
+                  q: 'Posso usar a ferramenta para estudo em família e ensino bíblico?',
+                  a: 'Sim. A BIBLIA ON oferece o Professor Adaptativo, Planos de Leitura, Arcade Bíblico com 13 jogos interactivos e ferramentas de pesquisa profunda ideais para noites de adoração em família e estudo individual.'
                 }
               ].map((faq, i) => (
                 <div key={i} className="p-4 rounded-2xl bg-slate-50 dark:bg-[#1E3E62]/40 border border-slate-200 dark:border-slate-700/80 space-y-1.5">

@@ -160,9 +160,9 @@ const FEATURE_KNOWLEDGE_BASE: FeatureTopic[] = [
 
   // 10. RECURSOS ADICIONAIS: ÁRVORE GENEALÓGICA, MAPAS, CRONOLOGIA, LÉXICO
   {
-    keywords: ['recursos', 'genealogia', 'árvore', 'léxico', 'grego', 'hebraico', 'mapas', 'atlas', 'cronologia', 'profecias', 'discursos', 'tutor', 'quiz', 'comparador'],
+    keywords: ['recursos', 'genealogia', 'árvore', 'léxico', 'grego', 'hebraico', 'mapas', 'atlas', 'cronologia', 'profecias', 'tutor', 'quiz', 'comparador'],
     title: 'Recursos Avançados e Ferramentas Auxiliares',
-    answer: `O BIBLIA ON dispõe de um ecossistema completo de ferramentas auxiliares:\n\n• **Árvore Genealógica:** Linhagem messiânica de Adão a Jesus Cristo.\n• **Léxico Original:** Definições em Hebraico, Aramaico e Grego Koiné com números Strong.\n• **Atlas & Linha do Tempo:** Mapas dos tempos bíblicos, rota do Êxodo e cronologia histórica de 4026 a.C. até 100 d.C.\n• **Comparador de Traduções:** Compare versículos lado a lado.\n• **Laboratório de Profecias:** Mapeamento de profecias messiânicas e cumprimentos históricos.\n• **Preparador de Discursos & Tutor:** Estruturador de temas bíblicos e exercícios adaptativos.\n• **Quizzes:** Testes bíblicos gamificados para autoavaliação.`,
+    answer: `O BIBLIA ON dispõe de um ecossistema completo de ferramentas auxiliares:\n\n• **Árvore Genealógica:** Linhagem messiânica de Adão a Jesus Cristo.\n• **Léxico Original:** Definições em Hebraico, Aramaico e Grego Koiné com números Strong.\n• **Atlas & Linha do Tempo:** Mapas dos tempos bíblicos, rota do Êxodo e cronologia histórica de 4026 a.C. até 100 d.C.\n• **Comparador de Traduções:** Compare versículos lado a lado.\n• **Laboratório de Profecias:** Mapeamento de profecias messiânicas e cumprimentos históricos.\n• **Professor Adaptativo & Tutor:** Ensino pedagógico em 3 níveis e exercícios adaptativos.\n• **Quizzes:** Testes bíblicos gamificados para autoavaliação.`,
     actions: [
       { label: 'Ver Árvore Genealógica', tab: 'genealogy', icon: 'GitBranch' },
       { label: 'Abrir Atlas Bíblico', tab: 'atlas', icon: 'MapPin' },

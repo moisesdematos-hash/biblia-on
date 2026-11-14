@@ -18,7 +18,6 @@ import {
   Clock, 
   Layers,
   Calendar,
-  Mic,
   Brain,
   Columns,
   GitBranch,
@@ -51,7 +50,6 @@ export type ActiveTab =
   | 'quizzes' 
   | 'library' 
   | 'plans'
-  | 'speeches'
   | 'tutor'
   | 'compare'
   | 'genealogy'
@@ -141,7 +139,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'explorer' as ActiveTab, label: t.nav.explorer, icon: BookOpen },
     { id: 'chat' as ActiveTab, label: t.nav.chat, icon: Brain },
     { id: 'plans' as ActiveTab, label: t.nav.plans, icon: Calendar },
-    { id: 'speeches' as ActiveTab, label: t.nav.speeches, icon: Mic },
     { id: 'tutor' as ActiveTab, label: t.nav.tutor, icon: Brain },
     { id: 'genealogy' as ActiveTab, label: t.nav.genealogy, icon: GitBranch },
     { id: 'characters' as ActiveTab, label: t.nav.characters, icon: Users },
