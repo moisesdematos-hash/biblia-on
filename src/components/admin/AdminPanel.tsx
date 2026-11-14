@@ -117,11 +117,26 @@ export const AdminPanel: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (adminPin === '2026' || adminPin === 'admin' || adminPin === 'biblia') {
+    const customPin = typeof window !== 'undefined' ? localStorage.getItem('biblia_on_admin_custom_pin') : null;
+    const isAuthorized = customPin 
+      ? adminPin === customPin 
+      : (adminPin === '2026' || adminPin === 'admin' || adminPin === 'biblia');
+
+    if (isAuthorized) {
       setIsAuthenticated(true);
       setAuthError(false);
     } else {
       setAuthError(true);
+    }
+  };
+
+  const handleChangePin = () => {
+    const newPin = window.prompt('Defina o novo PIN exclusivo para o Painel Administrativo (mínimo 4 dígitos):');
+    if (newPin && newPin.trim().length >= 4) {
+      localStorage.setItem('biblia_on_admin_custom_pin', newPin.trim());
+      triggerNotice('Novo PIN administrativo atualizado com sucesso!');
+    } else if (newPin !== null) {
+      alert('O PIN deve conter no mínimo 4 caracteres.');
     }
   };
 
@@ -231,9 +246,8 @@ export const AdminPanel: React.FC = () => {
             </button>
           </form>
 
-          <div className="text-[11px] text-slate-400 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-center space-x-1">
-            <span>PIN demonstrativo local:</span>
-            <strong className="text-[#D4AF37] font-mono">2026</strong>
+          <div className="text-[11px] text-slate-400 dark:text-slate-500 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-center space-x-1">
+            <span>Área confidencial restrita à administração da BIBLIA ON</span>
           </div>
         </div>
       </div>
@@ -279,6 +293,15 @@ export const AdminPanel: React.FC = () => {
             <Award className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>100% Conformidade TNM</span>
           </div>
+
+          {/* Botão de Alterar PIN */}
+          <button
+            onClick={handleChangePin}
+            className="text-xs px-3.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-[#D4AF37] font-semibold transition-all border border-[#D4AF37]/40 hover:border-[#D4AF37]"
+            title="Definir um PIN exclusivo personalizado"
+          >
+            Alterar PIN
+          </button>
 
           {/* Botão de Terminar Sessão */}
           <button

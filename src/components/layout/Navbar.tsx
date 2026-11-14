@@ -87,6 +87,30 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [readerStats, setReaderStats] = useState<ReaderStats>(() => readerCounterService.getStats());
   const [showAIKeysModal, setShowAIKeysModal] = useState(false);
 
+  // Mecanismo de acesso secreto ao Painel Administrativo por 5 cliques no logotipo
+  const logoClicksRef = React.useRef<number>(0);
+  const logoClickTimeoutRef = React.useRef<any>(null);
+
+  const handleLogoClick = () => {
+    logoClicksRef.current += 1;
+
+    if (logoClicksRef.current >= 5) {
+      if (logoClickTimeoutRef.current) clearTimeout(logoClickTimeoutRef.current);
+      logoClicksRef.current = 0;
+      handleSelectTab('admin');
+      return;
+    }
+
+    if (logoClicksRef.current === 1 && activeTab !== 'home') {
+      handleSelectTab('home');
+    }
+
+    if (logoClickTimeoutRef.current) clearTimeout(logoClickTimeoutRef.current);
+    logoClickTimeoutRef.current = setTimeout(() => {
+      logoClicksRef.current = 0;
+    }, 2500);
+  };
+
   useEffect(() => {
     const unsubPwa = pwaService.subscribe((s) => setPwaState(s));
     const unsubReaders = readerCounterService.subscribe((s) => setReaderStats(s));
@@ -137,13 +161,13 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-50 bg-[#0B192C] text-white border-b border-slate-700/60 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo & Marca */}
+          {/* Logo & Marca (Clique 5x ativa acesso secreto administrativo) */}
           <div 
-            className="flex items-center space-x-3 cursor-pointer group"
-            onClick={() => handleSelectTab('home')}
+            className="flex items-center space-x-3 cursor-pointer group select-none"
+            onClick={handleLogoClick}
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1E3E62] to-[#0B192C] p-1.5 border border-[#D4AF37]/50 shadow-inner group-hover:border-[#D4AF37] transition-all">
-              <img src="/logo.svg" alt="BIBLIA ON" className="w-full h-full object-contain" />
+              <img src="/logo.svg" alt="BIBLIA ON" className="w-full h-full object-contain pointer-events-none" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
@@ -218,13 +242,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <Heart className="w-4 h-4 text-amber-400" />
                   <span>{t.nav.donations}</span>
-                </button>
-                <button
-                  onClick={() => handleSelectTab('admin')}
-                  className="w-full text-left flex items-center space-x-2.5 px-4 py-2 text-xs text-slate-400 hover:bg-[#1E3E62] hover:text-slate-200 transition-colors"
-                >
-                  <ShieldCheck className="w-4 h-4 text-slate-400" />
-                  <span>{t.nav.admin}</span>
                 </button>
               </div>
             </div>
@@ -451,12 +468,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <Heart className="w-3.5 h-3.5 text-amber-400" />
                 <span>{t.nav.donations}</span>
-              </button>
-              <button
-                onClick={() => handleSelectTab('admin')}
-                className="text-xs text-slate-400 hover:text-slate-200 px-2 py-1.5"
-              >
-                {t.nav.admin}
               </button>
             </div>
           </div>
