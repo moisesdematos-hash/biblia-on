@@ -11,7 +11,8 @@ import {
   Check,
   RotateCcw,
   Info,
-  Sparkles
+  Sparkles,
+  Clock
 } from 'lucide-react';
 import type { FinancialReport } from '../../types';
 
@@ -348,32 +349,19 @@ export const DonationsAndTransparency: React.FC = () => {
             </p>
           </div>
 
-          {/* Confirmação e Registo */}
-          {donationSuccess ? (
-            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 space-y-2 text-xs animate-fadeIn">
-              <div className="flex items-center space-x-2 font-bold text-sm">
-                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                <span>Obrigado pelo seu coração generoso!</span>
-              </div>
-              <p>
-                O seu donativo voluntário em <strong>{currentAccount.label}</strong> foi contabilizado com sucesso no relatório financeiro público.
-              </p>
-              <button
-                onClick={() => setDonationSuccess(false)}
-                className="mt-2 text-[11px] underline text-emerald-700 dark:text-emerald-400 hover:opacity-80 block font-semibold"
-              >
-                Concluir e voltar
-              </button>
+          {/* Confirmação e Registo (Bloqueado temporariamente: BREVEMENTE) */}
+          <div className="w-full p-4 rounded-2xl bg-amber-500/10 border-2 border-[#D4AF37]/50 text-center space-y-2 select-none shadow-sm">
+            <div className="flex items-center justify-center space-x-2 text-[#D4AF37] font-bold text-sm uppercase tracking-wider">
+              <Clock className="w-4 h-4" />
+              <span>Canais de Contribuição: BREVEMENTE ATIVOS</span>
             </div>
-          ) : (
-            <button
-              onClick={() => handleContribute(customAmount ? parseFloat(customAmount) : (selectedAmount || 0))}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-[#D4AF37] text-[#0B192C] font-bold text-sm hover:opacity-95 transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer"
-            >
-              <Heart className="w-4 h-4 fill-current" />
-              <span>Registar Contribuição de {(customAmount ? parseFloat(customAmount) : (selectedAmount || 0)).toLocaleString()} {selectedCurrency}</span>
-            </button>
-          )}
+            <p className="text-xs text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed">
+              As contas bancárias oficiais (EUR, USD e KZ) encontram-se em homologação institucional e testes finais. Durante este período, o apoio financeiro está pausado. Estudar as Escrituras é e será sempre 100% gratuito para todos.
+            </p>
+            <div className="inline-block px-3 py-1 rounded-full bg-[#1E3E62] text-[#D4AF37] text-[11px] font-mono font-bold border border-[#D4AF37]/40">
+              STATUS: HOMOLOGAÇÃO EM CURSO
+            </div>
+          </div>
 
           {/* Segurança e Ética */}
           <div className="flex items-center space-x-2 text-[11px] text-slate-400 justify-center">

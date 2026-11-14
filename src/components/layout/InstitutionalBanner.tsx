@@ -27,12 +27,9 @@ export const InstitutionalBanner: React.FC<Props> = ({ onOpenDonations }) => {
           </p>
         </div>
         <div className="flex items-center space-x-2 shrink-0">
-          <button
-            onClick={onOpenDonations}
-            className="text-[11px] underline text-[#D4AF37] hover:text-white font-semibold transition-colors"
-          >
-            Saber mais
-          </button>
+          <span className="text-[10px] font-bold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/40 select-none">
+            Apoio: BREVEMENTE
+          </span>
           <button
             onClick={() => setDismissed(true)}
             className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800 transition-colors"

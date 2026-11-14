@@ -251,13 +251,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                   );
                 })}
                 <div className="border-t border-slate-700/80 my-1"></div>
-                <button
-                  onClick={() => handleSelectTab('donations')}
-                  className="w-full text-left flex items-center space-x-2.5 px-4 py-2 text-xs text-amber-300 hover:bg-[#1E3E62] transition-colors font-medium"
+                <div
+                  className="w-full text-left flex items-center justify-between px-4 py-2 text-xs text-slate-400 opacity-90 cursor-default select-none"
+                  title="Área de contribuições voluntárias em fase de homologação. O estudo é sempre 100% gratuito."
                 >
-                  <Heart className="w-4 h-4 text-amber-400" />
-                  <span>{t.nav.donations}</span>
-                </button>
+                  <div className="flex items-center space-x-2.5">
+                    <Heart className="w-4 h-4 text-amber-400/80" />
+                    <span>{t.nav.donations}</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/30">BREVEMENTE</span>
+                </div>
               </div>
             </div>
           </nav>
@@ -288,19 +291,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>Chaves IA</span>
             </button>
 
-            {/* Botão de Acesso Direto às Contribuições & Apoio */}
-            <button
-              onClick={() => handleSelectTab('donations')}
-              className={`hidden sm:flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border cursor-pointer ${
-                activeTab === 'donations'
-                  ? 'bg-rose-500/20 text-rose-300 border-rose-500/60 shadow-sm'
-                  : 'bg-slate-800/80 hover:bg-rose-500/10 text-slate-300 hover:text-rose-400 border-slate-700 hover:border-rose-500/40'
-              }`}
-              title="Apoiar a BIBLIA ON (Contribuições voluntárias e transparência pública)"
+            {/* Botão de Acesso Direto às Contribuições (Bloqueado: BREVEMENTE) */}
+            <div
+              className="hidden sm:inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800/80 border border-slate-700 text-slate-300 select-none cursor-default"
+              title="Área de apoio voluntário em fase de homologação. O estudo é e será sempre 100% gratuito."
             >
-              <Heart className="w-3.5 h-3.5 text-rose-400 fill-current" />
-              <span className="hidden 2xl:inline">Apoiar</span>
-            </button>
+              <Heart className="w-3.5 h-3.5 text-rose-400" />
+              <span className="hidden 2xl:inline text-slate-400">Apoio:</span>
+              <span className="text-[10px] font-bold text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/30">BREVEMENTE</span>
+            </div>
 
             {/* Contador de Pessoas Online em Tempo Real */}
             <div 
@@ -528,13 +527,11 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{readerStats.onlineNow} {readerStats.onlineNow === 1 ? 'online' : 'online'}</span>
             </div>
             <div className="flex items-center space-x-2">
-              <button
-                onClick={() => handleSelectTab('donations')}
-                className="flex items-center space-x-1.5 text-xs text-amber-300 font-semibold px-3 py-1.5 rounded-lg bg-amber-950/40 border border-amber-600/40"
-              >
+              <div className="flex items-center space-x-1.5 text-xs text-slate-300 font-semibold px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 select-none">
                 <Heart className="w-3.5 h-3.5 text-amber-400" />
-                <span>{t.nav.donations}</span>
-              </button>
+                <span>Apoio:</span>
+                <span className="text-[10px] font-bold text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/30">BREVEMENTE</span>
+              </div>
             </div>
           </div>
         </div>
