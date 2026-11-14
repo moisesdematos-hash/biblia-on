@@ -497,6 +497,19 @@ export const AIChat: React.FC<AIChatProps> = ({ initialQuery = '', isOfflineMode
             className="flex-1 bg-transparent px-3 py-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
           />
 
+          {/* Botão de Apagar / Limpar Conversa junto ao campo de envio */}
+          {messages.length > 0 && (
+            <button
+              type="button"
+              onClick={handleClearChat}
+              className="p-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 dark:text-rose-400 border border-rose-500/30 hover:border-rose-400 transition-all shadow-sm shrink-0 flex items-center space-x-1"
+              title="Apagar e limpar toda a conversa do chat"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span className="hidden sm:inline text-xs font-medium">Limpar Chat</span>
+            </button>
+          )}
+
           <button
             onClick={() => handleSend()}
             disabled={!inputQuery.trim() || isLoading}

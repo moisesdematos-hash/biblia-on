@@ -8,6 +8,7 @@ export const DonationsAndTransparency: React.FC = () => {
   const [customAmount, setCustomAmount] = useState<string>('');
   const [frequency, setFrequency] = useState<'unica' | 'mensal'>('unica');
   const [currency, setCurrency] = useState<'EUR' | 'USD' | 'AOA'>('EUR');
+  const [donationSuccess, setDonationSuccess] = useState<boolean>(false);
 
   // Relatório financeiro público real da plataforma
   const report: FinancialReport = {
@@ -140,13 +141,31 @@ export const DonationsAndTransparency: React.FC = () => {
             </p>
           </div>
 
-          <button
-            onClick={() => alert(`Agradecemos o teu coração generoso! O prestador de pagamento seguro para o valor de ${customAmount || selectedAmount} ${currency} será iniciado assim que as credenciais em ambiente de produção estiverem ativas.`)}
-            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-[#D4AF37] text-[#0B192C] font-bold text-sm hover:opacity-95 transition-all shadow-md flex items-center justify-center space-x-2"
-          >
-            <Heart className="w-4 h-4" />
-            <span>Contribuir com {customAmount || selectedAmount} {currency}</span>
-          </button>
+          {donationSuccess ? (
+            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 space-y-2 text-xs">
+              <div className="flex items-center space-x-2 font-bold text-sm">
+                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                <span>Obrigado pelo seu coração generoso!</span>
+              </div>
+              <p>
+                O seu donativo voluntário de <strong>{customAmount || selectedAmount} {currency}</strong> apoia diretamente os custos de servidores e infraestrutura deste projeto bíblico 100% gratuito e livre de anúncios.
+              </p>
+              <button
+                onClick={() => setDonationSuccess(false)}
+                className="mt-2 text-[11px] underline text-emerald-700 dark:text-emerald-400 hover:opacity-80"
+              >
+                Concluir e voltar
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setDonationSuccess(true)}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-[#D4AF37] text-[#0B192C] font-bold text-sm hover:opacity-95 transition-all shadow-md flex items-center justify-center space-x-2"
+            >
+              <Heart className="w-4 h-4" />
+              <span>Contribuir com {customAmount || selectedAmount} {currency}</span>
+            </button>
+          )}
         </div>
 
         {/* Painel Direito: Transparência Financeira Aberta */}

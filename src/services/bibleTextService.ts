@@ -118,17 +118,16 @@ export const EXPANDED_CHAPTER_DATA: Record<string, { summary: string; verses: { 
 };
 
 /**
- * Resolve e gera a lista completa de versículos de qualquer livro e capítulo da Bíblia
+ * Resolve e gera a lista de versículos autênticos de qualquer livro e capítulo da Bíblia
  */
 export function getChapterVerses(book: BibleBook, chapter: number): BibleVerse[] {
   const chapterKey = `${book.id}_${chapter}`;
   const expanded = EXPANDED_CHAPTER_DATA[chapterKey];
 
+  const verseMap = new Map<number, BibleVerse>();
+
   // 1. Se possuímos o registro expandido dedicado
   if (expanded) {
-    const sampleMatches = SAMPLE_VERSES.filter(v => v.bookId === book.id && v.chapter === chapter);
-    const verseMap = new Map<number, BibleVerse>();
-
     expanded.verses.forEach(ev => {
       verseMap.set(ev.verse, {
         id: `${book.id}_${chapter}_${ev.verse}`,
@@ -141,73 +140,36 @@ export function getChapterVerses(book: BibleBook, chapter: number): BibleVerse[]
         crossReferences: ev.crossRefs
       });
     });
-
-    sampleMatches.forEach(sv => verseMap.set(sv.verse, sv));
-
-    // Se faltarem números intermediários, preencher ordenadamente
-    const maxVerse = Math.max(...Array.from(verseMap.keys()), 10);
-    const result: BibleVerse[] = [];
-    for (let i = 1; i <= maxVerse; i++) {
-      if (verseMap.has(i)) {
-        result.push(verseMap.get(i)!);
-      } else {
-        result.push({
-          id: `${book.id}_${chapter}_${i}`,
-          bookId: book.id,
-          bookName: book.name,
-          chapter,
-          verse: i,
-          text: `E prosseguiu o registro fiel em ${book.name} ${chapter}:${i}, confirmando a fidelidade das Escrituras inspiradas e o testemunho da aliança com Jeová.`,
-          translation: 'TNM'
-        });
-      }
-    }
-    return result;
   }
 
-  // 2. Se temos versículos cadastrados em SAMPLE_VERSES
+  // 2. Se temos versículos cadastrados em SAMPLE_VERSES para este capítulo
   const samples = SAMPLE_VERSES.filter(v => v.bookId === book.id && v.chapter === chapter);
-  if (samples.length > 0) {
-    const verseMap = new Map<number, BibleVerse>();
-    samples.forEach(s => verseMap.set(s.verse, s));
-    const maxVerse = Math.max(...Array.from(verseMap.keys()), 12);
-    const result: BibleVerse[] = [];
-    for (let i = 1; i <= maxVerse; i++) {
-      if (verseMap.has(i)) {
-        result.push(verseMap.get(i)!);
-      } else {
-        result.push({
-          id: `${book.id}_${chapter}_${i}`,
-          bookId: book.id,
-          bookName: book.name,
-          chapter,
-          verse: i,
-          text: i === 1
-            ? `No capítulo ${chapter} de ${book.name}, as Escrituras preservam o relato inspirado e proveitoso para ensinar e disciplinar em justiça.`
-            : `Instrução contínua e edificante de ${book.name} ${chapter}:${i}, harmonizada com todo o cânon bíblico da Tradução do Novo Mundo.`,
-          translation: 'TNM'
-        });
-      }
+  samples.forEach(s => {
+    if (!verseMap.has(s.verse)) {
+      verseMap.set(s.verse, s);
     }
-    return result;
+  });
+
+  // Se encontramos versículos canónicos autênticos, retorná-los ordenados
+  if (verseMap.size > 0) {
+    return Array.from(verseMap.values()).sort((a, b) => a.verse - b.verse);
   }
 
-  // 3. Fallback estruturado de alta fidelidade
-  return Array.from({ length: 15 }, (_, i) => {
-    const vNum = i + 1;
-    return {
-      id: `${book.id}_${chapter}_${vNum}`,
+  // 3. Caso o capítulo específico ainda não possua o texto integral no cache local:
+  // Fornecer a síntese canónica autêntica do livro/capítulo sem inventar versículos falsos
+  const bookSummary = book.theme || `${book.name} no Cânon Sagrado`;
+  return [
+    {
+      id: `${book.id}_${chapter}_1`,
       bookId: book.id,
       bookName: book.name,
       chapter,
-      verse: vNum,
-      text: vNum === 1
-        ? `No capítulo ${chapter} do livro de ${book.name}, o registro inspirado preserva o ensinamento e a narrativa exegética fiel das Escrituras Sagradas.`
-        : `E continuou o relato sagrado com lições para a instrução espiritual e fé daqueles que buscam a soberania de Deus (versículo ${vNum}).`,
+      verse: 1,
+      text: `[Síntese Canónica de ${book.name} ${chapter}] ${bookSummary}. O registo inspirado deste capítulo preserva lições fiéis harmonizadas com todo o cânon bíblico da Tradução do Novo Mundo. (Para consultar e analisar qualquer versículo específico deste capítulo, utilize o Assistente Bíblico Inteligente ou a Concordância).`,
       translation: 'TNM',
-      crossReferences: vNum === 1 ? ['psa_83_18', '2ti_3_16'] : undefined
-    };
-  });
+      footnotes: ['Capítulo canónico em sincronização com o índice local offline da TNM.']
+    }
+  ];
 }
 
 /**
