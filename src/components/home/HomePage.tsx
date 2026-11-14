@@ -319,7 +319,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
           </div>
           <div className="flex items-center space-x-4">
             <button onClick={() => onNavigate('library')} className="hover:text-[#D4AF37] transition-colors">Minhas Notas</button>
-            <button onClick={() => onNavigate('donations')} className="hover:text-[#D4AF37] transition-colors">Transparência</button>
+            <button onClick={() => onNavigate('donations')} className="hover:text-[#D4AF37] text-rose-500 dark:text-rose-400 font-semibold transition-colors flex items-center space-x-1">
+              <Heart className="w-3.5 h-3.5 fill-current" />
+              <span>Apoiar / Contribuições</span>
+            </button>
             <button onClick={() => onNavigate('admin')} className="hover:text-[#D4AF37] transition-colors">Administração</button>
           </div>
         </div>

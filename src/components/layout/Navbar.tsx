@@ -118,6 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'life' as ActiveTab, label: t.nav.life, icon: Heart },
     { id: 'quizzes' as ActiveTab, label: t.nav.quizzes, icon: HelpCircle },
     { id: 'library' as ActiveTab, label: t.nav.library, icon: Bookmark },
+    { id: 'donations' as ActiveTab, label: t.nav.donations, icon: Heart },
   ];
 
   const handleSelectTab = (tab: ActiveTab) => {
@@ -253,6 +254,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Key className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span className="hidden xl:inline">Chaves IA</span>
+            </button>
+
+            {/* Botão de Acesso Direto às Contribuições & Apoio */}
+            <button
+              onClick={() => handleSelectTab('donations')}
+              className={`flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border cursor-pointer ${
+                activeTab === 'donations'
+                  ? 'bg-rose-500/20 text-rose-300 border-rose-500/60 shadow-sm'
+                  : 'bg-slate-800/80 hover:bg-rose-500/10 text-slate-300 hover:text-rose-400 border-slate-700 hover:border-rose-500/40'
+              }`}
+              title="Apoiar a BIBLIA ON (Contribuições voluntárias e transparência pública)"
+            >
+              <Heart className="w-3.5 h-3.5 text-rose-400 fill-current" />
+              <span className="hidden sm:inline">Apoiar</span>
             </button>
 
             {/* Contador de Leitores Ativos no Topo */}

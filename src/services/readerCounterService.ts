@@ -11,8 +11,8 @@ export interface ReaderStats {
 class ReaderCounterService {
   private storageKey = 'biblia_on_reader_stats_v1';
   private visitDateKey = 'biblia_on_last_visit_day';
-  private baselineTotal = 14320; // Linha de base agregada inicial da comunidade bíblica
-  private baselineToday = 342;
+  private baselineTotal = 0; // Zerado conforme solicitado
+  private baselineToday = 0;
   private listeners: ((stats: ReaderStats) => void)[] = [];
 
   constructor() {
@@ -25,9 +25,9 @@ class ReaderCounterService {
   public getStats(): ReaderStats {
     if (typeof window === 'undefined') {
       return {
-        totalReaders: this.baselineTotal,
-        todayReaders: this.baselineToday,
-        countriesCount: 18,
+        totalReaders: 0,
+        todayReaders: 0,
+        countriesCount: 1,
         isLive: true,
         lastUpdated: Date.now()
       };
@@ -37,22 +37,27 @@ class ReaderCounterService {
       const stored = localStorage.getItem(this.storageKey);
       if (stored) {
         const parsed = JSON.parse(stored);
-        return {
-          totalReaders: Math.max(parsed.totalReaders || 0, this.baselineTotal),
-          todayReaders: parsed.todayReaders || this.baselineToday,
-          countriesCount: parsed.countriesCount || 18,
-          isLive: true,
-          lastUpdated: parsed.lastUpdated || Date.now()
-        };
+        // Se tinha a baseline artificial de 14320, limpa para iniciar do zero real
+        if (parsed.totalReaders >= 14320) {
+          localStorage.removeItem(this.storageKey);
+        } else {
+          return {
+            totalReaders: parsed.totalReaders || 0,
+            todayReaders: parsed.todayReaders || 0,
+            countriesCount: parsed.countriesCount || 1,
+            isLive: true,
+            lastUpdated: parsed.lastUpdated || Date.now()
+          };
+        }
       }
     } catch (e) {
       // Ignorar erros de parse do localStorage
     }
 
     const initialStats: ReaderStats = {
-      totalReaders: this.baselineTotal,
-      todayReaders: this.baselineToday,
-      countriesCount: 18,
+      totalReaders: 0,
+      todayReaders: 0,
+      countriesCount: 1,
       isLive: true,
       lastUpdated: Date.now()
     };

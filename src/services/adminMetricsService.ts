@@ -48,19 +48,41 @@ class AdminMetricsService {
 
   private ensureInitialized() {
     if (typeof window === 'undefined') return;
-    if (!localStorage.getItem(this.storageKey)) {
+    const raw = localStorage.getItem(this.storageKey);
+    if (!raw) {
       const initialTelemetry = {
-        dialoguesCount: 1420,
-        modernInquiriesCount: 890,
-        audioPlaysCount: 2310,
-        searchesCount: 4850,
-        chaptersReadCount: 6720,
-        codexViewsCount: 1240,
-        contradictionsCount: 980,
-        quizzesCount: 760,
+        dialoguesCount: 0,
+        modernInquiriesCount: 0,
+        audioPlaysCount: 0,
+        searchesCount: 0,
+        chaptersReadCount: 0,
+        codexViewsCount: 0,
+        contradictionsCount: 0,
+        quizzesCount: 0,
         lastUpdated: Date.now()
       };
       localStorage.setItem(this.storageKey, JSON.stringify(initialTelemetry));
+    } else {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.dialoguesCount >= 1420) {
+          // Limpa telemetria simulada anterior
+          const cleanTelemetry = {
+            dialoguesCount: 0,
+            modernInquiriesCount: 0,
+            audioPlaysCount: 0,
+            searchesCount: 0,
+            chaptersReadCount: 0,
+            codexViewsCount: 0,
+            contradictionsCount: 0,
+            quizzesCount: 0,
+            lastUpdated: Date.now()
+          };
+          localStorage.setItem(this.storageKey, JSON.stringify(cleanTelemetry));
+        }
+      } catch (e) {
+        // Ignora erro de JSON
+      }
     }
   }
 
