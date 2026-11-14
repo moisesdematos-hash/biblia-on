@@ -286,7 +286,7 @@ Responda em formato JSON estrito com esta estrutura:
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.4,
-        maxOutputTokens: 1200,
+        maxOutputTokens: 2048,
         responseMimeType: 'application/json'
       }
     })

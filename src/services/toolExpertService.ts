@@ -285,7 +285,7 @@ ${baseContext ? `\nContexto auxiliar da ferramenta:\n${baseContext}` : ''}`;
               { role: 'user', content: userPrompt }
             ],
             temperature: 0.7,
-            max_tokens: 800
+            max_tokens: 1800
           })
         });
 
@@ -314,7 +314,7 @@ ${baseContext ? `\nContexto auxiliar da ferramenta:\n${baseContext}` : ''}`;
                     { role: 'user', content: userPrompt }
                   ],
                   temperature: 0.7,
-                  max_tokens: 800
+                  max_tokens: 1800
                 })
               });
               if (retryRes.ok) {
