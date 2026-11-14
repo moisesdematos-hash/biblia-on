@@ -181,11 +181,13 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Botão Flutuante Compacto do Copiloto (Redimensionado e Reposicionado Acima da Barra de Envio) */}
+      {/* Botão Flutuante Compacto do Copiloto (Oculto no Mobile Durante Conversas para Não Obstruir Textos) */}
       {!isFloatingExpertOpen && activeTab !== 'tool_assistant' && (
         <button
           onClick={() => setIsFloatingExpertOpen(true)}
-          className="fixed bottom-24 right-4 sm:bottom-28 sm:right-6 z-40 p-2.5 sm:p-3 rounded-full bg-gradient-to-tr from-[#D4AF37] via-amber-400 to-[#D4AF37] text-slate-950 shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/80 ring-2 ring-[#D4AF37]/60 group flex items-center justify-center"
+          className={`fixed bottom-24 right-4 sm:bottom-28 sm:right-6 z-40 p-2.5 sm:p-3 rounded-full bg-gradient-to-tr from-[#D4AF37] via-amber-400 to-[#D4AF37] text-slate-950 shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/80 ring-2 ring-[#D4AF37]/60 group items-center justify-center ${
+            activeTab === 'personas' || activeTab === 'chat' ? 'hidden sm:flex' : 'flex'
+          }`}
           title="Abrir o Copiloto Especialista da Ferramenta"
           aria-label="Abrir Copiloto Especialista BIBLIA ON"
         >

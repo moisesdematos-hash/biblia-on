@@ -58,6 +58,7 @@ export const CharacterDialogView: React.FC = () => {
   const [isTickerPaused, setIsTickerPaused] = useState(false);
   const [tickerSpeed, setTickerSpeed] = useState<'slow' | 'normal' | 'fast'>('normal');
   const [tickerMode, setTickerMode] = useState<'tv' | 'static'>('tv');
+  const [isMobileGalleryOpen, setIsMobileGalleryOpen] = useState(false);
   const chatPanelRef = useRef<HTMLDivElement>(null);
 
   const tickerDuration = useMemo(() => {
@@ -356,6 +357,8 @@ export const CharacterDialogView: React.FC = () => {
         timestamp: Date.now()
       }
     ]);
+
+    setIsMobileGalleryOpen(false);
 
     // Em dispositivos móveis ou telas estreitas, rola suavemente até o painel de chat
     if (typeof window !== 'undefined' && window.innerWidth < 1024 && chatPanelRef.current) {
@@ -891,9 +894,31 @@ export const CharacterDialogView: React.FC = () => {
         </div>
       </div>
 
+      {/* Seletor Compacto no Mobile para Alternar Personagem Sem Bloquear o Ecrã */}
+      <div className="lg:hidden flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 shadow-sm mb-4">
+        <div className="flex items-center space-x-2.5 min-w-0">
+          <span className="text-2xl p-1.5 rounded-xl bg-amber-500/10 border border-[#D4AF37]/40 shrink-0">
+            {selectedPersona.avatarSymbol}
+          </span>
+          <div className="min-w-0">
+            <span className="text-[10px] text-slate-400 block font-mono uppercase">Personagem Ativa:</span>
+            <h4 className="font-title text-sm font-bold text-slate-900 dark:text-white truncate">
+              {selectedPersona.name} <span className="text-[11px] text-[#D4AF37] font-normal">({selectedPersona.archetypeLabel})</span>
+            </h4>
+          </div>
+        </div>
+        <button
+          onClick={() => setIsMobileGalleryOpen(!isMobileGalleryOpen)}
+          className="px-3 py-1.5 rounded-xl bg-[#1E3E62] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-semibold flex items-center space-x-1.5 shrink-0 active:scale-95 transition-all shadow-xs cursor-pointer"
+        >
+          <Users className="w-3.5 h-3.5" />
+          <span>{isMobileGalleryOpen ? 'Ocultar Lista' : 'Mudar (58)'}</span>
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Painel Esquerdo: Galeria e Busca de Personagens */}
-        <div className="lg:col-span-1 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col h-[750px]">
+        <div className={`${isMobileGalleryOpen ? 'flex' : 'hidden lg:flex'} lg:col-span-1 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex-col h-[480px] lg:h-[750px] mb-4 lg:mb-0 animate-in fade-in`}>
           {/* Campo de Pesquisa em Tempo Real */}
           <div className="relative mb-3">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -973,29 +998,30 @@ export const CharacterDialogView: React.FC = () => {
         </div>
 
         {/* Painel Central: Chat e Diálogo com o Mentor/Profeta/Rei/Juiz/Deus */}
-        <div ref={chatPanelRef} className="lg:col-span-3 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col h-[750px] justify-between relative">
-          {/* Cabeçalho da Personagem Ativa com Arquétipo e Indicador de Voz */}
-          <div className="border-b border-slate-200 dark:border-slate-800 pb-3 mb-3 flex items-center justify-between">
-            <div className="flex items-center space-x-3 min-w-0">
-              <span className="text-3xl p-2 rounded-2xl bg-amber-500/10 border border-[#D4AF37]/40 shrink-0">
+        <div ref={chatPanelRef} className="lg:col-span-3 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 sm:p-6 shadow-sm flex flex-col h-[750px] justify-between relative">
+          {/* Cabeçalho da Personagem Ativa com Arquétipo e Indicador de Voz (Estruturado em Linhas no Mobile para Evitar Sobreposições) */}
+          <div className="border-b border-slate-200 dark:border-slate-800 pb-3 mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-3">
+            {/* Linha 1: Identidade da Personagem */}
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
+              <span className="text-2xl sm:text-3xl p-1.5 sm:p-2 rounded-2xl bg-amber-500/10 border border-[#D4AF37]/40 shrink-0">
                 {selectedPersona.avatarSymbol}
               </span>
-              <div className="min-w-0">
-                <div className="flex items-center space-x-2 flex-wrap">
-                  <h3 className="font-title text-lg sm:text-xl font-bold text-slate-900 dark:text-white truncate">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <h3 className="font-title text-base sm:text-xl font-bold text-slate-900 dark:text-white truncate">
                     {selectedPersona.name}
                   </h3>
-                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#1E3E62] text-[#D4AF37] font-semibold shrink-0">
+                  <span className="text-[10px] sm:text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#1E3E62] text-[#D4AF37] font-semibold truncate max-w-[150px] sm:max-w-none">
                     {selectedPersona.archetypeLabel}
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">
+                  <span className="text-[9px] sm:text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">
                     {selectedPersona.eraLabel}
                   </span>
                 </div>
-                <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                  <span>{selectedPersona.title}</span>
-                  <span>•</span>
-                  <span className="text-[#D4AF37] font-mono flex items-center space-x-1">
+                <div className="flex items-center space-x-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                  <span className="truncate">{selectedPersona.title}</span>
+                  <span className="hidden sm:inline">•</span>
+                  <span className="text-[#D4AF37] font-mono hidden sm:inline-flex items-center space-x-1">
                     <Mic className="w-3 h-3 inline" />
                     <span>{acousticPreset.descriptor} ({acousticPreset.pitch}x)</span>
                   </span>
@@ -1003,7 +1029,8 @@ export const CharacterDialogView: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 shrink-0">
+            {/* Linha 2 (Mobile) / Lado Direito (Desktop): Barra de Ferramentas e Configurações */}
+            <div className="flex items-center justify-between sm:justify-end gap-1.5 sm:gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800/80">
               {/* Botão Chat Limpo (Modo Zen sem escritas que atrapalham) */}
               <button
                 onClick={toggleCleanMode}
@@ -1015,7 +1042,7 @@ export const CharacterDialogView: React.FC = () => {
                 title={isCleanMode ? 'Desativar Chat Limpo (Voltar a exibir perguntas sugeridas e chips)' : 'Ativar Chat Limpo (Ocultar escritas, chips e distrações)'}
               >
                 {isCleanMode ? <EyeOff className="w-3.5 h-3.5 text-slate-950" /> : <Eye className="w-3.5 h-3.5 text-[#D4AF37]" />}
-                <span className="hidden sm:inline">{isCleanMode ? 'Chat Limpo ✓' : 'Chat Limpo'}</span>
+                <span className="text-[11px] sm:text-xs">{isCleanMode ? 'Limpo ✓' : 'Limpo'}</span>
               </button>
 
               {/* Botão Apagar Chat */}
@@ -1025,22 +1052,22 @@ export const CharacterDialogView: React.FC = () => {
                 title="Apagar todo o histórico de mensagens deste chat"
               >
                 <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-                <span className="hidden sm:inline">Apagar Chat</span>
+                <span className="hidden sm:inline">Apagar</span>
               </button>
 
               {/* Botão de Estado da IA e Chave */}
               <button
                 onClick={() => setShowAIModal(true)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 border transition-all ${
+                className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 border transition-all ${
                   personaAIService.hasActiveAI()
                     ? 'bg-sky-500/15 text-sky-300 border-sky-500/40 hover:bg-sky-500/25 shadow-xs'
                     : 'bg-amber-500/10 text-[#D4AF37] border-[#D4AF37]/40 hover:bg-amber-500/20'
                 }`}
-                title="Configurar Inteligência Artificial (Google Gemini ou Motor Local)"
+                title="Configurar Inteligência Artificial (Google Gemini, Groq ou Motor Local)"
               >
                 <Bot className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span className="hidden sm:inline">
-                  {personaAIService.hasActiveAI() ? 'IA Online Ativa ⚡' : 'Motor Local TNM 🛡️'}
+                <span className="text-[11px] sm:text-xs">
+                  {personaAIService.hasActiveAI() ? 'IA ⚡' : 'TNM 🛡️'}
                 </span>
               </button>
 
