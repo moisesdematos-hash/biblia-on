@@ -71,7 +71,7 @@ export const AdminPanel: React.FC = () => {
     notesCount: 0,
     highlightsCount: 0,
     plansCount: 0,
-    speechesCount: 0,
+    studiesCount: 0,
     flashcardsCount: 0
   });
 
@@ -107,7 +107,7 @@ export const AdminPanel: React.FC = () => {
         notesCount: notes,
         highlightsCount: bookmarks,
         plansCount: plans,
-        speechesCount: studies,
+        studiesCount: studies,
         flashcardsCount: history
       });
     } catch (e) {
@@ -895,7 +895,7 @@ export const AdminPanel: React.FC = () => {
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 text-center">
                 <span className="text-[10px] font-mono text-slate-400 block">Estudos</span>
-                <span className="text-xl font-bold font-title text-sky-400">{dbStats.speechesCount}</span>
+                <span className="text-xl font-bold font-title text-sky-400">{dbStats.studiesCount}</span>
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 text-center">
                 <span className="text-[10px] font-mono text-slate-400 block">Flashcards</span>

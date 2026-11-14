@@ -178,32 +178,6 @@ export interface LifeGuidanceTopic {
   safetyDisclaimer?: string;
 }
 
-export interface SpeechOutline {
-  id: string;
-  title: string;
-  theme: string;
-  objective: string;
-  targetMinutes: 5 | 10 | 15 | 30;
-  targetAudience: string;
-  introduction: {
-    hook: string;
-    themeStatement: string;
-    mainScripture: string;
-  };
-  mainPoints: {
-    heading: string;
-    scripture: string;
-    explanation: string;
-    illustration?: string;
-    application: string;
-  }[];
-  conclusion: {
-    summary: string;
-    actionCall: string;
-    encouragement: string;
-  };
-}
-
 export interface FinancialReport {
   period: string;
   lastUpdated: string;
