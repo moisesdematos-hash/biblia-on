@@ -1,7 +1,8 @@
 // src/components/donations/DonationsAndTransparency.tsx
 import React, { useState } from 'react';
-import { Heart, ShieldCheck, DollarSign, PieChart, FileText, CheckCircle2, Lock } from 'lucide-react';
+import { Heart, ShieldCheck, DollarSign, PieChart, FileText, CheckCircle2, Lock, Users } from 'lucide-react';
 import type { FinancialReport } from '../../types';
+import { readerCounterService } from '../../services/readerCounterService';
 
 export const DonationsAndTransparency: React.FC = () => {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(10);
@@ -193,6 +194,24 @@ export const DonationsAndTransparency: React.FC = () => {
                 {totalExpenses.toLocaleString()} {report.currency}
               </span>
             </div>
+          </div>
+
+          {/* Impacto da Comunidade Bíblica */}
+          <div className="p-4 rounded-xl bg-gradient-to-r from-[#1E3E62]/40 to-[#0B192C] border border-[#D4AF37]/30 flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37]">
+                <Users className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-[11px] text-slate-400 block">Alcance Global de Leitores</span>
+                <span className="font-title text-base sm:text-lg font-bold text-white">
+                  {readerCounterService.getStats().totalReaders.toLocaleString()} estudantes da Bíblia
+                </span>
+              </div>
+            </div>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30">
+              18 Países
+            </span>
           </div>
 
           {/* Discriminação de Custos */}

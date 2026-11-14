@@ -1,4 +1,5 @@
 // src/services/adminMetricsService.ts
+import { readerCounterService } from './readerCounterService';
 
 export interface PersonaMetrics {
   id: string;
@@ -100,9 +101,11 @@ class AdminMetricsService {
       } catch {}
     }
 
+    const readerStats = readerCounterService.getStats();
+
     return {
-      totalEstimatedReaders: 28450 + Math.floor(localData.chaptersReadCount * 0.4),
-      activeSessionsToday: 1342 + Math.floor(localData.dialoguesCount * 0.15),
+      totalEstimatedReaders: readerStats.totalReaders + Math.floor(localData.chaptersReadCount * 0.4),
+      activeSessionsToday: readerStats.todayReaders + Math.floor(localData.dialoguesCount * 0.15),
       totalChaptersRead: localData.chaptersReadCount,
       totalScriptureSearches: localData.searchesCount,
       totalPersonaDialogues: localData.dialoguesCount,

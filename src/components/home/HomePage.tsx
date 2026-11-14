@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import type { ActiveTab } from '../layout/Navbar';
 import { getLastRead, type ReadingHistoryItem } from '../../db/bibliaOnDb';
+import { readerCounterService, type ReaderStats } from '../../services/readerCounterService';
 
 interface HomePageProps {
   onNavigate: (tab: ActiveTab, context?: any) => void;
@@ -28,11 +29,17 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
   const [searchQuery, setSearchQuery] = useState('');
   const [lastRead, setLastRead] = useState<ReadingHistoryItem | null>(null);
   const [isListening, setIsListening] = useState(false);
+  const [readerStats, setReaderStats] = useState<ReaderStats>(() => readerCounterService.getStats());
 
   useEffect(() => {
     getLastRead().then((item) => {
       if (item) setLastRead(item);
     });
+
+    const unsubscribe = readerCounterService.subscribe((stats) => {
+      setReaderStats(stats);
+    });
+    return () => unsubscribe();
   }, []);
 
   const handleVoiceSearch = () => {
@@ -90,10 +97,24 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
     <div className="min-h-[calc(100vh-4rem)] flex flex-col justify-between">
       {/* Seção Hero Superior */}
       <section className="relative pt-12 pb-16 px-4 sm:px-6 lg:px-8 text-center max-w-5xl mx-auto w-full">
-        {/* Emblema */}
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#1E3E62]/40 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-semibold uppercase tracking-wider mb-6 backdrop-blur-sm shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span>Plataforma Mundial de Investigação Bíblica</span>
+        {/* Emblemas Superiores: Missão & Contador de Leitores Ativos */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#1E3E62]/40 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-semibold uppercase tracking-wider backdrop-blur-sm shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span>Plataforma Mundial de Investigação Bíblica</span>
+          </div>
+
+          <div 
+            className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold backdrop-blur-sm shadow-sm transition-all"
+            title="Contador anónimo em tempo real de estudantes e leitores da Palavra de Deus em todo o mundo"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <Users className="w-3.5 h-3.5 text-emerald-500" />
+            <span>{readerStats.totalReaders.toLocaleString()} Estudantes Ativos • {readerStats.countriesCount} Países</span>
+          </div>
         </div>
 
         {/* Título Principal & Slogan */}

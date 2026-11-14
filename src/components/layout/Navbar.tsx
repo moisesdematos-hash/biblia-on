@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { I18N_TRANSLATIONS, type LanguageCode } from '../../data/i18nData';
 import { pwaService } from '../../services/pwaService';
+import { readerCounterService, type ReaderStats } from '../../services/readerCounterService';
 
 export type ActiveTab = 
   | 'home' 
@@ -81,9 +82,15 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [pwaState, setPwaState] = useState(pwaService.getState());
+  const [readerStats, setReaderStats] = useState<ReaderStats>(() => readerCounterService.getStats());
 
   useEffect(() => {
-    return pwaService.subscribe((s) => setPwaState(s));
+    const unsubPwa = pwaService.subscribe((s) => setPwaState(s));
+    const unsubReaders = readerCounterService.subscribe((s) => setReaderStats(s));
+    return () => {
+      unsubPwa();
+      unsubReaders();
+    };
   }, []);
 
   const t = I18N_TRANSLATIONS[currentLang];
@@ -234,6 +241,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Bot className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span className="hidden md:inline">Especialista</span>
             </button>
+
+            {/* Contador de Leitores Ativos no Topo */}
+            <div 
+              className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-semibold cursor-default"
+              title="Estudantes e leitores ativos da Palavra de Deus em todo o mundo (100% anónimo e privado)"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <Users className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{readerStats.totalReaders.toLocaleString()}</span>
+            </div>
 
             {/* Botão de Instalação PWA Rápido */}
             {pwaState.isInstallable && (
