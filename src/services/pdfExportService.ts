@@ -138,7 +138,7 @@ export const pdfExportService = {
         </div>
 
         <div class="footer">
-          Documento gerado por BIBLIA ON — A Bíblia ao alcance de todos. "A tua palavra é a verdade." (João 17:17)
+          Documento gerado por BIBLIA ON — O Conhecimento Bíblico ao alcance de todos. "A tua palavra é a verdade." (João 17:17)
         </div>
 
         <script>

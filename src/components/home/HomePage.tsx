@@ -214,7 +214,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
 
         {/* Título Principal & Slogan */}
         <h1 className="font-title text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-4 leading-tight">
-          A Bíblia ao alcance de todos.
+          O Conhecimento Bíblico ao alcance de todos.
           <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-[#D4AF37] to-amber-500 dark:from-[#D4AF37] dark:via-amber-200 dark:to-[#D4AF37]">
             Em qualquer idioma. Em qualquer lugar.
           </span>
@@ -632,7 +632,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
 
           <div className="pt-6 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px]">
             <div>
-              © 2026 <strong>BIBLIA ON</strong> — "A Bíblia ao alcance de todos. Em qualquer idioma. Em qualquer lugar."
+              © 2026 <strong>BIBLIA ON</strong> — "O Conhecimento Bíblico ao alcance de todos. Em qualquer idioma. Em qualquer lugar."
             </div>
             <div className="flex items-center space-x-3 text-slate-500">
               <span>Tradução do Novo Mundo de Estudo (TNM)</span>

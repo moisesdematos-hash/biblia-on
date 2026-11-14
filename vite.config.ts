@@ -13,7 +13,7 @@ export default defineConfig({
       manifest: {
         name: 'BIBLIA ON - Plataforma de Estudo Bíblico',
         short_name: 'BIBLIA ON',
-        description: 'A Bíblia ao alcance de todos. Em qualquer idioma. Em qualquer lugar.',
+        description: 'O Conhecimento Bíblico ao alcance de todos. Em qualquer idioma. Em qualquer lugar.',
         theme_color: '#0B192C',
         background_color: '#0B192C',
         display: 'standalone',
