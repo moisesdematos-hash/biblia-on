@@ -698,7 +698,7 @@ SUPERPODER 5: LIGAÇÃO PROFÉTICA COM O SÉCULO XXI
         model,
         messages,
         temperature: 0.7,
-        max_tokens: 2048
+        max_tokens: 3000
       })
     });
 
@@ -716,7 +716,28 @@ SUPERPODER 5: LIGAÇÃO PROFÉTICA COM O SÉCULO XXI
     }
 
     const data = await response.json();
-    return data.choices?.[0]?.message?.content || null;
+    const rawContent = data.choices?.[0]?.message?.content || null;
+    return rawContent ? this.sanitizeTruncatedEnding(rawContent) : null;
+  }
+
+  /**
+   * Garante que uma resposta de IA nunca fique com frases cortadas ou penduradas
+   */
+  private sanitizeTruncatedEnding(text: string): string {
+    const trimmed = text.trim();
+    if (/[.!?”"]$/.test(trimmed)) return trimmed;
+
+    const lastPunctuation = Math.max(
+      trimmed.lastIndexOf('.'),
+      trimmed.lastIndexOf('!'),
+      trimmed.lastIndexOf('?')
+    );
+
+    if (lastPunctuation > trimmed.length * 0.6) {
+      return trimmed.slice(0, lastPunctuation + 1);
+    }
+
+    return `${trimmed}...`;
   }
 
   /**
@@ -771,7 +792,7 @@ SUPERPODER 5: LIGAÇÃO PROFÉTICA COM O SÉCULO XXI
 
     const data = await response.json();
     const candidateText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    return candidateText || null;
+    return candidateText ? this.sanitizeTruncatedEnding(candidateText) : null;
   }
 }
 
