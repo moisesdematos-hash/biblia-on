@@ -171,11 +171,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-50 bg-[#0B192C] text-white border-b border-slate-700/60 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo & Marca (Clique 5x ativa acesso secreto administrativo) */}
           <div 
-            className="flex items-center space-x-3 cursor-pointer group select-none"
+            className="flex items-center space-x-3 cursor-pointer group select-none shrink-0"
             onClick={handleLogoClick}
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1E3E62] to-[#0B192C] p-1.5 border border-[#D4AF37]/50 shadow-inner group-hover:border-[#D4AF37] transition-all">
@@ -198,7 +198,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Navegação Desktop */}
           <nav className="hidden xl:flex items-center space-x-1 shrink-0">
-            {navItems.slice(0, 4).map((item) => {
+            {navItems.slice(0, 3).map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               const isSpecial = item.special;
@@ -225,7 +225,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="relative group">
               <button 
                 className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  navItems.slice(4).some(i => i.id === activeTab)
+                  navItems.slice(3).some(i => i.id === activeTab)
                     ? 'bg-[#1E3E62] text-[#D4AF37] border border-[#D4AF37]/40'
                     : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                 }`}
@@ -234,7 +234,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="text-[10px]">▼</span>
               </button>
               <div className="absolute right-0 mt-1 w-64 bg-[#0B192C] border border-slate-700 rounded-xl shadow-2xl py-2 hidden group-hover:block transition-all z-50 max-h-[480px] overflow-y-auto">
-                {navItems.slice(4).map((item) => {
+                {navItems.slice(3).map((item) => {
                   const Icon = item.icon;
                   const isActive = activeTab === item.id;
                   return (
@@ -267,7 +267,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Botão Especialista da Ferramenta */}
             <button
               onClick={() => handleSelectTab('tool_assistant')}
-              className={`hidden lg:flex items-center space-x-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold transition-all border cursor-pointer ${
+              className={`hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold transition-all border cursor-pointer ${
                 activeTab === 'tool_assistant'
                   ? 'bg-[#1E3E62] text-[#D4AF37] border-[#D4AF37] shadow-sm'
                   : 'bg-amber-500/10 hover:bg-amber-500/20 text-[#D4AF37] border-[#D4AF37]/40 hover:border-[#D4AF37]'
@@ -275,7 +275,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               title="Abrir o Chat Especialista em todas as funcionalidades da ferramenta"
             >
               <Bot className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span>Especialista</span>
+              <span className="hidden 2xl:inline">Especialista</span>
             </button>
 
             {/* Configuração de Chaves IA */}
@@ -299,7 +299,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               title="Apoiar a BIBLIA ON (Contribuições voluntárias e transparência pública)"
             >
               <Heart className="w-3.5 h-3.5 text-rose-400 fill-current" />
-              <span>Apoiar</span>
+              <span className="hidden 2xl:inline">Apoiar</span>
             </button>
 
             {/* Contador de Pessoas Online em Tempo Real */}
@@ -361,7 +361,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             {/* Ajuste de Tamanho de Fonte */}
-            <div className="hidden lg:flex items-center bg-slate-800/80 rounded-lg p-0.5 border border-slate-700 text-xs shrink-0">
+            <div className="hidden 2xl:flex items-center bg-slate-800/80 rounded-lg p-0.5 border border-slate-700 text-xs shrink-0">
               <button 
                 onClick={() => setFontSize('small')}
                 className={`px-2 py-0.5 rounded text-[11px] font-bold ${fontSize === 'small' ? 'bg-[#1E3E62] text-[#D4AF37]' : 'text-slate-400 hover:text-white'}`}
