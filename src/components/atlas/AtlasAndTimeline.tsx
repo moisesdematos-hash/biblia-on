@@ -78,8 +78,8 @@ export const AtlasAndTimeline: React.FC<{ initialMode?: 'atlas' | 'timeline' | '
       ) : activeSubTab === 'atlas' ? (
         /* MÓDULO ATLAS BÍBLICO */
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Lista de Cidades e Lugares */}
-          <div className="lg:col-span-1 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm space-y-2 h-[700px] overflow-y-auto">
+          {/* Lista de Cidades e Lugares (No Mobile fica após o mapa interativo) */}
+          <div className="order-2 lg:order-1 lg:col-span-1 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm space-y-2 h-[340px] lg:h-[700px] overflow-y-auto">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
               Lugares do Mundo Bíblico
             </h2>
@@ -89,7 +89,7 @@ export const AtlasAndTimeline: React.FC<{ initialMode?: 'atlas' | 'timeline' | '
                 <button
                   key={place.id}
                   onClick={() => setSelectedPlace(place)}
-                  className={`w-full text-left p-3.5 rounded-xl text-xs transition-all flex flex-col ${
+                  className={`w-full text-left p-3.5 rounded-xl text-xs transition-all flex flex-col cursor-pointer ${
                     isSelected
                       ? 'bg-[#1E3E62] text-[#D4AF37] font-semibold border border-[#D4AF37]/50 shadow-sm'
                       : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60'
@@ -110,7 +110,7 @@ export const AtlasAndTimeline: React.FC<{ initialMode?: 'atlas' | 'timeline' | '
           </div>
 
           {/* Mapa Vetorial e Ficha do Lugar */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="order-1 lg:order-2 lg:col-span-3 space-y-6">
             {/* Mapa Vetorial Cartográfico Interativo Offline Completo */}
             <BiblicalMap
               selectedPlace={selectedPlace}

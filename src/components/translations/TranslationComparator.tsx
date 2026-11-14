@@ -22,9 +22,35 @@ export const TranslationComparator: React.FC = () => {
         </p>
       </div>
 
+      {/* Seletor Rápido de Passagens em Modo Mobile (Chips com Rolagem Horizontal) */}
+      <div className="lg:hidden mb-5">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
+          Passagens para Comparação:
+        </span>
+        <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-thin">
+          {COMPARISON_DATA.map((comp) => {
+            const isSelected = selectedComparison.reference === comp.reference;
+            return (
+              <button
+                key={comp.reference}
+                onClick={() => setSelectedComparison(comp)}
+                className={`whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#1E3E62] text-[#D4AF37] border border-[#D4AF37]/50 shadow-md ring-1 ring-[#D4AF37]/40'
+                    : 'bg-white dark:bg-[#0B192C] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
+                }`}
+              >
+                <span>{comp.reference}</span>
+                <span className="text-[10px] text-slate-400 ml-1.5 capitalize font-mono">({comp.originalLanguage})</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Lista de Versículos em Comparação */}
-        <div className="lg:col-span-1 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm space-y-2">
+        {/* Lista de Versículos em Comparação (Desktop) */}
+        <div className="hidden lg:block lg:col-span-1 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm space-y-2">
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
             Passagens Chave
           </h2>

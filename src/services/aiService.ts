@@ -179,6 +179,7 @@ Responda OBRIGATORIAMENTE em formato JSON com esta estrutura:
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey.trim()}`
       },
+      signal: AbortSignal.timeout(9000),
       body: JSON.stringify({
         model,
         messages: [
@@ -287,6 +288,7 @@ Responda em formato JSON estrito com esta estrutura:
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    signal: AbortSignal.timeout(9000),
     body: JSON.stringify({
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {

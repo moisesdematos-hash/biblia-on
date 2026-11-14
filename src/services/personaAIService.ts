@@ -707,7 +707,7 @@ SUPERPODER 5: LIGAÇÃO PROFÉTICA COM O SÉCULO XXI
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`
       },
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(9000),
       body: JSON.stringify({
         model,
         messages,
@@ -782,7 +782,7 @@ SUPERPODER 5: LIGAÇÃO PROFÉTICA COM O SÉCULO XXI
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(9000),
       body: JSON.stringify({
         contents,
         generationConfig: {

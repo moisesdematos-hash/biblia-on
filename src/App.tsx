@@ -1,32 +1,50 @@
 // src/App.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Navbar, type ActiveTab } from './components/layout/Navbar';
 import { InstitutionalBanner } from './components/layout/InstitutionalBanner';
 import { HomePage } from './components/home/HomePage';
-import { BibleExplorer } from './components/explorer/BibleExplorer';
-import { AIChat } from './components/chat/AIChat';
-import { CharactersEncyclopedia } from './components/characters/CharactersEncyclopedia';
-import { OriginalWordsLab } from './components/lexicon/OriginalWordsLab';
-import { PropheciesLab } from './components/prophecies/PropheciesLab';
-import { ContradictionsInvestigator } from './components/contradictions/ContradictionsInvestigator';
-import { AtlasAndTimeline } from './components/atlas/AtlasAndTimeline';
-import { LifeGuidanceView } from './components/life/LifeGuidanceView';
-import { QuizzesView } from './components/quizzes/QuizzesView';
-import { PersonalLibrary } from './components/library/PersonalLibrary';
-import { DonationsAndTransparency } from './components/donations/DonationsAndTransparency';
-import { AdminPanel } from './components/admin/AdminPanel';
-
-// Novos módulos integrados
-import { GenealogyTree } from './components/genealogy/GenealogyTree';
-import { ReadingPlansView } from './components/readingPlans/ReadingPlansView';
-import { AdaptiveTutor } from './components/tutor/AdaptiveTutor';
-import { TranslationComparator } from './components/translations/TranslationComparator';
-import { LivingCodexView } from './components/codex/LivingCodexView';
-import { CharacterDialogView } from './components/characters/CharacterDialogView';
-import { ToolExpertChat } from './components/assistant/ToolExpertChat';
 import { BottomNav } from './components/layout/BottomNav';
-import { Bot } from 'lucide-react';
+import { Bot, Sparkles } from 'lucide-react';
 import type { LanguageCode } from './data/i18nData';
+
+// Carregamento Sob Demanda (Code-Splitting) para Inicialização Ultra-Rápida em Telemóveis
+const BibleExplorer = lazy(() => import('./components/explorer/BibleExplorer').then(m => ({ default: m.BibleExplorer })));
+const AIChat = lazy(() => import('./components/chat/AIChat').then(m => ({ default: m.AIChat })));
+const CharactersEncyclopedia = lazy(() => import('./components/characters/CharactersEncyclopedia').then(m => ({ default: m.CharactersEncyclopedia })));
+const OriginalWordsLab = lazy(() => import('./components/lexicon/OriginalWordsLab').then(m => ({ default: m.OriginalWordsLab })));
+const PropheciesLab = lazy(() => import('./components/prophecies/PropheciesLab').then(m => ({ default: m.PropheciesLab })));
+const ContradictionsInvestigator = lazy(() => import('./components/contradictions/ContradictionsInvestigator').then(m => ({ default: m.ContradictionsInvestigator })));
+const AtlasAndTimeline = lazy(() => import('./components/atlas/AtlasAndTimeline').then(m => ({ default: m.AtlasAndTimeline })));
+const LifeGuidanceView = lazy(() => import('./components/life/LifeGuidanceView').then(m => ({ default: m.LifeGuidanceView })));
+const QuizzesView = lazy(() => import('./components/quizzes/QuizzesView').then(m => ({ default: m.QuizzesView })));
+const PersonalLibrary = lazy(() => import('./components/library/PersonalLibrary').then(m => ({ default: m.PersonalLibrary })));
+const DonationsAndTransparency = lazy(() => import('./components/donations/DonationsAndTransparency').then(m => ({ default: m.DonationsAndTransparency })));
+const AdminPanel = lazy(() => import('./components/admin/AdminPanel').then(m => ({ default: m.AdminPanel })));
+const GenealogyTree = lazy(() => import('./components/genealogy/GenealogyTree').then(m => ({ default: m.GenealogyTree })));
+const ReadingPlansView = lazy(() => import('./components/readingPlans/ReadingPlansView').then(m => ({ default: m.ReadingPlansView })));
+const AdaptiveTutor = lazy(() => import('./components/tutor/AdaptiveTutor').then(m => ({ default: m.AdaptiveTutor })));
+const TranslationComparator = lazy(() => import('./components/translations/TranslationComparator').then(m => ({ default: m.TranslationComparator })));
+const LivingCodexView = lazy(() => import('./components/codex/LivingCodexView').then(m => ({ default: m.LivingCodexView })));
+const CharacterDialogView = lazy(() => import('./components/characters/CharacterDialogView').then(m => ({ default: m.CharacterDialogView })));
+const ToolExpertChat = lazy(() => import('./components/assistant/ToolExpertChat').then(m => ({ default: m.ToolExpertChat })));
+
+// Indicador elegante de carregamento sob demanda
+const ModuleLoadingFallback: React.FC = () => (
+  <div className="min-h-[450px] flex flex-col items-center justify-center p-8 space-y-4 animate-in fade-in duration-200">
+    <div className="relative flex items-center justify-center">
+      <div className="w-12 h-12 rounded-full border-2 border-slate-700/60 border-t-[#D4AF37] animate-spin" />
+      <Sparkles className="w-5 h-5 text-[#D4AF37] absolute animate-pulse" />
+    </div>
+    <div className="text-center space-y-1">
+      <h3 className="font-title text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">
+        A carregar módulo bíblico...
+      </h3>
+      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+        Otimização de dados para navegação ultrarrápida
+      </p>
+    </div>
+  </div>
+);
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
@@ -111,73 +129,75 @@ export const App: React.FC = () => {
         setIsMobileMenuOpen={setIsMobileMenuOpen}
       />
 
-      {/* Conteúdo Dinâmico */}
+      {/* Conteúdo Dinâmico com Carregamento Otimizado (Suspense) */}
       <main className="flex-1 pb-20 md:pb-8 w-full max-w-full">
-        {activeTab === 'home' && (
+        {activeTab === 'home' ? (
           <HomePage
             onNavigate={handleNavigate}
             onSearchSubmit={handleSearchSubmit}
           />
-        )}
+        ) : (
+          <Suspense fallback={<ModuleLoadingFallback />}>
+            {/* Chave de Ouro: O Codex Vivo */}
+            {activeTab === 'codex' && <LivingCodexView />}
 
-        {/* Chave de Ouro: O Codex Vivo */}
-        {activeTab === 'codex' && <LivingCodexView />}
+            {/* Mecanismo de Diálogo com Personagens Bíblicos */}
+            {activeTab === 'personas' && <CharacterDialogView />}
 
-        {/* Mecanismo de Diálogo com Personagens Bíblicos */}
-        {activeTab === 'personas' && <CharacterDialogView />}
+            {activeTab === 'explorer' && (
+              <BibleExplorer
+                initialBookId={explorerTarget.bookId || 'gen'}
+                initialChapter={explorerTarget.chapter || 1}
+                fontSize={fontSize}
+              />
+            )}
 
-        {activeTab === 'explorer' && (
-          <BibleExplorer
-            initialBookId={explorerTarget.bookId || 'gen'}
-            initialChapter={explorerTarget.chapter || 1}
-            fontSize={fontSize}
-          />
-        )}
+            {activeTab === 'chat' && (
+              <AIChat
+                initialQuery={chatInitialQuery}
+                isOfflineMode={isOffline}
+              />
+            )}
 
-        {activeTab === 'chat' && (
-          <AIChat
-            initialQuery={chatInitialQuery}
-            isOfflineMode={isOffline}
-          />
-        )}
+            {activeTab === 'plans' && (
+              <ReadingPlansView onOpenExplorer={handleOpenExplorerFromPlan} />
+            )}
 
-        {activeTab === 'plans' && (
-          <ReadingPlansView onOpenExplorer={handleOpenExplorerFromPlan} />
-        )}
+            {activeTab === 'tutor' && <AdaptiveTutor />}
 
-        {activeTab === 'tutor' && <AdaptiveTutor />}
+            {activeTab === 'genealogy' && <GenealogyTree />}
 
-        {activeTab === 'genealogy' && <GenealogyTree />}
+            {activeTab === 'compare' && <TranslationComparator />}
 
-        {activeTab === 'compare' && <TranslationComparator />}
+            {activeTab === 'characters' && <CharactersEncyclopedia />}
 
-        {activeTab === 'characters' && <CharactersEncyclopedia />}
+            {activeTab === 'lexicon' && <OriginalWordsLab />}
 
-        {activeTab === 'lexicon' && <OriginalWordsLab />}
+            {activeTab === 'prophecies' && <PropheciesLab />}
 
-        {activeTab === 'prophecies' && <PropheciesLab />}
+            {activeTab === 'contradictions' && <ContradictionsInvestigator />}
 
-        {activeTab === 'contradictions' && <ContradictionsInvestigator />}
+            {activeTab === 'atlas' && <AtlasAndTimeline initialMode="atlas" />}
 
-        {activeTab === 'atlas' && <AtlasAndTimeline initialMode="atlas" />}
+            {activeTab === 'timeline' && <AtlasAndTimeline initialMode="timeline" />}
 
-        {activeTab === 'timeline' && <AtlasAndTimeline initialMode="timeline" />}
+            {activeTab === 'life' && <LifeGuidanceView />}
 
-        {activeTab === 'life' && <LifeGuidanceView />}
+            {activeTab === 'quizzes' && <QuizzesView />}
 
-        {activeTab === 'quizzes' && <QuizzesView />}
+            {activeTab === 'library' && <PersonalLibrary />}
 
-        {activeTab === 'library' && <PersonalLibrary />}
+            {activeTab === 'donations' && <DonationsAndTransparency />}
 
-        {activeTab === 'donations' && <DonationsAndTransparency />}
+            {activeTab === 'admin' && <AdminPanel />}
 
-        {activeTab === 'admin' && <AdminPanel />}
-
-        {/* Chat da Ferramenta Expert em Todas as Funcionalidades */}
-        {activeTab === 'tool_assistant' && (
-          <div className="py-6 px-4">
-            <ToolExpertChat onNavigate={handleNavigate} isFloating={false} />
-          </div>
+            {/* Chat da Ferramenta Expert em Todas as Funcionalidades */}
+            {activeTab === 'tool_assistant' && (
+              <div className="py-6 px-4">
+                <ToolExpertChat onNavigate={handleNavigate} isFloating={false} />
+              </div>
+            )}
+          </Suspense>
         )}
       </main>
 
@@ -205,14 +225,16 @@ export const App: React.FC = () => {
 
       {/* Janela Flutuante do Especialista */}
       {isFloatingExpertOpen && (
-        <ToolExpertChat
-          isFloating={true}
-          isOpen={isFloatingExpertOpen}
-          onClose={() => setIsFloatingExpertOpen(false)}
-          onNavigate={(tab, ctx) => {
-            handleNavigate(tab, ctx);
-          }}
-        />
+        <Suspense fallback={null}>
+          <ToolExpertChat
+            isFloating={true}
+            isOpen={isFloatingExpertOpen}
+            onClose={() => setIsFloatingExpertOpen(false)}
+            onNavigate={(tab, ctx) => {
+              handleNavigate(tab, ctx);
+            }}
+          />
+        </Suspense>
       )}
 
       {/* Barra de Navegação Inferior Mobile (PWA & Ergonomia) */}

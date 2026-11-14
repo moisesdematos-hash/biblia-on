@@ -33,8 +33,8 @@ export const GenealogyTree: React.FC = () => {
         </p>
       </div>
 
-      {/* Filtros de Linhagem */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      {/* Filtros de Linhagem com Rolagem Horizontal Suave no Mobile */}
+      <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-thin">
         {[
           { id: 'todos', label: 'Toda a Linhagem' },
           { id: 'patriarcal', label: 'Linha Messiânica Patriarcal' },
@@ -45,7 +45,7 @@ export const GenealogyTree: React.FC = () => {
           <button
             key={filter.id}
             onClick={() => setLineageFilter(filter.id as any)}
-            className={`text-xs px-3.5 py-1.5 rounded-xl font-medium transition-all ${
+            className={`whitespace-nowrap shrink-0 text-xs px-3.5 py-1.5 rounded-xl font-medium transition-all cursor-pointer ${
               lineageFilter === filter.id
                 ? 'bg-[#1E3E62] text-[#D4AF37] border border-[#D4AF37]/50 shadow-sm'
                 : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
@@ -57,8 +57,8 @@ export const GenealogyTree: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Lista de Gerações */}
-        <div className="lg:col-span-1 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col h-[700px]">
+        {/* Lista de Gerações (Compacta no Mobile para Permitir Visualizar a Ficha Logo Abaixo) */}
+        <div className="lg:col-span-1 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col h-[280px] lg:h-[700px]">
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
             Gerações ({filteredNodes.length})
           </h2>
