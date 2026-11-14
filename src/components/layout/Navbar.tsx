@@ -270,17 +270,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="hidden sm:inline">Apoiar</span>
             </button>
 
-            {/* Contador de Leitores Ativos no Topo */}
+            {/* Contador de Pessoas Online em Tempo Real */}
             <div 
-              className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-semibold cursor-default"
-              title="Estudantes e leitores ativos da Palavra de Deus em todo o mundo (100% anónimo e privado)"
+              className="flex items-center space-x-1.5 px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold cursor-default transition-all"
+              title="Pessoas online agora a estudar as Sagradas Escrituras (100% anónimo e privado)"
             >
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <Users className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{readerStats.totalReaders.toLocaleString()}</span>
+              <span>
+                {readerStats.onlineNow} <span className="hidden sm:inline">{readerStats.onlineNow === 1 ? 'online' : 'online'}</span>
+              </span>
             </div>
 
             {/* Botão de Instalação PWA Rápido */}
@@ -421,19 +423,28 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
 
           <div className="pt-3 border-t border-slate-700/80 flex items-center justify-between">
-            <button
-              onClick={() => handleSelectTab('donations')}
-              className="flex items-center space-x-2 text-xs text-amber-300 font-semibold px-3 py-2 rounded-lg bg-amber-950/40 border border-amber-600/40"
-            >
-              <Heart className="w-4 h-4 text-amber-400" />
-              <span>{t.nav.donations}</span>
-            </button>
-            <button
-              onClick={() => handleSelectTab('admin')}
-              className="text-xs text-slate-400 hover:text-slate-200 px-3 py-2"
-            >
-              {t.nav.admin}
-            </button>
+            <div className="flex items-center space-x-1.5 text-xs text-emerald-400 font-semibold px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>{readerStats.onlineNow} {readerStats.onlineNow === 1 ? 'online' : 'online'}</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => handleSelectTab('donations')}
+                className="flex items-center space-x-1.5 text-xs text-amber-300 font-semibold px-3 py-1.5 rounded-lg bg-amber-950/40 border border-amber-600/40"
+              >
+                <Heart className="w-3.5 h-3.5 text-amber-400" />
+                <span>{t.nav.donations}</span>
+              </button>
+              <button
+                onClick={() => handleSelectTab('admin')}
+                className="text-xs text-slate-400 hover:text-slate-200 px-2 py-1.5"
+              >
+                {t.nav.admin}
+              </button>
+            </div>
           </div>
         </div>
       )}

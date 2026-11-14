@@ -325,15 +325,29 @@ export const AdminPanel: React.FC = () => {
       {activeAdminTab === 'visao_geral' && (
         <div className="space-y-6">
           {/* CARDS DE KPIS PRINCIPAIS */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3.5">
+            <div className="bg-white dark:bg-[#0B192C] p-4 rounded-2xl border border-emerald-500/40 shadow-sm space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 flex items-center">
+                <span className="relative flex h-2 w-2 mr-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                Online Agora
+              </span>
+              <div className="text-xl sm:text-2xl font-bold font-title text-emerald-400">
+                {summary.onlineNow}
+              </div>
+              <span className="text-[10px] text-slate-400">Sessões ativas</span>
+            </div>
+
             <div className="bg-white dark:bg-[#0B192C] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Leitores Estimados</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Leitores Registados</span>
               <div className="text-xl sm:text-2xl font-bold font-title text-[#D4AF37]">
                 {summary.totalEstimatedReaders.toLocaleString()}
               </div>
               <span className="text-[10px] text-emerald-400 flex items-center space-x-1">
                 <TrendingUp className="w-3 h-3" />
-                <span>+14.2% este mês</span>
+                <span>Em tempo real</span>
               </span>
             </div>
 

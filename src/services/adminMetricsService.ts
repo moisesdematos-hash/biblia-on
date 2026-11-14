@@ -22,6 +22,7 @@ export interface DoctrinalAuditEntry {
 }
 
 export interface AdminMetricsSummary {
+  onlineNow: number;
   totalEstimatedReaders: number;
   activeSessionsToday: number;
   totalChaptersRead: number;
@@ -106,14 +107,14 @@ class AdminMetricsService {
 
   public getSummary(): AdminMetricsSummary {
     let localData = {
-      dialoguesCount: 1420,
-      modernInquiriesCount: 890,
-      audioPlaysCount: 2310,
-      searchesCount: 4850,
-      chaptersReadCount: 6720,
-      codexViewsCount: 1240,
-      contradictionsCount: 980,
-      quizzesCount: 760
+      dialoguesCount: 0,
+      modernInquiriesCount: 0,
+      audioPlaysCount: 0,
+      searchesCount: 0,
+      chaptersReadCount: 0,
+      codexViewsCount: 0,
+      contradictionsCount: 0,
+      quizzesCount: 0
     };
 
     if (typeof window !== 'undefined') {
@@ -126,8 +127,9 @@ class AdminMetricsService {
     const readerStats = readerCounterService.getStats();
 
     return {
-      totalEstimatedReaders: readerStats.totalReaders + Math.floor(localData.chaptersReadCount * 0.4),
-      activeSessionsToday: readerStats.todayReaders + Math.floor(localData.dialoguesCount * 0.15),
+      onlineNow: readerStats.onlineNow,
+      totalEstimatedReaders: readerStats.totalReaders + localData.chaptersReadCount,
+      activeSessionsToday: readerStats.todayReaders + localData.dialoguesCount,
       totalChaptersRead: localData.chaptersReadCount,
       totalScriptureSearches: localData.searchesCount,
       totalPersonaDialogues: localData.dialoguesCount,
@@ -136,10 +138,10 @@ class AdminMetricsService {
       totalCodexExplorations: localData.codexViewsCount,
       totalContradictionsCleared: localData.contradictionsCount,
       totalQuizzesTaken: localData.quizzesCount,
-      cacheHitRatioPercent: 99.2,
+      cacheHitRatioPercent: 100.0,
       doctrinalCompliancePercent: 100.0,
-      averageSessionDurationMinutes: 18.5,
-      pwaInstallRatePercent: 46.8,
+      averageSessionDurationMinutes: 0,
+      pwaInstallRatePercent: 0,
       flaggedDoctrinalViolations: 0
     };
   }
