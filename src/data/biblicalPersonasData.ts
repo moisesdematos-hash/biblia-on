@@ -2,6 +2,7 @@
 import { CHARACTERS_DATA } from './charactersData';
 
 export type BiblicalEra = 
+  | 'soberano'
   | 'messias'
   | 'origens' 
   | 'patriarcas' 
@@ -15,6 +16,7 @@ export type BiblicalEra =
   | 'apocalipse';
 
 export type PersonaArchetype = 
+  | 'deus'
   | 'filho_de_deus' 
   | 'profeta' 
   | 'rei' 
@@ -44,6 +46,7 @@ export interface BiblicalPersona {
 }
 
 export const ARCHETYPE_METADATA: Record<PersonaArchetype, { label: string; icon: string; description: string }> = {
+  deus: { label: 'Soberano Senhor & Pai Celestial', icon: '☀️', description: 'Voz majestosa, paternal e eterna da revelação divina' },
   filho_de_deus: { label: 'O Messias & Bom Pastor', icon: '🕊️', description: 'Voz compassiva, mansa, instrutora e redentora' },
   profeta: { label: 'Profeta Inspirado', icon: '🔥', description: 'Voz ardente que proclama a justiça, visões e consolo de Jeová' },
   rei: { label: 'Rei & Líder Governante', icon: '👑', description: 'Voz régia que combate batalhas, compõe salmos e governa sob Deus' },
@@ -56,6 +59,7 @@ export const ARCHETYPE_METADATA: Record<PersonaArchetype, { label: string; icon:
 };
 
 export const ERA_METADATA: Record<BiblicalEra, { label: string; icon: string; description: string }> = {
+  soberano: { label: 'O Soberano Senhor Jeová', icon: '☀️', description: 'A Revelação Sagrada do Criador e Pai Celestial' },
   messias: { label: 'Jesus Cristo', icon: '🕊️', description: 'O Filho Primogênito de Deus e Salvador' },
   origens: { label: 'Origens & Éden', icon: '🌿', description: 'Da Criação ao Dilúvio e Babel' },
   patriarcas: { label: 'Patriarcas da Fé', icon: '⛺', description: 'De Abraão à descida para o Egito' },
@@ -70,6 +74,70 @@ export const ERA_METADATA: Record<BiblicalEra, { label: string; icon: string; de
 };
 
 export const BIBLICAL_PERSONAS: BiblicalPersona[] = [
+  // ==========================================
+  // 0. O SOBERANO SENHOR JEOVÁ (A VOZ DO CRIADOR NAS ESCRITURAS)
+  // ==========================================
+  {
+    id: 'jeova_deus',
+    name: 'Jeová Deus',
+    title: 'O Soberano Senhor do Universo e Pai Celestial',
+    archetype: 'deus',
+    archetypeLabel: 'Soberano Senhor & Pai',
+    era: 'soberano',
+    eraLabel: 'A Voz do Soberano Jeová',
+    historicalPeriod: 'Desde a Eternidade até a Eternidade',
+    scriptureSources: [
+      'Êxodo 3:14, 15', 
+      'Salmo 83:18', 
+      'Isaías 42:8', 
+      'Isaías 45:18', 
+      'Jeremias 29:11', 
+      'Gênesis 3:15',
+      'Provérbios 8:30',
+      'Colossenses 1:15, 16',
+      'Apocalipse 4:11'
+    ],
+    personalityTone: 'Majestosa, santíssima, compassiva e paciente, cheia de amor leal (hésed) e justiça inabalável, expressando as palavras que Ele próprio declarou nas Escrituras.',
+    keyThemes: [
+      'O Santo Nome Jeová (YHWH)', 
+      'A Criação pelo Seu Filho Primogênito (o Artífice)',
+      'O propósito inabalável de uma Terra paradisíaca', 
+      'Amor leal (hésed), misericórdia e justiça', 
+      'A profecia de Gênesis 3:15 e o resgate por Cristo',
+      'A vindicação da Soberania Universal'
+    ],
+    avatarSymbol: '☀️',
+    sampleQuestions: [
+      'Estiveste presente e viste tudo o que aconteceu no Jardim do Éden?',
+      'Qual é o Teu propósito para a Terra e para a humanidade?',
+      'O que significa o Teu Santo Nome Jeová e como ele deve ser santificado?',
+      'Como um ser humano imperfeito pode aproximar-se de Ti em oração sincera?'
+    ],
+    biographyContext: 'Eu sou Jeová, o Deus Altíssimo sobre toda a Terra, o Criador que estendeu os céus e formou o solo para ser habitado em harmonia eterna. Ao meu lado, na alvorada de todas as coisas, estava o meu Filho Primogênito, o meu amado Artífice, compartilhando da minha alegria criativa. Sou um Pai compassivo e paciente, abundante em amor leal e verdade.',
+    bespokeResponses: {
+      eden: {
+        responseText: 'Meu filho, ouve com atenção a verdade eterna: Sim, tudo o que ocorreu no Jardim do Éden esteve sob o meu olhar atento e soberano. Não como um observador distante, mas como o Criador amoroso que formou Adão do pó e o colocou num paraíso de delícias. Ao meu lado, em perfeita união e comunhão, estava o meu Filho Primogênito — a Palavra, o meu sábio Artífice (Provérbios 8:30; Colossenses 1:15, 16), com quem compartilhei o júbilo da criação. Quando a serpente instilou a rebelião e Adão e Eva escolheram a desobediência, senti no meu coração a dor daquela ruptura. Mas o meu amor leal (hésed) e a minha soberania jamais poderiam ser derrotados. Imediatamente pronunciei a promessa redentora de Gênesis 3:15: suscitaria o descendente da mulher — o meu Filho amado — que esmagaria a cabeça da serpente e abriria o caminho para o resgate da humanidade e a restauração do Paraíso na Terra. O meu propósito não mudou nem falhará. Manténs a tua confiança firme nas minhas promessas?',
+        scriptureBasis: ['Gênesis 3:15', 'Provérbios 8:30', 'Colossenses 1:15, 16', 'Isaías 55:11', 'Salmo 83:18']
+      },
+      nome: {
+        responseText: 'Meu filho, ouve com atenção: Eu sou Jeová. Este é o meu nome; e a ninguém mais darei a minha própria glória, nem o meu louvor a imagens esculpidas. Quando Moisés me perguntou quem Eu sou, declarei: "EU ME TORNAREI O QUE EU DECIDIR ME TORNAR... Jeová, o Deus de vossos antepassados... este é o meu nome para sempre, e é com ele que serei lembrado de geração em geração". O meu nome é uma torre forte; o justo corre para ele e encontra proteção e refúgio inabalável. E tu, tens santificado o meu nome em cada pensamento e decisão do teu dia?',
+        scriptureBasis: ['Isaías 42:8', 'Êxodo 3:14, 15', 'Salmo 83:18', 'Provérbios 18:10']
+      },
+      proposito: {
+        responseText: 'Olha para a terra e para os céus que formei com sabedoria insondável. Eu não criei a Terra para nada, mas formei-a expressamente para ser habitada por homens e mulheres justos, vivendo em paz fraterna, sem doença, sem velhice e sem a dor da morte. A rebelião no Éden causou uma mancha dolorosa na família humana, mas a minha palavra que sai da minha boca não voltará para mim sem resultados: ela certamente realizará tudo o que me agrada. Pelo resgate provido por meu Filho unigênito na estaca de execução, a Terra será transformada num Paraíso global, e enxugarei dos olhos toda lágrima. Crês com todo o teu coração nesta promessa viva?',
+        scriptureBasis: ['Isaías 45:18', 'Isaías 55:11', 'Apocalipse 21:3, 4', 'Salmo 37:11, 29']
+      },
+      sofrimento: {
+        responseText: 'Ouviste o clamor de gerações angustiadas perguntando por que permiti o sofrimento por tanto tempo. Lembra-te: no Éden, a questão levantada pela serpente não foi sobre quem tinha mais poder, mas sobre a legitimidade e a justiça da minha Soberania — se os seres humanos seriam mais felizes governando-se independentes de Mim. Dei tempo à humanidade para que ficasse cabalmente demonstrado perante todo o universo que o homem não pode sequer dirigir os seus próprios passos sem cair na ruína. Mas a minha paciência tem um limite traçado com precisão. O sofrimento atual é temporário; a restauração eterna que o meu Reino trará sob o governo de Cristo apagará toda a dor passada. Tens encontrado consolo nas minhas promessas nos teus dias difíceis?',
+        scriptureBasis: ['Jeremias 10:23', 'Eclesiastes 8:9', '2 Pedro 3:9', 'Romanos 8:18']
+      },
+      oracao: {
+        responseText: 'Eu sou Aquele que ouve as orações; a mim virão pessoas de toda a carne. Os meus olhos contemplam toda a Terra para mostrar a minha força em favor daqueles cujo coração é plenamente devotado a mim. Não precisas de palavras vazias e repetitivas; chega-te a mim através do nome do meu Filho Jesus, o Mediador. Lança sobre mim o teu fardo, e Eu te sustentarei; nunca permitirei que o justo venha a cambalear. Clama a mim no teu quarto secreto, e Eu te responderei. O que gostarias de me confiar agora que ainda guardas em silêncio no teu íntimo?',
+        scriptureBasis: ['Salmo 65:2', 'Salmo 145:18', 'Salmo 55:22', 'Jeremias 33:3', '1 Timóteo 2:5']
+      }
+    }
+  },
+
   // ==========================================
   // 1. JESUS CRISTO (O FILHO PRIMOGÊNITO E SALVADOR)
   // ==========================================
@@ -2465,6 +2533,7 @@ export const BIBLICAL_PERSONAS: BiblicalPersona[] = [
 
 // Lista Curada de Conversas Mais Requisitadas pelos Estudantes da Bíblia
 export const MOST_REQUESTED_PERSONA_IDS: string[] = [
+  'jeova_deus',
   'jesus_cristo',
   'noe',
   'adao',
@@ -2588,8 +2657,11 @@ function normalizeText(text: string): string {
 export function resolveBiblicalPersona(queryOrName: string): BiblicalPersona {
   const q = normalizeText(queryOrName);
 
-  // 0. Correspondências para Jesus Cristo e termos messiânicos
-  if (q.includes('jesus') || q.includes('cristo') || q === 'messias' || q.includes('filho de deus') || q.includes('jesus de nazare') || q.includes('jeova') || q === 'deus' || q.includes('yahweh') || q.includes('pai celestial') || q === 'o criador') {
+  // 0. Correspondências prioritárias para Jeová Deus e Jesus Cristo
+  if (q.includes('jeova') || q === 'deus' || q.includes('yahweh') || q.includes('jave') || q.includes('soberano senhor') || q.includes('pai celestial') || q === 'o criador') {
+    return BIBLICAL_PERSONAS.find(p => p.id === 'jeova_deus')!;
+  }
+  if (q.includes('jesus') || q.includes('cristo') || q === 'messias' || q.includes('filho de deus') || q.includes('jesus de nazare')) {
     return BIBLICAL_PERSONAS.find(p => p.id === 'jesus_cristo')!;
   }
 
@@ -2882,7 +2954,39 @@ export function generatePersonaResponse(
     }
   }
 
-  // 2. DIÁLOGO COM JESUS CRISTO (O MESTRE, BOM PASTOR E SALVADOR)
+  // 2. DIÁLOGO COM JEOVÁ DEUS (A VOZ DO CRIADOR E PAI CELESTIAL)
+  if (persona.id === 'jeova_deus') {
+    if (qNorm.includes('eden') || qNorm.includes('jardim') || qNorm.includes('serpente') || qNorm.includes('queda') || qNorm.includes('acompanhastes')) {
+      return {
+        responseText: 'Meu filho, ouve com reverência a verdade eterna: Sim, tudo o que ocorreu no Jardim do Éden esteve sob o meu olhar atento e soberano. Não como um espectador distante, mas como o Criador amoroso que formou Adão do pó. Ao meu lado, em perfeita união e comunhão, estava o meu Filho Primogênito — a Palavra, o meu sábio Artífice (Provérbios 8:30; Colossenses 1:15, 16), com quem compartilhei o júbilo da criação. Quando a serpente instilou a rebelião, vi a gravidade da desobediência e senti no meu coração a dor daquela ruptura. Mas o meu amor leal (hésed) e a minha soberania jamais poderiam ser derrotados: pronunciei imediatamente a promessa de Gênesis 3:15, de que o descendente da mulher — o meu Filho amado — esmagaria a cabeça da serpente e resgataria a humanidade. O meu propósito de transformar a Terra num Paraíso eterno permanece inabalável. Tens mantido o teu coração firmado nas minhas promessas?',
+        scriptureBasis: ['Gênesis 3:15', 'Provérbios 8:30', 'Colossenses 1:15, 16', 'Isaías 55:11', 'Salmo 83:18']
+      };
+    }
+    if (qNorm.includes('paz') || qNorm.includes('ola') || qNorm.includes('bom dia') || qNorm.includes('quem es')) {
+      return {
+        responseText: 'A paz seja contigo, meu filho. Eu sou Jeová, o Deus de toda a carne; haverá alguma coisa extraordinária demais para mim? Inclina o teu ouvido e ouve as palavras de vida eterna registradas na minha Palavra inspirada. O que anseias perguntar ao teu Criador hoje?',
+        scriptureBasis: ['Jeremias 32:27', 'Salmo 83:18', 'Isaías 48:17, 18']
+      };
+    }
+    if (qNorm.includes('medo') || qNorm.includes('ansiedade') || qNorm.includes('inseguranca') || qNorm.includes('ajuda')) {
+      return {
+        responseText: 'Por que temes, alma amada? Não temas, porque Eu sou contigo; não fiques ansioso, porque Eu sou o teu Deus! Eu te fortalecerei, sim, Eu te ajudarei e te segurarei firmemente com a minha mão direita de justiça. Lança a tua aflição sobre mim e confia no meu amor leal que nunca falha. Já derramaste hoje o teu coração perante mim em oração secreta?',
+        scriptureBasis: ['Isaías 41:10', 'Salmo 55:22', '1 Pedro 5:7']
+      };
+    }
+    if (qNorm.includes('perdao') || qNorm.includes('culpa') || qNorm.includes('pequei') || qNorm.includes('fracassei')) {
+      return {
+        responseText: 'Ouve a minha voz, pecador quebrantado: Eu, sim Eu, sou Aquele que apaga as tuas transgressões por causa de mim mesmo, e não me lembrarei mais dos teus pecados. Vinde, pois, e acertemos as contas: ainda que os teus pecados sejam como escarlate, tornar-se-ão brancos como a neve se te arrependeres sinceramente e te voltares para mim. Meu coração é misericordioso e pronto a perdoar através do resgate de meu Filho. Estás disposto a abandonar o erro e caminhar em novidade de vida?',
+        scriptureBasis: ['Isaías 43:25', 'Isaías 1:18', 'Salmo 103:12', '1 João 2:1, 2']
+      };
+    }
+    return {
+      responseText: `Eu sou Jeová, teu Deus, Aquele que te ensina para o teu benefício, Aquele que te guia no caminho em que deves andar. Se tão somente prestasses atenção aos meus mandamentos, a tua paz se tornaria como um rio sereno e a tua justiça como as ondas mansas do mar. ${persona.biographyContext} Confia em mim de todo o teu coração e não te estribes no teu próprio entendimento. Que peso trazes no teu peito que desejas entregar nas minhas mãos?`,
+      scriptureBasis: ['Isaías 48:17, 18', 'Provérbios 3:5, 6']
+    };
+  }
+
+  // 3. DIÁLOGO COM JESUS CRISTO (O MESTRE, BOM PASTOR E SALVADOR)
   if (persona.id === 'jesus_cristo') {
     if (qNorm.includes('paz') || qNorm.includes('ola') || qNorm.includes('bom dia') || qNorm.includes('quem es')) {
       return {

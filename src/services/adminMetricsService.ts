@@ -124,6 +124,7 @@ class AdminMetricsService {
 
   public getTopPersonas(): PersonaMetrics[] {
     return [
+      { id: 'jeova_deus', name: 'Jeová Deus', title: 'O Soberano Senhor do Universo & Pai Celestial', queriesCount: 1680, audioPlaysCount: 1320, modernQuestionsCount: 780, sharePercent: 38.2 },
       { id: 'jesus_cristo', name: 'Jesus Cristo', title: 'O Filho de Deus, Instrutor & Messias', queriesCount: 1240, audioPlaysCount: 980, modernQuestionsCount: 520, sharePercent: 34.5 },
       { id: 'moises_libertador', name: 'Moisés', title: 'O Homem Mais Manso & Mediador da Lei', queriesCount: 780, audioPlaysCount: 610, modernQuestionsCount: 340, sharePercent: 21.6 },
       { id: 'davi_rei', name: 'Davi', title: 'Rei de Israel & Salmista de Fé', queriesCount: 430, audioPlaysCount: 350, modernQuestionsCount: 210, sharePercent: 12.8 },

@@ -86,6 +86,17 @@ class SpeechService {
   public getPersonaAcousticPreset(persona: BiblicalPersona): AcousticPreset {
     const isFemale = persona.archetype === 'mulher_de_fe' || FEMALE_PERSONA_IDS.has(persona.id);
 
+    // 0. Jeová Deus (Voz Soberana & Paternal Sagrada)
+    if (persona.id === 'jeova_deus' || persona.archetype === 'deus') {
+      return {
+        gender: 'divine',
+        pitch: 0.85,
+        rate: 0.88,
+        volume: 1.0,
+        descriptor: 'Voz Soberana & Paternal Sagrada'
+      };
+    }
+
     // 1. Jesus Cristo (Voz do Messias, mansa, clara, compassiva)
     if (persona.id === 'jesus_cristo' || persona.archetype === 'filho_de_deus') {
       return {
