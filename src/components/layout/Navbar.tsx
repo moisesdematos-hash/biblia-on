@@ -135,7 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const navItems = [
     { id: 'home' as ActiveTab, label: t.nav.home, icon: Compass },
     { id: 'codex' as ActiveTab, label: 'O Codex Vivo 👑', icon: Sparkles, special: true },
-    { id: 'personas' as ActiveTab, label: 'Conversar com Personagens', icon: MessageSquare },
+    { id: 'personas' as ActiveTab, label: 'O Criador & Figuras Bíblicas', icon: MessageSquare },
     { id: 'explorer' as ActiveTab, label: t.nav.explorer, icon: BookOpen },
     { id: 'chat' as ActiveTab, label: t.nav.chat, icon: Brain },
     { id: 'plans' as ActiveTab, label: t.nav.plans, icon: Calendar },

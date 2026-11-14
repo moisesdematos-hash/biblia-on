@@ -581,10 +581,10 @@ export const CharacterDialogView: React.FC = () => {
             <span>Diálogos Imersivos & Vozes Diferenciadas da Fé</span>
           </div>
           <h1 className="font-title text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white">
-            Conversar com Personagens Bíblicos
+            O Criador, Seu Filho & Figuras Bíblicas
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
-            Converse diretamente com o Criador, com Seu Filho Jesus Cristo, e com profetas, reis, juízes, patriarcas e santas mulheres de fé, ouvindo cada resposta com timbres, tons e modulações vocais adaptadas à sua persona.
+            Meditação bíblica interativa com rigor exegético: consulte os conselhos e promessas do Soberano Deus Jeová, os ensinamentos de Jesus Cristo e o exemplo de 56 servos fiéis das Escrituras Sagradas.
           </p>
         </div>
 
@@ -901,7 +901,13 @@ export const CharacterDialogView: React.FC = () => {
             {selectedPersona.avatarSymbol}
           </span>
           <div className="min-w-0">
-            <span className="text-[10px] text-slate-400 block font-mono uppercase">Personagem Ativa:</span>
+            <span className="text-[10px] text-slate-400 block font-mono uppercase">
+              {selectedPersona.id === 'jeova_deus'
+                ? '👑 O Criador em Foco:'
+                : selectedPersona.id === 'jesus_cristo'
+                  ? '✝️ O Filho de Deus em Foco:'
+                  : '📜 Servo Bíblico em Foco:'}
+            </span>
             <h4 className="font-title text-sm font-bold text-slate-900 dark:text-white truncate">
               {selectedPersona.name} <span className="text-[11px] text-[#D4AF37] font-normal">({selectedPersona.archetypeLabel})</span>
             </h4>
@@ -912,7 +918,7 @@ export const CharacterDialogView: React.FC = () => {
           className="px-3 py-1.5 rounded-xl bg-[#1E3E62] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-semibold flex items-center space-x-1.5 shrink-0 active:scale-95 transition-all shadow-xs cursor-pointer"
         >
           <Users className="w-3.5 h-3.5" />
-          <span>{isMobileGalleryOpen ? 'Ocultar Lista' : 'Mudar (58)'}</span>
+          <span>{isMobileGalleryOpen ? 'Fechar Lista' : 'Figuras (58)'}</span>
         </button>
       </div>
 
@@ -932,7 +938,7 @@ export const CharacterDialogView: React.FC = () => {
           </div>
 
           <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-1">
-            <span>Personagens ({filteredPersonas.length})</span>
+            <span>Escrituras Sagradas ({filteredPersonas.length})</span>
             <span className="text-[#D4AF37] font-mono">
               {filterMode === 'archetype' 
                 ? (selectedArchetype !== 'all' ? ARCHETYPE_METADATA[selectedArchetype]?.label : 'Todos')
@@ -940,43 +946,128 @@ export const CharacterDialogView: React.FC = () => {
             </span>
           </div>
 
-          {/* Lista com Rolagem */}
-          <div className="overflow-y-auto flex-1 space-y-2 pr-1 scrollbar-thin">
+          {/* Lista Estruturada com Distinção de Honra ao Criador */}
+          <div className="overflow-y-auto flex-1 space-y-3 pr-1 scrollbar-thin">
             {filteredPersonas.length > 0 ? (
-              filteredPersonas.map((persona) => {
-                const isSelected = selectedPersona.id === persona.id;
-                const isDivine = persona.id === 'jeova_deus' || persona.id === 'jesus_cristo';
+              (() => {
+                const sovereignGod = filteredPersonas.find(p => p.id === 'jeova_deus');
+                const messianicSon = filteredPersonas.find(p => p.id === 'jesus_cristo');
+                const humanWitnesses = filteredPersonas.filter(p => p.id !== 'jeova_deus' && p.id !== 'jesus_cristo');
+
                 return (
-                  <button
-                    key={persona.id}
-                    onClick={() => handleSelectPersona(persona)}
-                    className={`w-full text-left p-3 rounded-xl text-xs transition-all flex items-start space-x-3 ${
-                      isSelected
-                        ? 'bg-[#1E3E62] text-[#D4AF37] font-semibold border border-[#D4AF37]/50 shadow-sm'
-                        : isDivine
-                          ? 'bg-amber-500/5 dark:bg-amber-500/10 text-slate-900 dark:text-white hover:bg-amber-500/15 border border-[#D4AF37]/20'
-                          : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 border border-transparent'
-                    }`}
-                  >
-                    <span className="text-xl shrink-0 p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800">
-                      {persona.avatarSymbol}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-1.5">
-                        <span className="font-bold text-sm text-slate-900 dark:text-white shrink-0">
-                          {persona.name}
-                        </span>
-                        <span className="text-[10px] text-[#D4AF37] font-mono truncate text-right">
-                          {persona.archetypeLabel.split('&')[0].trim()}
-                        </span>
+                  <>
+                    {/* 1. SEÇÃO DE REVERÊNCIA MÁXIMA: O SOBERANO DEUS */}
+                    {sovereignGod && (
+                      <div className="space-y-1">
+                        <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#D4AF37] flex items-center space-x-1.5 bg-[#1E3E62]/40 rounded-lg border border-[#D4AF37]/40 shadow-xs">
+                          <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                          <span>O Soberano Senhor do Universo</span>
+                        </div>
+                        <button
+                          onClick={() => handleSelectPersona(sovereignGod)}
+                          className={`w-full text-left p-3 rounded-xl text-xs transition-all flex items-start space-x-3 cursor-pointer ${
+                            selectedPersona.id === sovereignGod.id
+                              ? 'bg-gradient-to-r from-[#1E3E62] via-[#0B192C] to-[#1E3E62] text-[#D4AF37] font-semibold border-2 border-[#D4AF37] shadow-md ring-1 ring-[#D4AF37]/50'
+                              : 'bg-amber-500/10 hover:bg-amber-500/20 text-slate-900 dark:text-white border border-[#D4AF37]/40 shadow-xs'
+                          }`}
+                        >
+                          <span className="text-2xl shrink-0 p-1.5 rounded-xl bg-amber-500/20 border border-[#D4AF37]/50 shadow-xs">
+                            {sovereignGod.avatarSymbol}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-1.5">
+                              <span className="font-bold text-sm text-[#D4AF37] shrink-0 font-title">
+                                {sovereignGod.name}
+                              </span>
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#1E3E62] text-[#D4AF37] font-mono font-semibold">
+                                Todo-Poderoso
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-600 dark:text-slate-300 truncate mt-0.5">
+                              {sovereignGod.title}
+                            </p>
+                          </div>
+                        </button>
                       </div>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                        {persona.title}
-                      </p>
-                    </div>
-                  </button>
+                    )}
+
+                    {/* 2. SEÇÃO MESSIÂNICA: O FILHO DE DEUS */}
+                    {messianicSon && (
+                      <div className="space-y-1">
+                        <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-300 flex items-center space-x-1.5 bg-[#0B192C] rounded-lg border border-slate-700 shadow-xs">
+                          <Crown className="w-3 h-3 text-amber-400" />
+                          <span>O Filho de Deus & Rei Messiânico</span>
+                        </div>
+                        <button
+                          onClick={() => handleSelectPersona(messianicSon)}
+                          className={`w-full text-left p-3 rounded-xl text-xs transition-all flex items-start space-x-3 cursor-pointer ${
+                            selectedPersona.id === messianicSon.id
+                              ? 'bg-[#1E3E62] text-[#D4AF37] font-semibold border-2 border-[#D4AF37] shadow-md'
+                              : 'bg-slate-50 dark:bg-slate-800/80 hover:bg-[#1E3E62]/30 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700/60'
+                          }`}
+                        >
+                          <span className="text-2xl shrink-0 p-1.5 rounded-xl bg-amber-500/15 border border-[#D4AF37]/30">
+                            {messianicSon.avatarSymbol}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-1.5">
+                              <span className="font-bold text-sm text-slate-900 dark:text-white shrink-0 font-title">
+                                {messianicSon.name}
+                              </span>
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-amber-700 dark:text-amber-300 font-mono font-semibold">
+                                O Redentor
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                              {messianicSon.title}
+                            </p>
+                          </div>
+                        </button>
+                      </div>
+                    )}
+
+                    {/* 3. SEÇÃO DOS SERVOS E TESTEMUNHAS HUMANAS */}
+                    {humanWitnesses.length > 0 && (
+                      <div className="space-y-1.5 pt-1">
+                        <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                          <span>Servos & Testemunhas Bíblicas ({humanWitnesses.length})</span>
+                        </div>
+                        {humanWitnesses.map((persona) => {
+                          const isSelected = selectedPersona.id === persona.id;
+                          return (
+                            <button
+                              key={persona.id}
+                              onClick={() => handleSelectPersona(persona)}
+                              className={`w-full text-left p-3 rounded-xl text-xs transition-all flex items-start space-x-3 cursor-pointer ${
+                                isSelected
+                                  ? 'bg-[#1E3E62] text-[#D4AF37] font-semibold border border-[#D4AF37]/50 shadow-sm'
+                                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 border border-transparent'
+                              }`}
+                            >
+                              <span className="text-xl shrink-0 p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800">
+                                {persona.avatarSymbol}
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center justify-between gap-1.5">
+                                  <span className="font-bold text-sm text-slate-900 dark:text-white shrink-0">
+                                    {persona.name}
+                                  </span>
+                                  <span className="text-[10px] text-[#D4AF37] font-mono truncate text-right">
+                                    {persona.archetypeLabel.split('&')[0].trim()}
+                                  </span>
+                                </div>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                                  {persona.title}
+                                </p>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </>
                 );
-              })
+              })()
             ) : (
               <div className="p-4 text-center space-y-3">
                 <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -1094,6 +1185,36 @@ export const CharacterDialogView: React.FC = () => {
               </button>
             </div>
           </div>
+
+          {/* Tarja Solene de Reverência para Jeová Deus */}
+          {selectedPersona.id === 'jeova_deus' && (
+            <div className="mb-3 px-3.5 py-2.5 rounded-xl bg-amber-500/10 border border-[#D4AF37]/50 text-amber-200 text-xs flex items-start space-x-2.5 shadow-sm animate-in fade-in">
+              <ShieldCheck className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
+              <div className="leading-relaxed">
+                <strong className="text-[#D4AF37] block font-semibold text-xs">
+                  Nota de Reverência ao Soberano Deus Jeová:
+                </strong>
+                <span className="text-slate-600 dark:text-slate-300 text-[11px] block mt-0.5">
+                  Todas as respostas fundamentam-se exclusivamente nas palavras, promessas e conselhos que o Criador revelou no Cânon Sagrado das Escrituras (Tradução do Novo Mundo). Esta ferramenta tem caráter estritamente educativo para meditação bíblica e não constitui nova revelação nem substitui a oração pessoal sincera.
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Tarja de Reverência para Jesus Cristo */}
+          {selectedPersona.id === 'jesus_cristo' && (
+            <div className="mb-3 px-3.5 py-2 rounded-xl bg-[#1E3E62]/40 border border-[#D4AF37]/40 text-amber-200 text-xs flex items-start space-x-2.5 shadow-sm animate-in fade-in">
+              <Crown className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
+              <div className="leading-relaxed">
+                <strong className="text-[#D4AF37] block font-semibold text-xs">
+                  O Filho de Deus e Rei Messiânico:
+                </strong>
+                <span className="text-slate-600 dark:text-slate-300 text-[11px] block mt-0.5">
+                  Diálogo reflexivo baseado com rigor e fidelidade histórica nos ensinamentos, milagres e ministério de Cristo registados nos Evangelhos e no restante cânon bíblico.
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Drawer / Painel de Configurações Vocais Diferenciadas */}
           {showVoiceSettings && (

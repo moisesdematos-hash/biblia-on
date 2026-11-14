@@ -132,7 +132,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
     {
       category: 'Inteligência Artificial & Diálogo Sagrado',
       items: [
-        { id: 'personas' as ActiveTab, title: 'Conversar com Personagens', desc: 'Diálogo direto com Jeová Deus, Jesus Cristo e 56 figuras bíblicas', icon: MessageSquare, color: 'text-[#D4AF37]', highlight: true },
+        { id: 'personas' as ActiveTab, title: 'O Criador & Figuras Bíblicas', desc: 'Diálogo meditativo com o Soberano Deus Jeová, Jesus Cristo e 56 servos fiéis da Bíblia', icon: MessageSquare, color: 'text-[#D4AF37]', highlight: true },
         { id: 'chat' as ActiveTab, title: 'Assistente Bíblico IA', desc: 'Chat exegético rigoroso com 3 níveis de profundidade de estudo', icon: Bot, color: 'text-blue-400' },
         { id: 'tool_assistant' as ActiveTab, title: 'Especialista da Ferramenta', desc: 'Guia interactivo completo para navegar e tirar o máximo proveito da app', icon: Sparkles, color: 'text-amber-400' },
       ]
