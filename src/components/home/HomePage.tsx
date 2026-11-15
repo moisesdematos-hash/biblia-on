@@ -163,7 +163,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
       a: 'Sim, incondicionalmente. O nosso compromisso institucional garante que qualquer pessoa no mundo pode estudar as Sagradas Escrituras sem assinaturas, sem anúncios e sem barreiras financeiras.'
     },
     {
-      q: 'Como funciona a conversa com Deus, com Jesus e com os personagens bíblicos?',
+      q: 'Como funciona a conversa com Jesus e com os personagens bíblicos?',
       a: 'O sistema utiliza modelos de linguagem com guardrails teológicos rigorosos baseados na Tradução do Novo Mundo e no cânon de 66 livros. Cada personagem responde em primeira pessoa respeitando o contexto histórico, as lições e as palavras exatas registadas na Bíblia.'
     },
     {
@@ -295,7 +295,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
 
             {/* FRASE DE IMPACTO EM LETRAS GRANDES CONFORME PEDIDO */}
             <h2 className="font-title text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight sm:leading-snug drop-shadow-md">
-              "Converse Diretamente com Deus, com Jesus e com os Personagens Bíblicos e faça as perguntas que quiseres e terás as respostas na hora!"
+              "Converse Diretamente com Jesus e com os Personagens Bíblicos e faça as perguntas que quiseres e terás as respostas na hora!"
             </h2>
 
             <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
@@ -305,8 +305,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
             {/* Mosaico de Avatares das Personas em Destaque */}
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 pt-2">
               {[
-                { name: 'Jeová Deus', role: 'Soberano Senhor & Pai', icon: '👑', highlight: true },
                 { name: 'Jesus Cristo', role: 'Filho Primogênito & Rei', icon: '🕊️', highlight: true },
+                { name: 'Abraão', role: 'Pai dos que Têm Fé', icon: '⛺' },
                 { name: 'Moisés', role: 'Legislador do Sinai', icon: '📜' },
                 { name: 'Rei David', role: 'Salmista de Israel', icon: '👑' },
                 { name: 'Ap. Paulo', role: 'Missionário das Nações', icon: '⚔️' },

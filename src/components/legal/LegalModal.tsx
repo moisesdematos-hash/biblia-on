@@ -190,7 +190,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                   a: 'Sim, totalmente. Não existem assinaturas premium, paywalls nem funcionalidades bloqueadas. O nosso estatuto fundamental define que estudar a Palavra de Deus deve ser sempre livre e acessível a qualquer ser humano.'
                 },
                 {
-                  q: 'Como funciona a conversa com Deus, Jesus e os Personagens Bíblicos?',
+                  q: 'Como funciona a conversa com Jesus e os Personagens Bíblicos?',
                   a: 'Através de modelos de linguagem de ponta configurados com diretrizes teológicas rigorosas (guardrails doutrinários). Cada personagem responde em primeira pessoa com fidelidade aos manuscritos sagrados, usando a linguagem, a história e os fatos canônicos registados na Bíblia.'
                 },
                 {
