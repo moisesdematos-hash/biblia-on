@@ -103,12 +103,11 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
     });
   };
   
-  const initialInquiry = personaAIService.getModernEraInquiry(BIBLICAL_PERSONAS[0]);
   const [messages, setMessages] = useState<DialogMessage[]>([
     {
       id: 'init_welcome',
       sender: 'persona',
-      text: `A paz esteja convosco. Eu sou Jesus Cristo, o Filho Primogênito de Deus e o Bom Pastor. Quem me segue nunca andará em escuridão, mas terá a luz da vida. O que gostarias de aprender comigo hoje?\n\n💬 **E diz-me uma coisa sobre o vosso tempo moderno:**\n${initialInquiry.question}`,
+      text: `A paz esteja convosco. Eu sou Jesus Cristo, o Filho Primogênito de Deus e o Bom Pastor. Quem me segue nunca andará em escuridão, mas terá a luz da vida. O que gostarias de aprender comigo hoje?`,
       scriptures: BIBLICAL_PERSONAS[0].scriptureSources,
       timestamp: Date.now()
     }
@@ -180,10 +179,8 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
     const paragraphs = text.split('\n\n').filter(Boolean);
 
     return (
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {paragraphs.map((p, idx) => {
-          const isModernInquiry = p.includes('tempo moderno') || p.includes('vosso tempo') || p.startsWith('💬') || p.includes('Diz-me, meu filho:');
-
           const formattedParts = p.split(/(\*\*[^*]+\*\*)/g).map((sub, i) => {
             if (sub.startsWith('**') && sub.endsWith('**')) {
               return (
@@ -195,27 +192,9 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
             return sub;
           });
 
-          if (isModernInquiry && isPersona) {
-            if (isCleanMode) return null;
-            return (
-              <div
-                key={idx}
-                className="mt-3 p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-[#1E3E62]/40 to-amber-500/10 border border-[#D4AF37]/50 text-xs sm:text-sm text-amber-100/90 leading-relaxed space-y-1 shadow-sm"
-              >
-                <div className="flex items-center space-x-1.5 text-[11px] font-bold text-[#D4AF37] uppercase tracking-wider mb-1">
-                  <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span>Reflexão de {selectedPersona.name} sobre o nosso século XXI:</span>
-                </div>
-                <p className="font-serif italic text-slate-100">
-                  {formattedParts}
-                </p>
-              </div>
-            );
-          }
-
           return (
             <p key={idx} className="font-serif text-sm sm:text-base leading-relaxed text-slate-800 dark:text-slate-100">
-              {isPersona && idx === 0 && !p.startsWith('"') ? `“${p}` : p}{isPersona && idx === paragraphs.length - 1 && !p.endsWith('"') && !isModernInquiry ? '”' : ''}
+              {isPersona && idx === 0 && !p.startsWith('"') && !p.startsWith('“') ? `“${p}` : p}{isPersona && idx === paragraphs.length - 1 && !p.endsWith('"') && !p.endsWith('”') ? '”' : ''}
             </p>
           );
         })}
@@ -235,17 +214,12 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
       if (saved && saved.messages && saved.messages.length > 0) {
         setMessages(saved.messages);
       } else {
-        const inquiry = personaAIService.getModernEraInquiry(selectedPersona);
         let greeting = `A paz seja contigo. Eu sou ${selectedPersona.name} (${selectedPersona.archetypeLabel}). Como testemunha dos propósitos sagrados de Deus durante ${selectedPersona.historicalPeriod}, estou pronto para conversar contigo. O que tens no coração para inquirir hoje?`;
         
         if (selectedPersona.id === 'jeova_deus') {
           greeting = `A paz seja contigo, meu filho. Eu sou Jeová, o Soberano Senhor do Universo e teu Pai Celestial. Como Criador que estendeu os céus e formou a Terra para ser habitada em paz eterna, estou pronto a ouvir a tua alma. O que gostarias de inquirir da minha Palavra sagrada hoje?`;
         } else if (selectedPersona.id === 'jesus_cristo') {
           greeting = `A paz esteja convosco. Eu sou Jesus Cristo, o Filho Primogênito de Deus e o Bom Pastor. Quem me segue nunca andará em escuridão, mas terá a luz da vida. O que gostarias de aprender comigo hoje?`;
-        }
-
-        if (aiConfig.askAboutModernEra && !isCleanMode) {
-          greeting += `\n\n💬 **E diz-me uma coisa sobre o vosso tempo moderno:**\n${inquiry.question}`;
         }
 
         const freshMsg: DialogMessage = {
@@ -1109,129 +1083,116 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
 
         {/* Painel Central: Chat e Diálogo com o Mentor/Profeta/Rei/Juiz/Deus */}
         <div ref={chatPanelRef} className="lg:col-span-3 bg-white dark:bg-[#0B192C] border border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 sm:p-6 shadow-sm flex flex-col h-[750px] justify-between relative">
-          {/* Cabeçalho da Personagem Ativa com Arquétipo e Indicador de Voz (Estruturado em Linhas no Mobile para Evitar Sobreposições) */}
-          <div className="border-b border-slate-200 dark:border-slate-800 pb-3 mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-3">
-            {/* Linha 1: Identidade da Personagem */}
-            <div className="flex items-center space-x-3 min-w-0 flex-1">
-              <span className="text-2xl sm:text-3xl p-1.5 sm:p-2 rounded-2xl bg-amber-500/10 border border-[#D4AF37]/40 shrink-0">
+          {/* Cabeçalho Limpo & Minimalista da Personagem */}
+          <div className="border-b border-slate-200 dark:border-slate-800 pb-2.5 mb-2.5 flex items-center justify-between gap-3">
+            {/* Identidade da Personagem */}
+            <div className="flex items-center space-x-2.5 min-w-0 flex-1">
+              <span className="text-2xl sm:text-3xl p-1.5 rounded-2xl bg-amber-500/10 border border-[#D4AF37]/40 shrink-0">
                 {selectedPersona.avatarSymbol}
               </span>
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <h3 className="font-title text-base sm:text-xl font-bold text-slate-900 dark:text-white truncate">
+                <div className="flex items-center space-x-2">
+                  <h3 className="font-title text-base sm:text-lg font-bold text-slate-900 dark:text-white truncate">
                     {selectedPersona.name}
                   </h3>
-                  <span className="text-[10px] sm:text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#1E3E62] text-[#D4AF37] font-semibold truncate max-w-[150px] sm:max-w-none">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#1E3E62] text-[#D4AF37] font-semibold shrink-0 hidden sm:inline">
                     {selectedPersona.archetypeLabel}
                   </span>
-                  <span className="text-[9px] sm:text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">
-                    {selectedPersona.eraLabel}
-                  </span>
                 </div>
-                <div className="flex items-center space-x-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                  <span className="truncate">{selectedPersona.title}</span>
-                  <span className="hidden sm:inline">•</span>
-                  <span className="text-[#D4AF37] font-mono hidden sm:inline-flex items-center space-x-1">
-                    <Mic className="w-3 h-3 inline" />
-                    <span>{acousticPreset.descriptor} ({acousticPreset.pitch}x)</span>
-                  </span>
-                </div>
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
+                  {selectedPersona.title}
+                </p>
               </div>
             </div>
 
-            {/* Linha 2 (Mobile) / Lado Direito (Desktop): Barra de Ferramentas e Configurações */}
-            <div className="flex items-center justify-between sm:justify-end gap-1.5 sm:gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800/80">
-              {/* Botão Chat Limpo (Modo Zen sem escritas que atrapalham) */}
-              <button
-                onClick={toggleCleanMode}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 border transition-all cursor-pointer shadow-xs ${
-                  isCleanMode
-                    ? 'bg-[#D4AF37] text-slate-950 border-white font-bold ring-1 ring-amber-300 shadow-md'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-300 hover:text-[#D4AF37] border-slate-200 dark:border-slate-700'
-                }`}
-                title={isCleanMode ? 'Desativar Chat Limpo (Voltar a exibir perguntas sugeridas e chips)' : 'Ativar Chat Limpo (Ocultar escritas, chips e distrações)'}
-              >
-                {isCleanMode ? <EyeOff className="w-3.5 h-3.5 text-slate-950" /> : <Eye className="w-3.5 h-3.5 text-[#D4AF37]" />}
-                <span className="text-[11px] sm:text-xs">{isCleanMode ? 'Limpo ✓' : 'Limpo'}</span>
-              </button>
-
-              {/* Botão Apagar Chat */}
-              <button
-                onClick={handleClearChat}
-                className="px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 border border-rose-500/30 hover:border-rose-400 transition-all cursor-pointer shadow-xs active:scale-95"
-                title="Apagar todo o histórico de mensagens deste chat"
-              >
-                <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-                <span className="hidden sm:inline">Apagar</span>
-              </button>
-
-              {/* Botão de Estado da IA e Chave */}
+            {/* Barra de Ações Compacta & Sem Poluição Visual */}
+            <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
+              {/* Botão de Estado da IA */}
               <button
                 onClick={() => setShowAIModal(true)}
-                className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 border transition-all ${
+                className={`px-2 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1 border transition-all cursor-pointer ${
                   personaAIService.hasActiveAI()
-                    ? 'bg-sky-500/15 text-sky-300 border-sky-500/40 hover:bg-sky-500/25 shadow-xs'
+                    ? 'bg-sky-500/15 text-sky-300 border-sky-500/40 hover:bg-sky-500/25'
                     : 'bg-amber-500/10 text-[#D4AF37] border-[#D4AF37]/40 hover:bg-amber-500/20'
                 }`}
-                title="Configurar Inteligência Artificial (Google Gemini, Groq ou Motor Local)"
+                title="Configurar Inteligência Artificial & Guardrails Doutrinais"
               >
                 <Bot className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span className="text-[11px] sm:text-xs">
-                  {personaAIService.hasActiveAI() ? 'IA ⚡' : 'TNM 🛡️'}
+                <span className="text-[10px] font-mono hidden md:inline">
+                  {personaAIService.hasActiveAI() ? 'IA Ativa' : 'TNM Local'}
                 </span>
               </button>
 
-              {/* Botão de Configurações Vocais */}
+              {/* Botão de Voz e Ritmo */}
               <button
                 onClick={() => setShowVoiceSettings(!showVoiceSettings)}
-                className={`p-2 rounded-xl transition-colors flex items-center space-x-1.5 text-xs font-mono ${
+                className={`p-2 rounded-xl transition-colors flex items-center space-x-1 cursor-pointer ${
                   showVoiceSettings 
                     ? 'bg-[#1E3E62] text-[#D4AF37] border border-[#D4AF37]/40' 
                     : 'text-slate-400 hover:text-[#D4AF37] hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
-                title="Configurações de Áudio e Vozes Diferenciadas"
+                title="Configurações de Voz e Ritmo da Fala"
               >
                 <Sliders className="w-4 h-4" />
-                <span className="hidden sm:inline">Voz</span>
               </button>
 
+              {/* Botão Limpar Chat */}
+              <button
+                onClick={handleClearChat}
+                className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                title="Limpar mensagens desta conversa"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+
+              {/* Botão Perfil & Informações Bíblicas */}
               <button
                 onClick={() => setShowPersonaInfo(!showPersonaInfo)}
-                className="p-2 rounded-xl text-slate-400 hover:text-[#D4AF37] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                title="Ver perfil completo e passagens bíblicas"
+                className={`p-2 rounded-xl transition-colors cursor-pointer ${
+                  showPersonaInfo
+                    ? 'bg-[#1E3E62] text-[#D4AF37]'
+                    : 'text-slate-400 hover:text-[#D4AF37] hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+                title="Ver perfil bíblico, biografia e escritas sagradas"
               >
                 <Info className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Tarja Solene de Reverência para Jeová Deus */}
+          {/* Tarja Discreta de Reverência para Jeová Deus */}
           {selectedPersona.id === 'jeova_deus' && (
-            <div className="mb-3 px-3.5 py-2.5 rounded-xl bg-amber-500/10 border border-[#D4AF37]/50 text-amber-200 text-xs flex items-start space-x-2.5 shadow-sm animate-in fade-in">
-              <ShieldCheck className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
-              <div className="leading-relaxed">
-                <strong className="text-[#D4AF37] block font-semibold text-xs">
-                  Nota de Reverência ao Soberano Deus Jeová:
-                </strong>
-                <span className="text-slate-600 dark:text-slate-300 text-[11px] block mt-0.5">
-                  Todas as respostas fundamentam-se exclusivamente nas palavras, promessas e conselhos que o Criador revelou no Cânon Sagrado das Escrituras (Tradução do Novo Mundo). Esta ferramenta tem caráter estritamente educativo para meditação bíblica e não constitui nova revelação nem substitui a oração pessoal sincera.
+            <div className="mb-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-[#D4AF37]/30 text-amber-200 text-xs flex items-center justify-between shadow-xs animate-in fade-in">
+              <div className="flex items-center space-x-2 truncate">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                <span className="text-slate-300 text-[11px] truncate">
+                  <strong className="text-[#D4AF37]">Reverência Sagrada:</strong> Respostas fundamentadas exclusivamente no Cânon Bíblico (TNM).
                 </span>
               </div>
+              <button 
+                onClick={() => setShowPersonaInfo(true)}
+                className="text-[10px] text-[#D4AF37] hover:underline shrink-0 ml-2 font-semibold cursor-pointer"
+              >
+                Saber mais
+              </button>
             </div>
           )}
 
-          {/* Tarja de Reverência para Jesus Cristo */}
+          {/* Tarja Discreta para Jesus Cristo */}
           {selectedPersona.id === 'jesus_cristo' && (
-            <div className="mb-3 px-3.5 py-2 rounded-xl bg-[#1E3E62]/40 border border-[#D4AF37]/40 text-amber-200 text-xs flex items-start space-x-2.5 shadow-sm animate-in fade-in">
-              <Crown className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
-              <div className="leading-relaxed">
-                <strong className="text-[#D4AF37] block font-semibold text-xs">
-                  O Filho de Deus e Rei Messiânico:
-                </strong>
-                <span className="text-slate-600 dark:text-slate-300 text-[11px] block mt-0.5">
-                  Diálogo reflexivo baseado com rigor e fidelidade histórica nos ensinamentos, milagres e ministério de Cristo registados nos Evangelhos e no restante cânon bíblico.
+            <div className="mb-2 px-3 py-1.5 rounded-xl bg-[#1E3E62]/30 border border-[#D4AF37]/30 text-amber-200 text-xs flex items-center justify-between shadow-xs animate-in fade-in">
+              <div className="flex items-center space-x-2 truncate">
+                <Crown className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                <span className="text-slate-300 text-[11px] truncate">
+                  <strong className="text-[#D4AF37]">O Messias & Rei:</strong> Diálogo fiel aos ensinamentos de Cristo nos Evangelhos.
                 </span>
               </div>
+              <button 
+                onClick={() => setShowPersonaInfo(true)}
+                className="text-[10px] text-[#D4AF37] hover:underline shrink-0 ml-2 font-semibold cursor-pointer"
+              >
+                Saber mais
+              </button>
             </div>
           )}
 
@@ -1295,6 +1256,60 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
                     </select>
                   </div>
                 )}
+
+                {/* Seletor de Ritmo & Velocidade de Resposta */}
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-700/60">
+                  <label className="text-[11px] font-semibold text-slate-400 block mb-1.5">
+                    Ritmo da Fala & Resposta:
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        personaAIService.updateConfig({ speedLevel: 'slow' });
+                        setAiConfig(personaAIService.getConfig());
+                      }}
+                      className={`p-2 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 border transition-all cursor-pointer ${
+                        aiConfig.speedLevel === 'slow'
+                          ? 'bg-[#1E3E62] text-[#D4AF37] border-[#D4AF37] shadow-xs font-bold'
+                          : 'bg-slate-50 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 hover:text-white'
+                      }`}
+                    >
+                      <span>🐢</span>
+                      <span>Solene</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        personaAIService.updateConfig({ speedLevel: 'normal' });
+                        setAiConfig(personaAIService.getConfig());
+                      }}
+                      className={`p-2 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 border transition-all cursor-pointer ${
+                        aiConfig.speedLevel === 'normal'
+                          ? 'bg-[#1E3E62] text-[#D4AF37] border-[#D4AF37] shadow-xs font-bold'
+                          : 'bg-slate-50 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 hover:text-white'
+                      }`}
+                    >
+                      <span>⚡</span>
+                      <span>Natural</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        personaAIService.updateConfig({ speedLevel: 'fast' });
+                        setAiConfig(personaAIService.getConfig());
+                      }}
+                      className={`p-2 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 border transition-all cursor-pointer ${
+                        aiConfig.speedLevel === 'fast'
+                          ? 'bg-[#1E3E62] text-[#D4AF37] border-[#D4AF37] shadow-xs font-bold'
+                          : 'bg-slate-50 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 hover:text-white'
+                      }`}
+                    >
+                      <span>🚀</span>
+                      <span>Rápido</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -1587,27 +1602,6 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
             </div>
           )}
 
-          {/* Banner de Auto-Atualização de Modelo Descontinuado */}
-          {upgradeNotice && (
-            <div className="bg-gradient-to-r from-amber-500/20 via-sky-500/20 to-amber-500/20 border border-[#D4AF37] p-3 rounded-2xl flex items-center justify-between text-xs text-amber-200 shadow-lg mb-3 animate-in slide-in-from-top">
-              <div className="flex items-center space-x-2.5">
-                <Zap className="w-4 h-4 text-[#D4AF37] animate-bounce shrink-0" />
-                <div className="leading-snug">
-                  <span className="font-bold text-white">Auto-Atualização de IA Ativada: </span>
-                  O modelo <code className="text-rose-300 font-mono px-1 py-0.5 bg-rose-950/60 rounded">{upgradeNotice.deprecatedModel}</code> foi descontinuado pelo provedor e atualizado com sucesso para <code className="text-emerald-300 font-mono font-bold px-1 py-0.5 bg-emerald-950/60 rounded">{upgradeNotice.newModel}</code>.
-                  <span className="block text-[10px] text-slate-300 mt-0.5">As tuas conversas continuam sem interrupções e sem erros.</span>
-                </div>
-              </div>
-              <button 
-                onClick={() => setUpgradeNotice(null)} 
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors ml-2"
-                title="Fechar notificação"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
-
           {/* Área de Mensagens com Scroll */}
           <div className="flex-1 overflow-y-auto space-y-4 pr-2 mb-3 scrollbar-thin">
             {messages.length === 0 && (
@@ -1736,133 +1730,61 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
             <div ref={messagesEndRef} />
           </div>
 
-          {!isCleanMode && (
-            <>
-              {/* Sugestões de Perguntas Rápidas da Personagem */}
-              <div className="flex flex-wrap gap-1.5 mb-2">
-                <span className="text-[11px] font-semibold text-slate-400 py-1">Perguntas sugeridas:</span>
+          {/* Sugestões de Perguntas Apenas no Início da Conversa (Desaparecem ao Enviar Mensagem) */}
+          {messages.length <= 1 && selectedPersona.sampleQuestions && selectedPersona.sampleQuestions.length > 0 && (
+            <div className="mb-2 space-y-1.5 animate-in fade-in">
+              <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none">
+                <span className="text-[10px] font-semibold text-[#D4AF37] uppercase tracking-wider shrink-0 flex items-center space-x-1 mr-1">
+                  <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                  <span>Sugestões:</span>
+                </span>
                 {selectedPersona.sampleQuestions.map((q, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleSendMessage(q)}
-                    className="text-[11px] px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors truncate max-w-[280px]"
+                    className="whitespace-nowrap text-[11px] px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-[#1E3E62] text-slate-700 dark:text-slate-300 hover:text-[#D4AF37] border border-slate-200 dark:border-slate-700 hover:border-[#D4AF37] transition-all cursor-pointer shrink-0"
                   >
                     {q}
                   </button>
                 ))}
               </div>
-
-              {/* Chips de Aconselhamento Pastoral / Vida Pessoal */}
-              <div className="flex items-center space-x-1.5 overflow-x-auto pb-2 scrollbar-thin">
-                <span className="text-[10px] font-semibold text-[#D4AF37] uppercase tracking-wider shrink-0 flex items-center space-x-1">
-                  <Compass className="w-3 h-3" />
-                  <span>Dilemas da Vida:</span>
-                </span>
-                {lifeGuidancePrompts.map((p, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleSendMessage(p.query)}
-                    className="whitespace-nowrap text-[10px] px-2.5 py-0.5 rounded-lg bg-amber-500/5 hover:bg-amber-500/15 border border-[#D4AF37]/30 text-slate-700 dark:text-slate-300 hover:text-[#D4AF37] transition-all"
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Barra Dinâmica de 3 Níveis de Velocidade de Resposta & Fala */}
-              <div className="flex items-center justify-between px-1 text-xs">
-                <div className="flex items-center space-x-1.5 text-[11px] text-slate-400">
-                  <Sliders className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span className="font-medium hidden sm:inline">Velocidade da Resposta:</span>
-                </div>
-                <div className="flex items-center space-x-1 bg-slate-200/60 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-300 dark:border-slate-700">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      personaAIService.updateConfig({ speedLevel: 'slow' });
-                      setAiConfig(personaAIService.getConfig());
-                    }}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all flex items-center space-x-1 ${
-                      aiConfig.speedLevel === 'slow'
-                        ? 'bg-[#1E3E62] text-[#D4AF37] shadow-xs ring-1 ring-[#D4AF37]/50 font-bold'
-                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                    title="Ritmo Solene & Contemplativo (Pausado / Meditativo - 0.85x de fala)"
-                  >
-                    <span>🐢</span>
-                    <span>Solene</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      personaAIService.updateConfig({ speedLevel: 'normal' });
-                      setAiConfig(personaAIService.getConfig());
-                    }}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all flex items-center space-x-1 ${
-                      aiConfig.speedLevel === 'normal'
-                        ? 'bg-[#1E3E62] text-[#D4AF37] shadow-xs ring-1 ring-[#D4AF37]/50 font-bold'
-                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                    title="Ritmo Natural Humano (1.0x de fala)"
-                  >
-                    <span>⚡</span>
-                    <span>Natural</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      personaAIService.updateConfig({ speedLevel: 'fast' });
-                      setAiConfig(personaAIService.getConfig());
-                    }}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all flex items-center space-x-1 ${
-                      aiConfig.speedLevel === 'fast'
-                        ? 'bg-[#1E3E62] text-[#D4AF37] shadow-xs ring-1 ring-[#D4AF37]/50 font-bold'
-                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                    title="Ritmo Ultrarrápido Instantâneo (1.22x de fala)"
-                  >
-                    <span>🚀</span>
-                    <span>Rápido</span>
-                  </button>
-                </div>
-              </div>
-            </>
+            </div>
           )}
 
-          {/* Alerta / Status Flutuante do Microfone */}
+          {/* Alerta Discreto do Microfone */}
           {micNotice && (
-            <div className="flex items-center justify-between text-xs px-3.5 py-2 rounded-xl bg-amber-500/15 border border-[#D4AF37]/60 text-amber-200 animate-in fade-in">
-              <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-                <span>{micNotice}</span>
+            <div className="flex items-center justify-between text-xs px-3 py-1.5 rounded-xl bg-amber-500/15 border border-[#D4AF37]/50 text-amber-200 animate-in fade-in mb-2">
+              <div className="flex items-center space-x-2 truncate">
+                <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping shrink-0" />
+                <span className="truncate">{micNotice}</span>
               </div>
               {isListening && (
                 <button
                   type="button"
                   onClick={handleToggleMic}
-                  className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 font-medium text-[10px]"
+                  className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 font-medium text-[10px] shrink-0 ml-2 cursor-pointer"
                 >
-                  Concluir Fala
+                  Concluir
                 </button>
               )}
             </div>
           )}
 
-          {/* Campo de Entrada de Mensagem com Microfone */}
-          <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/80 p-2 rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-[#D4AF37] transition-colors">
-            {/* Botão de Microfone / Gravação por Voz */}
+          {/* Campo de Entrada de Mensagem Limpo & Confortável */}
+          <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/90 p-1.5 sm:p-2 rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-[#D4AF37] transition-all shadow-xs">
+            {/* Botão de Microfone */}
             <button
               type="button"
               onClick={handleToggleMic}
-              className={`p-2.5 rounded-xl transition-all border flex items-center justify-center shrink-0 ${
+              className={`p-2.5 rounded-xl transition-all flex items-center justify-center shrink-0 cursor-pointer ${
                 isListening
-                  ? 'bg-rose-600 text-white border-rose-400 animate-pulse ring-2 ring-rose-400/50 shadow-md shadow-rose-900/30'
-                  : 'bg-slate-200/70 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 hover:text-[#D4AF37] hover:border-[#D4AF37]/50 border-transparent'
+                  ? 'bg-rose-600 text-white animate-pulse ring-2 ring-rose-400/50 shadow-md'
+                  : 'text-slate-400 hover:text-[#D4AF37] hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
-              title={isListening ? 'Parar gravação do microfone' : 'Falar pelo microfone (Reconhecimento de Voz)'}
+              title={isListening ? 'Parar gravação do microfone' : 'Falar pelo microfone'}
             >
               {isListening ? (
-                <MicOff className="w-4 h-4 text-white animate-bounce" />
+                <MicOff className="w-4 h-4 text-white" />
               ) : (
                 <Mic className="w-4 h-4" />
               )}
@@ -1880,16 +1802,17 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
               }}
               placeholder={
                 isListening
-                  ? `🎙️ Ouvindo a sua voz... Fale com ${selectedPersona.name} agora...`
-                  : `Pergunta ou aconselha-te com ${selectedPersona.name} (ou fala pelo microfone)...`
+                  ? `🎙️ Ouvindo a sua voz... Fale agora...`
+                  : `Escreva a sua pergunta para ${selectedPersona.name}...`
               }
-              className="flex-1 bg-transparent px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
+              className="flex-1 bg-transparent px-2.5 py-1.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
             />
+
             <button
               onClick={() => handleSendMessage()}
               disabled={!inputQuery.trim()}
-              className="p-2.5 rounded-xl bg-[#1E3E62] text-[#D4AF37] hover:bg-[#1E3E62]/80 disabled:opacity-40 transition-all border border-[#D4AF37]/40 shadow-sm shrink-0"
-              title="Enviar pergunta"
+              className="p-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-500 disabled:opacity-30 disabled:cursor-not-allowed text-slate-950 font-bold transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer shrink-0"
+              title="Enviar mensagem"
             >
               <Send className="w-4 h-4" />
             </button>
