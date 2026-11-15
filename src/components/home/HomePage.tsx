@@ -33,6 +33,7 @@ import {
 import type { ActiveTab } from '../layout/Navbar';
 import { getLastRead, type ReadingHistoryItem } from '../../db/bibliaOnDb';
 import { readerCounterService, type ReaderStats } from '../../services/readerCounterService';
+import { pwaService, type PWAState } from '../../services/pwaService';
 import { LegalModal, type LegalTab } from '../legal/LegalModal';
 
 interface HomePageProps {
@@ -48,6 +49,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
   const [legalModalOpen, setLegalModalOpen] = useState(false);
   const [legalModalTab, setLegalModalTab] = useState<LegalTab>('termos');
   const [expandedFaqIndex, setExpandedFaqIndex] = useState<number | null>(null);
+  const [pwaState, setPwaState] = useState<PWAState>(() => pwaService.getState());
+  const [showInstallHelp, setShowInstallHelp] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState<'all' | 'exegesis' | 'history' | 'practical'>('all');
 
   useEffect(() => {
     getLastRead().then((item) => {
@@ -57,8 +61,27 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
     const unsubscribe = readerCounterService.subscribe((stats) => {
       setReaderStats(stats);
     });
-    return () => unsubscribe();
+
+    const unsubPwa = pwaService.subscribe((state) => {
+      setPwaState(state);
+    });
+
+    return () => {
+      unsubscribe();
+      unsubPwa();
+    };
   }, []);
+
+  const handleInstallClick = async () => {
+    if (pwaState.isInstallable) {
+      const ok = await pwaService.promptInstall();
+      if (!ok) {
+        setShowInstallHelp(prev => !prev);
+      }
+    } else {
+      setShowInstallHelp(prev => !prev);
+    }
+  };
 
   const openLegal = (tab: LegalTab) => {
     setLegalModalTab(tab);
@@ -116,43 +139,47 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
     'Como posso melhorar o meu casamento segundo a Bíblia?'
   ];
 
-  // 18 Módulos Completos da Aplicação
-  const ALL_MODULES = [
+  // 3 Grandes Trilhas Integradas de Estudo (17 Módulos Especializados)
+  const STUDY_TRACKS = [
     {
-      category: 'Texto Sagrado & Exegese Profunda',
+      id: 'exegesis' as const,
+      title: 'Trilha 1: Investigação & Exegese Textual',
+      shortTitle: '📜 Investigação & Exegese',
+      tagline: 'Manuscritos originais, códices interlineares e rigor teológico na Tradução do Novo Mundo',
       items: [
-        { id: 'explorer' as ActiveTab, title: 'Bíblia Completa', desc: '66 livros canónicos com notas de estudo e referências cruzadas', icon: BookOpen, color: 'text-amber-500' },
-        { id: 'codex' as ActiveTab, title: 'O Codex Vivo 👑', desc: 'O Fio Dourado de Gênesis a Apocalipse e rolos do Mar Morto', icon: Sparkles, color: 'text-[#D4AF37]' },
-        { id: 'compare' as ActiveTab, title: 'Comparador de Traduções', desc: 'TNM de Estudo, Almeida e King James em paralelo versículo a versículo', icon: Eye, color: 'text-sky-400' },
-        { id: 'lexicon' as ActiveTab, title: 'Léxico Hebraico & Grego', desc: 'Códigos Strong, lemas, morfologia e termos YHWH, néphesh, staurós', icon: Languages, color: 'text-purple-400' },
-        { id: 'contradictions' as ActiveTab, title: 'Harmonizações Bíblicas', desc: 'Investigação honesta e rigorosa de aparentes contradições bíblicas', icon: ShieldCheck, color: 'text-cyan-400' },
-        { id: 'prophecies' as ActiveTab, title: 'Profecias Bíblicas', desc: 'Cumprimentos messiânicos, profecias de Daniel e cronologias bíblicas', icon: Layers, color: 'text-rose-400' },
+        { id: 'explorer' as ActiveTab, title: 'Bíblia dos 66 Livros', desc: 'Texto canónico completo com notas de estudo e referências cruzadas', badge: 'Canónico', icon: BookOpen, color: 'text-amber-500', highlight: true },
+        { id: 'codex' as ActiveTab, title: 'O Codex Vivo 👑', desc: 'O Fio Dourado de Gênesis a Apocalipse e réplicas dos Rolos do Mar Morto', badge: 'Exclusivo 👑', icon: Sparkles, color: 'text-[#D4AF37]', highlight: true },
+        { id: 'compare' as ActiveTab, title: 'Comparador de Traduções', desc: 'TNM de Estudo, Almeida e King James versículo a versículo em paralelo', badge: 'Interlinear', icon: Eye, color: 'text-sky-400' },
+        { id: 'lexicon' as ActiveTab, title: 'Léxico Hebraico & Grego', desc: 'Códigos Strong, lemas, morfologia e termos YHWH, néphesh, staurós', badge: 'Original', icon: Languages, color: 'text-purple-400' },
+        { id: 'contradictions' as ActiveTab, title: 'Harmonizações Bíblicas', desc: 'Investigação honesta e rigorosa de aparentes contradições bíblicas', badge: 'Defesa da Fé', icon: ShieldCheck, color: 'text-cyan-400' },
+        { id: 'prophecies' as ActiveTab, title: 'Profecias Bíblicas', desc: 'Cumprimentos messiânicos, profecias de Daniel e cronologias bíblicas', badge: 'Messiânico', icon: Layers, color: 'text-rose-400' },
       ]
     },
     {
-      category: 'Inteligência Artificial & Diálogo Sagrado',
+      id: 'history' as const,
+      title: 'Trilha 2: História, Tempo & Geografia Sagrada',
+      shortTitle: '🗺️ História & Geografia',
+      tagline: 'Mapeamento geográfico interativo, cronologia universal e personagens das Escrituras',
       items: [
-        { id: 'personas' as ActiveTab, title: 'O Criador & Figuras Bíblicas', desc: 'Diálogo meditativo com o Soberano Deus Jeová, Jesus Cristo e 56 servos fiéis da Bíblia', icon: MessageSquare, color: 'text-[#D4AF37]', highlight: true },
-        { id: 'chat' as ActiveTab, title: 'Assistente Bíblico IA', desc: 'Chat exegético rigoroso com 3 níveis de profundidade de estudo', icon: Bot, color: 'text-blue-400' },
-        { id: 'tool_assistant' as ActiveTab, title: 'Especialista da Ferramenta', desc: 'Guia interactivo completo para navegar e tirar o máximo proveito da app', icon: Sparkles, color: 'text-amber-400' },
+        { id: 'personas' as ActiveTab, title: 'O Criador & Figuras Bíblicas', desc: 'Diálogo histórico e imersivo com 58 personagens sagrados com guardrails rigorosos', badge: 'Imersivo', icon: MessageSquare, color: 'text-[#D4AF37]', highlight: true },
+        { id: 'atlas' as ActiveTab, title: 'Atlas & Lugares Bíblicos', desc: 'Mapas vectoriais, rotas do Êxodo e viagens missionárias do apóstolo Paulo', badge: 'Mapas 3D', icon: MapPin, color: 'text-red-400' },
+        { id: 'timeline' as ActiveTab, title: 'Linha do Tempo Mundial', desc: 'Cronologia histórica universal desde a criação até ao século I d.C.', badge: 'Cronologia', icon: Clock, color: 'text-yellow-400' },
+        { id: 'genealogy' as ActiveTab, title: 'Genealogias Bíblicas', desc: 'Árvore genealógica de Adão a Jesus Cristo e as 12 Tribos de Israel', badge: 'Linhagem', icon: TreePine, color: 'text-emerald-500' },
+        { id: 'chat' as ActiveTab, title: 'Assistente Bíblico IA', desc: 'Pesquisa e auxílio exegético imediato com 3 níveis de profundidade de estudo', badge: 'IA Exegética', icon: Bot, color: 'text-blue-400' },
       ]
     },
     {
-      category: 'Arcade & Desafios Bíblicos (13 Jogos Viciantes)',
+      id: 'practical' as const,
+      title: 'Trilha 3: Edificação Prática, Ensino & Família',
+      shortTitle: '🌿 Edificação & Família',
+      tagline: 'Ferramentas dinâmicas para fixação do conhecimento, estudo diário e aplicação na vida',
       items: [
-        { id: 'quizzes' as ActiveTab, title: 'Arcade Bíblico Completo', desc: '13 Jogos interactivos: Linha do Tempo, Frutos do Espírito, Quem Sou Eu?, Construtor de Versículos e Quiz Relâmpago', icon: Gamepad2, color: 'text-emerald-400', highlight: true },
-      ]
-    },
-    {
-      category: 'Ensino, Genealogias & Ministério Prático',
-      items: [
-        { id: 'tutor' as ActiveTab, title: 'Professor Adaptativo', desc: 'Método pedagógico "Ensina-me até eu compreender" em 3 níveis + flashcards', icon: GraduationCap, color: 'text-indigo-400' },
-        { id: 'genealogy' as ActiveTab, title: 'Genealogias Bíblicas', desc: 'Árvore genealógica de Adão a Jesus Cristo e as 12 Tribos de Israel', icon: TreePine, color: 'text-emerald-500' },
-        { id: 'atlas' as ActiveTab, title: 'Atlas & Cronologia', desc: 'Mapas vectoriais, rotas do Êxodo e viagens apostólicas de Paulo', icon: MapPin, color: 'text-red-400' },
-        { id: 'timeline' as ActiveTab, title: 'Linha do Tempo Mundial', desc: 'Cronologia histórica universal desde a criação até ao século I d.C.', icon: Clock, color: 'text-yellow-400' },
-        { id: 'plans' as ActiveTab, title: 'Planos de Leitura', desc: 'Leitura de 1 Ano, Cronológica e dos Evangelhos com medalhas de progresso', icon: Compass, color: 'text-teal-400' },
-        { id: 'life' as ActiveTab, title: 'Orientador de Vida', desc: 'Princípios práticos para casamento, paz mental, ansiedade e esperança', icon: Heart, color: 'text-pink-400' },
-        { id: 'library' as ActiveTab, title: 'Biblioteca Pessoal', desc: 'Notas, versículos favoritos e exportação de backups seguros no seu dispositivo', icon: Bookmark, color: 'text-blue-300' },
+        { id: 'quizzes' as ActiveTab, title: 'Arcade Bíblico Completo', desc: '13 Jogos pedagógicos: Linha do Tempo, Frutos do Espírito, Quem Sou Eu? e Quiz Relâmpago', badge: '13 Jogos', icon: Gamepad2, color: 'text-emerald-400', highlight: true },
+        { id: 'tutor' as ActiveTab, title: 'Professor Adaptativo', desc: 'Método pedagógico "Ensina-me até eu compreender" em 3 níveis + flashcards', badge: 'Pedagógico', icon: GraduationCap, color: 'text-indigo-400' },
+        { id: 'plans' as ActiveTab, title: 'Planos de Leitura', desc: 'Leitura de 1 Ano, Cronológica e dos Evangelhos com medalhas de progresso', badge: 'Sistemático', icon: Compass, color: 'text-teal-400' },
+        { id: 'life' as ActiveTab, title: 'Orientador de Vida', desc: 'Princípios práticos para casamento, paz mental, ansiedade e esperança', badge: 'Vida Cristã', icon: Heart, color: 'text-pink-400' },
+        { id: 'library' as ActiveTab, title: 'Biblioteca Pessoal', desc: 'Notas, versículos favoritos e exportação de backups seguros no seu dispositivo', badge: '100% Privado', icon: Bookmark, color: 'text-blue-300' },
+        { id: 'tool_assistant' as ActiveTab, title: 'Especialista da Ferramenta', desc: 'Guia interactivo completo para navegar e tirar o máximo proveito da app', badge: 'Tutorial', icon: Sparkles, color: 'text-amber-400' },
       ]
     }
   ];
@@ -293,51 +320,55 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
               <span>Funcionalidade Exclusiva & Inovadora</span>
             </div>
 
-            {/* FRASE DE IMPACTO EM LETRAS GRANDES CONFORME PEDIDO */}
+            {/* Título Nobre & Solene */}
             <h2 className="font-title text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight sm:leading-snug drop-shadow-md">
-              "Converse Diretamente com Jesus e com os Personagens Bíblicos e faça as perguntas que quiseres e terás as respostas na hora!"
+              Diálogo Histórico com Figuras Bíblicas
             </h2>
 
             <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Experimente uma imersão espiritual sem precedentes. Faça perguntas sinceras sobre o propósito da criação, o Reino de Deus, profecias, a dor da perda e receba respostas imediatas fundamentadas rigorosamente no texto sagrado.
+              Questione, investigue e descubra respostas imediatas fundamentadas rigorosamente no texto sagrado da Tradução do Novo Mundo e no cânon dos 66 livros.
             </p>
 
-            {/* Mosaico de Avatares das Personas em Destaque */}
+            {/* Mosaico de Avatares das Personas com Clique Direto */}
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 pt-2">
               {[
-                { name: 'Jesus Cristo', role: 'Filho Primogênito & Rei', icon: '🕊️', highlight: true },
-                { name: 'Abraão', role: 'Pai dos que Têm Fé', icon: '⛺' },
-                { name: 'Moisés', role: 'Legislador do Sinai', icon: '📜' },
-                { name: 'Rei David', role: 'Salmista de Israel', icon: '👑' },
-                { name: 'Ap. Paulo', role: 'Missionário das Nações', icon: '⚔️' },
-                { name: 'Rainha Ester', role: 'Coragem Inabalável', icon: '🌸' },
-                { name: 'Rute', role: 'A Leal Moabita', icon: '🌾' },
-                { name: 'Ap. Pedro', role: 'Pescador de Homens', icon: '⛵' },
+                { id: 'jesus_cristo', name: 'Jesus Cristo', role: 'Filho & Messias', icon: '🕊️', highlight: true },
+                { id: 'abraao', name: 'Abraão', role: 'Pai da Fé', icon: '⛺' },
+                { id: 'moises', name: 'Moisés', role: 'Legislador', icon: '📜' },
+                { id: 'davi', name: 'Rei David', role: 'Salmista', icon: '👑' },
+                { id: 'paulo', name: 'Ap. Paulo', role: 'Missionário', icon: '⚔️' },
+                { id: 'ester', name: 'Rainha Ester', role: 'Coragem', icon: '🌸' },
+                { id: 'rute', name: 'Rute', role: 'Lealdade', icon: '🌾' },
+                { id: 'pedro', name: 'Ap. Pedro', role: 'Apóstolo', icon: '⛵' },
               ].map((p, idx) => (
                 <div 
                   key={idx}
-                  onClick={() => onNavigate('personas')}
-                  className={`p-3 rounded-2xl text-center border transition-all cursor-pointer hover:scale-105 ${
+                  onClick={() => onNavigate('personas', { personaId: p.id })}
+                  title={`Conversar diretamente com ${p.name}`}
+                  className={`p-3 rounded-2xl text-center border transition-all cursor-pointer hover:scale-105 active:scale-95 group/avatar ${
                     p.highlight 
                       ? 'bg-gradient-to-b from-[#1E3E62] to-[#0B192C] border-[#D4AF37] shadow-lg ring-1 ring-[#D4AF37]/50'
                       : 'bg-[#0B192C]/80 border-slate-700/80 hover:border-[#D4AF37]'
                   }`}
                 >
-                  <div className="text-2xl sm:text-3xl mb-1">{p.icon}</div>
+                  <div className="text-2xl sm:text-3xl mb-1 group-hover/avatar:scale-110 transition-transform">{p.icon}</div>
                   <div className="text-xs font-bold text-white truncate">{p.name}</div>
                   <div className="text-[10px] text-slate-400 truncate">{p.role}</div>
+                  <div className="mt-1 text-[9px] text-[#D4AF37] font-semibold opacity-0 group-hover/avatar:opacity-100 transition-opacity">
+                    Conversar 💬
+                  </div>
                 </div>
               ))}
             </div>
 
             {/* Botão de Ação Imediata */}
-            <div className="pt-4">
+            <div className="pt-4 flex items-center justify-center">
               <button
                 onClick={() => onNavigate('personas')}
-                className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-amber-400 to-[#D4AF37] text-slate-950 font-extrabold text-sm sm:text-base hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center justify-center space-x-2 mx-auto cursor-pointer border-2 border-white/40"
+                className="px-8 py-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-amber-400 to-[#D4AF37] text-slate-950 font-extrabold text-sm sm:text-base hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center justify-center space-x-2 cursor-pointer border-2 border-white/40"
               >
                 <MessageSquare className="w-5 h-5 text-slate-950 fill-current" />
-                <span>Iniciar Conversa com os Personagens Bíblicos</span>
+                <span>Explorar Todos os 58 Personagens Bíblicos</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
             </div>
@@ -371,135 +402,279 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSearchSubmit }
           </div>
         </div>
 
-        {/* Card: Pergunta Bíblica do Dia & Continuação de Leitura */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto text-left mb-14">
-          {/* Pergunta Bíblica do Dia */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-[#1E3E62]/50 border border-slate-200 dark:border-slate-700/80 shadow-md">
-            <div className="flex items-center space-x-2 text-amber-600 dark:text-[#D4AF37] font-semibold text-xs mb-2">
-              <Sparkles className="w-4 h-4" />
-              <span>Pergunta Bíblica do Dia</span>
-            </div>
-            <h3 className="font-semibold text-slate-900 dark:text-white text-base mb-1">
-              "Qual é o significado do nome pessoal de Deus, Jeová?"
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300 mb-3 leading-relaxed">
-              O Tetragrama YHWH procede do verbo hebraico que significa "tornar-se", revelando que Ele se torna o que for necessário para cumprir o Seu propósito infalível.
-            </p>
-            <button
-              onClick={() => onSearchSubmit('Qual o significado do nome Jeová?')}
-              className="text-xs font-semibold text-[#D4AF37] hover:underline flex items-center space-x-1 cursor-pointer"
-            >
-              <span>Ler estudo completo</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
+        {/* ========================================================================= */}
+        {/* 2. PROGRESSO DE LEITURA & PERGUNTA BÍBLICA DO DIA (VALOR IMEDIATO) */}
+        {/* ========================================================================= */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto text-left mb-10">
+          {/* Cartão de Continuação de Leitura Aprimorado */}
+          <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#1E3E62]/60 border-2 border-emerald-500/30 dark:border-emerald-500/40 shadow-lg relative overflow-hidden group flex flex-col justify-between">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="inline-flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider">
+                  <BookOpen className="w-4 h-4 text-emerald-500" />
+                  <span>{lastRead ? 'Continuar Leitura Recente' : 'Iniciar Estudo Bíblico'}</span>
+                </div>
+                <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                  {lastRead ? 'Guardado no Dispositivo' : 'Canónico'}
+                </span>
+              </div>
 
-          {/* Continuação de Leitura ou Sugestão Canônica */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-[#1E3E62]/50 border border-slate-200 dark:border-slate-700/80 shadow-md">
-            <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 font-semibold text-xs mb-2">
-              <BookOpen className="w-4 h-4" />
-              <span>{lastRead ? 'Continuar Leitura' : 'Sugestão de Leitura'}</span>
+              {lastRead ? (
+                <div className="space-y-1.5 mb-4">
+                  <h3 className="font-title font-extrabold text-slate-900 dark:text-white text-lg sm:text-xl group-hover:text-[#D4AF37] transition-colors">
+                    {lastRead.bookName} — Capítulo {lastRead.chapter}
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Retome o seu estudo exatamente no ponto onde parou. O seu progresso é mantido em segurança no seu navegador.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-1.5 mb-4">
+                  <h3 className="font-title font-extrabold text-slate-900 dark:text-white text-lg sm:text-xl">
+                    Gênesis 1 — No Princípio
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Comece a explorar o relato sagrado da criação, a perfeição do Éden e o propósito soberano do Criador para a humanidade.
+                  </p>
+                </div>
+              )}
             </div>
-            {lastRead ? (
-              <>
-                <h3 className="font-semibold text-slate-900 dark:text-white text-base mb-1">
-                  {lastRead.bookName} — Capítulo {lastRead.chapter}
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-300 mb-3 leading-relaxed">
-                  Registado no seu dispositivo. Continue o seu estudo exatamente de onde parou.
-                </p>
+
+            <div>
+              {lastRead ? (
                 <button
                   onClick={() => onNavigate('explorer', { bookId: lastRead.bookId, chapter: lastRead.chapter })}
-                  className="text-xs font-semibold text-emerald-500 hover:underline flex items-center space-x-1 cursor-pointer"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center space-x-2 transition-all cursor-pointer hover:scale-105 active:scale-95"
                 >
-                  <span>Retomar agora</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Retomar Leitura Agora</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
-              </>
-            ) : (
-              <>
-                <h3 className="font-semibold text-slate-900 dark:text-white text-base mb-1">
-                  Gênesis 1 — O Princípio da Criação
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-300 mb-3 leading-relaxed">
-                  Explore o relato dos céus e da terra e o propósito soberano do Criador para a humanidade.
-                </p>
-                <button
-                  onClick={() => onNavigate('explorer', { bookId: 'gen', chapter: 1 })}
-                  className="text-xs font-semibold text-emerald-500 hover:underline flex items-center space-x-1 cursor-pointer"
-                >
-                  <span>Iniciar leitura</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </>
-            )}
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => onNavigate('explorer', { bookId: 'gen', chapter: 1 })}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-500 text-slate-950 font-bold text-xs shadow-md flex items-center space-x-1.5 transition-all cursor-pointer hover:scale-105"
+                  >
+                    <span>Começar em Gênesis 1</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => onNavigate('explorer', { bookId: 'mat', chapter: 1 })}
+                    className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700/80 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-semibold text-xs transition-all cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600"
+                  >
+                    <span>Evangelho de Mateus</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Pergunta Bíblica do Dia */}
+          <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#1E3E62]/60 border-2 border-amber-500/30 dark:border-[#D4AF37]/40 shadow-lg relative overflow-hidden group flex flex-col justify-between">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="inline-flex items-center space-x-2 text-amber-600 dark:text-[#D4AF37] font-bold text-xs uppercase tracking-wider">
+                  <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                  <span>Pergunta Bíblica do Dia</span>
+                </div>
+                <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-full border border-amber-500/30">
+                  Línguas Originais
+                </span>
+              </div>
+              <h3 className="font-title font-extrabold text-slate-900 dark:text-white text-base sm:text-lg mb-1.5 leading-snug">
+                "Qual é o significado do nome pessoal de Deus, Jeová?"
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
+                O Tetragrama YHWH procede da raiz causativa do verbo hebraico que significa "tornar-se", revelando que Ele se torna o que for necessário para cumprir o Seu propósito infalível.
+              </p>
+            </div>
+            <div>
+              <button
+                onClick={() => onSearchSubmit('Qual o significado do nome Jeová segundo o hebraico?')}
+                className="px-4 py-2 rounded-xl bg-amber-50 dark:bg-slate-800 text-amber-800 dark:text-[#D4AF37] border border-amber-300 dark:border-amber-500/40 font-bold text-xs hover:bg-[#D4AF37] hover:text-slate-950 transition-all flex items-center space-x-1.5 cursor-pointer"
+              >
+                <span>Investigar estudo completo</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
         {/* ========================================================================= */}
-        {/* ⭐ PANORAMA COMPLETO: OS 18 MÓDULOS DE CONTEÚDO DA BIBLIA ON */}
+        {/* 3. BANNER INSTALAR APLICAÇÃO (PWA / MODO OFFLINE PARA TELEMÓVEL) */}
         {/* ========================================================================= */}
-        <div className="max-w-6xl mx-auto space-y-12 text-left mb-16">
+        <div className="max-w-4xl mx-auto mb-14 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#0B192C] via-[#1E3E62] to-[#0B192C] border-2 border-[#D4AF37]/60 shadow-xl text-left relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+            <div className="flex items-start sm:items-center space-x-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center shrink-0 shadow-inner">
+                <Smartphone className="w-6 h-6 text-[#D4AF37]" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#D4AF37] bg-[#D4AF37]/15 px-2.5 py-0.5 rounded-full border border-[#D4AF37]/30">
+                    Instalação Rápida PWA
+                  </span>
+                  <span className="text-[11px] text-emerald-400 font-semibold flex items-center space-x-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Funciona 100% Offline</span>
+                  </span>
+                </div>
+                <h3 className="font-title text-base sm:text-lg font-bold text-white">
+                  Tenha a BIBLIA ON no seu Ecrã Principal
+                </h3>
+                <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
+                  Adicione ao ecrã inicial do seu telemóvel ou computador para acesso instantâneo em ecrã inteiro e estudo bíblico sem necessidade de internet.
+                </p>
+              </div>
+            </div>
+
+            <div className="shrink-0 w-full sm:w-auto">
+              <button
+                onClick={handleInstallClick}
+                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-amber-400 to-[#D4AF37] text-slate-950 font-extrabold text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center justify-center space-x-2 cursor-pointer border border-white/30"
+              >
+                <Smartphone className="w-4 h-4 text-slate-950" />
+                <span>{pwaState.isInstalled ? 'Aplicação Já Instalada ✓' : '📲 Adicionar ao Ecrã Principal'}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Instruções Intuitivas de Instalação */}
+          {showInstallHelp && (
+            <div className="mt-4 pt-4 border-t border-slate-700/80 text-xs text-slate-300 space-y-2 animate-in fade-in duration-200">
+              <div className="font-bold text-[#D4AF37] flex items-center justify-between">
+                <span>Como adicionar ao seu ecrã inicial em qualquer dispositivo:</span>
+                <button 
+                  onClick={() => setShowInstallHelp(false)}
+                  className="text-slate-400 hover:text-white text-xs underline cursor-pointer"
+                >
+                  Fechar
+                </button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px]">
+                <div className="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700">
+                  <span className="font-bold text-white block mb-0.5">📱 Android (Chrome):</span>
+                  Toque nos três pontos <strong>⋮</strong> no topo e escolha <strong>"Instalar aplicativo"</strong> ou <strong>"Adicionar ao ecrã principal"</strong>.
+                </div>
+                <div className="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700">
+                  <span className="font-bold text-white block mb-0.5">🍏 iPhone / iPad (Safari):</span>
+                  Toque no botão de <strong>Partilha (quadrado com seta 📤)</strong> no rodapé e selecione <strong>"Adicionar ao Ecrã Principal"</strong>.
+                </div>
+                <div className="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700">
+                  <span className="font-bold text-white block mb-0.5">💻 Computador (Chrome/Edge):</span>
+                  Clique no ícone de instalação <strong>⊕</strong> na barra de endereços ao lado da estrela de favoritos.
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ========================================================================= */}
+        {/* 4. AS 3 TRILHAS INTEGRADAS DE ESTUDO DA BIBLIA ON (17 MÓDULOS) */}
+        {/* ========================================================================= */}
+        <div className="max-w-6xl mx-auto space-y-8 text-left mb-16">
           <div className="text-center space-y-2">
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
-              Tudo o Que a BIBLIA ON Oferece Para o Seu Estudo
+            <h2 className="font-title text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Trilhas Temáticas de Estudo Bíblico
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
-              Uma suíte integrada com 18 módulos de alta precisão exegética, desenhados para pesquisa profunda, edificação pessoal, ministério e ensino familiar.
+              17 módulos especializados de alta precisão organizados para guiar o leitor desde a exegese original até à aplicação prática no quotidiano.
             </p>
           </div>
 
-          {ALL_MODULES.map((section, sIdx) => (
-            <div key={sIdx} className="space-y-4">
-              <div className="flex items-center space-x-2 border-b border-slate-200 dark:border-slate-800 pb-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37]"></span>
-                <h3 className="font-title text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-                  {section.category}
-                </h3>
-              </div>
+          {/* Abas de Filtro de Trilhas */}
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+            <button
+              onClick={() => setSelectedTrack('all')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                selectedTrack === 'all'
+                  ? 'bg-gradient-to-r from-[#D4AF37] to-amber-500 text-slate-950 shadow-md scale-105'
+                  : 'bg-white dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[#D4AF37]'
+              }`}
+            >
+              Todas as Trilhas (17 Módulos)
+            </button>
+            {STUDY_TRACKS.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setSelectedTrack(t.id)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
+                  selectedTrack === t.id
+                    ? 'bg-gradient-to-r from-[#D4AF37] to-amber-500 text-slate-950 shadow-md scale-105'
+                    : 'bg-white dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[#D4AF37]'
+                }`}
+              >
+                <span>{t.shortTitle}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                  selectedTrack === t.id ? 'bg-slate-950 text-[#D4AF37]' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                }`}>
+                  {t.items.length}
+                </span>
+              </button>
+            ))}
+          </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-                {section.items.map((mod) => {
-                  const Icon = mod.icon;
-                  return (
-                    <div
-                      key={mod.id}
-                      onClick={() => onNavigate(mod.id)}
-                      className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between ${
-                        mod.highlight
-                          ? 'bg-gradient-to-br from-[#1E3E62]/80 to-[#0B192C] border-[#D4AF37] shadow-lg hover:shadow-2xl hover:scale-[1.02]'
-                          : 'bg-white dark:bg-[#1E3E62]/40 border-slate-200 dark:border-slate-700/70 hover:border-[#D4AF37] dark:hover:border-[#D4AF37] hover:shadow-md'
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center justify-between mb-2.5">
-                          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center">
-                            <Icon className={`w-5 h-5 ${mod.color}`} />
-                          </div>
-                          {mod.highlight && (
-                            <span className="text-[10px] font-bold uppercase tracking-wider bg-[#D4AF37] text-slate-950 px-2 py-0.5 rounded-full">
-                              Destaque
-                            </span>
-                          )}
-                        </div>
-                        <h4 className="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1.5 group-hover:text-[#D4AF37] transition-colors">
-                          {mod.title}
-                        </h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-300 leading-relaxed">
-                          {mod.desc}
-                        </p>
-                      </div>
-
-                      <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between text-xs font-semibold text-[#D4AF37]">
-                        <span>Aceder ao Módulo</span>
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                      </div>
+          {/* Renderização das Trilhas e Cards com Badges */}
+          <div className="space-y-10 pt-4">
+            {STUDY_TRACKS
+              .filter((track) => selectedTrack === 'all' || selectedTrack === track.id)
+              .map((track) => (
+                <div key={track.id} className="space-y-4">
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-3">
+                    <div className="flex items-center space-x-2.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37]"></span>
+                      <h3 className="font-title text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                        {track.title}
+                      </h3>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 pl-5">
+                      {track.tagline}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                    {track.items.map((mod) => {
+                      const Icon = mod.icon;
+                      return (
+                        <div
+                          key={mod.id}
+                          onClick={() => onNavigate(mod.id)}
+                          className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between ${
+                            mod.highlight
+                              ? 'bg-gradient-to-br from-[#1E3E62]/80 to-[#0B192C] border-[#D4AF37] shadow-lg hover:shadow-2xl hover:scale-[1.02]'
+                              : 'bg-white dark:bg-[#1E3E62]/40 border-slate-200 dark:border-slate-700/70 hover:border-[#D4AF37] dark:hover:border-[#D4AF37] hover:shadow-md hover:scale-[1.01]'
+                          }`}
+                        >
+                          <div>
+                            <div className="flex items-center justify-between mb-2.5">
+                              <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center">
+                                <Icon className={`w-5 h-5 ${mod.color}`} />
+                              </div>
+                              <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-[#D4AF37] border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-full">
+                                {mod.badge}
+                              </span>
+                            </div>
+                            <h4 className="font-semibold text-slate-900 dark:text-white text-sm sm:text-base mb-1.5 group-hover:text-[#D4AF37] transition-colors">
+                              {mod.title}
+                            </h4>
+                            <p className="text-xs text-slate-500 dark:text-slate-300 leading-relaxed">
+                              {mod.desc}
+                            </p>
+                          </div>
+
+                          <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between text-xs font-semibold text-[#D4AF37]">
+                            <span>Aceder ao Módulo</span>
+                            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+          </div>
         </div>
 
         {/* ========================================================================= */}

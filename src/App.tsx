@@ -60,6 +60,7 @@ export const App: React.FC = () => {
   const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
   const [chatInitialQuery, setChatInitialQuery] = useState<string>('');
   const [explorerTarget, setExplorerTarget] = useState<{ bookId?: string; chapter?: number }>({});
+  const [selectedPersonaTarget, setSelectedPersonaTarget] = useState<string | undefined>(undefined);
   const [isFloatingExpertOpen, setIsFloatingExpertOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -92,6 +93,9 @@ export const App: React.FC = () => {
   const handleNavigate = (tab: ActiveTab, context?: any) => {
     if (tab === 'explorer' && context) {
       setExplorerTarget(context);
+    }
+    if (tab === 'personas' && context?.personaId) {
+      setSelectedPersonaTarget(context.personaId);
     }
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -142,7 +146,7 @@ export const App: React.FC = () => {
             {activeTab === 'codex' && <LivingCodexView />}
 
             {/* Mecanismo de Diálogo com Personagens Bíblicos */}
-            {activeTab === 'personas' && <CharacterDialogView />}
+            {activeTab === 'personas' && <CharacterDialogView initialPersonaId={selectedPersonaTarget} />}
 
             {activeTab === 'explorer' && (
               <BibleExplorer

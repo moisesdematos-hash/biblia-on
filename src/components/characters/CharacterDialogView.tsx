@@ -37,8 +37,27 @@ interface DialogMessage {
   timestamp: number;
 }
 
-export const CharacterDialogView: React.FC = () => {
-  const [selectedPersona, setSelectedPersona] = useState<BiblicalPersona>(BIBLICAL_PERSONAS[0]); // Jesus Cristo
+interface CharacterDialogViewProps {
+  initialPersonaId?: string;
+}
+
+export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initialPersonaId }) => {
+  const [selectedPersona, setSelectedPersona] = useState<BiblicalPersona>(() => {
+    if (initialPersonaId) {
+      const found = resolveBiblicalPersona(initialPersonaId);
+      if (found) return found;
+    }
+    return BIBLICAL_PERSONAS[0];
+  });
+
+  useEffect(() => {
+    if (initialPersonaId) {
+      const found = resolveBiblicalPersona(initialPersonaId);
+      if (found) {
+        setSelectedPersona(found);
+      }
+    }
+  }, [initialPersonaId]);
   const [filterMode, setFilterMode] = useState<'most_requested' | 'prophets' | 'disciples' | 'archetype' | 'era'>('most_requested');
   const [selectedArchetype, setSelectedArchetype] = useState<PersonaArchetype | 'all'>('all');
   const [selectedEra, setSelectedEra] = useState<BiblicalEra | 'all'>('all');
