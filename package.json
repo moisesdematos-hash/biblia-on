@@ -16,7 +16,7 @@
   ],
   "author": "BIBLIA ON Team",
   "license": "MIT",
-  "description": "A Bíblia ao alcance de todos. Em qualquer idioma. Em qualquer lugar.",
+  "description": "O Conhecimento Bíblico ao alcance de todos.",
   "dependencies": {
     "clsx": "^2.1.1",
     "dexie": "^4.4.7",

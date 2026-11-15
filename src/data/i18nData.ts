@@ -42,7 +42,7 @@ export interface TranslationDictionary {
 export const I18N_TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
   pt: {
     appName: 'BIBLIA ON',
-    slogan: 'O Conhecimento Bíblico ao alcance de todos. Em qualquer idioma. Em qualquer lugar.',
+    slogan: 'O Conhecimento Bíblico ao alcance de todos.',
     heroQuestion: 'O que gostarias de descobrir nas Escrituras?',
     searchPlaceholder: 'Pergunta em linguagem natural ou digita uma passagem bíblica...',
     voiceTooltip: 'Pesquisar por voz (Microfone)',
@@ -78,7 +78,7 @@ export const I18N_TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
   },
   en: {
     appName: 'BIBLIA ON',
-    slogan: 'Biblical Knowledge within everyone’s reach. In any language. Anywhere.',
+    slogan: 'Biblical Knowledge within everyone’s reach.',
     heroQuestion: 'What would you like to discover in the Scriptures?',
     searchPlaceholder: 'Ask in natural language or type a Bible passage...',
     voiceTooltip: 'Voice Search (Microphone)',
@@ -114,7 +114,7 @@ export const I18N_TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
   },
   es: {
     appName: 'BIBLIA ON',
-    slogan: 'El Conocimiento Bíblico al alcance de todos. En cualquier idioma. En cualquier lugar.',
+    slogan: 'El Conocimiento Bíblico al alcance de todos.',
     heroQuestion: '¿Qué te gustaría descubrir en las Escrituras?',
     searchPlaceholder: 'Pregunta en lenguaje natural o escribe un pasaje bíblico...',
     voiceTooltip: 'Búsqueda por voz (Micrófono)',
@@ -150,7 +150,7 @@ export const I18N_TRANSLATIONS: Record<LanguageCode, TranslationDictionary> = {
   },
   fr: {
     appName: 'BIBLIA ON',
-    slogan: 'La Connaissance Biblique à la portée de tous. En toute langue. N’importe où.',
+    slogan: 'La Connaissance Biblique à la portée de tous.',
     heroQuestion: 'Que souhaiteriez-vous découvrir dans les Écritures ?',
     searchPlaceholder: 'Posez une question ou tapez un passage biblique...',
     voiceTooltip: 'Recherche vocale (Microphone)',

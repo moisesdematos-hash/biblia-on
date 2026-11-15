@@ -1,5 +1,5 @@
 # BIBLIA ON
-> **"A Bíblia ao alcance de todos. Em qualquer idioma. Em qualquer lugar."**
+> **"O Conhecimento Bíblico ao alcance de todos."**
 
 Uma plataforma mundial de referência para o estudo, investigação, ensino e compreensão profunda das Escrituras Sagradas, combinando inteligência artificial exegética com uma base de conhecimento canônica estruturada, funcionamento offline resiliente (PWA) e preservação intransigente da privacidade.
 
