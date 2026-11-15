@@ -81,9 +81,9 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
   const chatPanelRef = useRef<HTMLDivElement>(null);
 
   const tickerDuration = useMemo(() => {
-    if (tickerSpeed === 'slow') return '115s'; // 0.4x da velocidade de TV (mínima solene e serena)
-    if (tickerSpeed === 'fast') return '25s';  // 1.8x
-    return '45s';                              // 1.0x TV
+    if (tickerSpeed === 'slow') return '180s'; // 0.25x (lenta e contemplativa)
+    if (tickerSpeed === 'fast') return '90s';   // 0.5x (velocidade máxima permitida)
+    return '115s';                              // 0.4x (suave e serena)
   }, [tickerSpeed]);
 
   const [isCleanMode, setIsCleanMode] = useState<boolean>(() => {
@@ -655,34 +655,34 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
               )}
             </button>
 
-            {/* Seletor de Velocidade do Letreiro */}
+            {/* Seletor de Velocidade do Letreiro (Velocidade Máxima Limitada a 0.5x) */}
             <div className="flex items-center bg-[#0B192C] border border-slate-700/80 rounded-xl p-0.5 text-[11px]">
               <button
                 onClick={() => setTickerSpeed('slow')}
                 className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
                   tickerSpeed === 'slow' ? 'bg-[#1E3E62] text-[#D4AF37] font-bold shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
-                title="Velocidade Mínima da TV (0.4x - 115s)"
+                title="Velocidade Muito Lenta (0.25x - 180s)"
               >
-                0.4x TV
+                0.25x
               </button>
               <button
                 onClick={() => setTickerSpeed('normal')}
                 className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
                   tickerSpeed === 'normal' ? 'bg-[#1E3E62] text-[#D4AF37] font-bold shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
-                title="Velocidade Padrão de TV (45s)"
+                title="Velocidade Suave de Leitura (0.4x - 115s)"
               >
-                1.0x TV
+                0.4x
               </button>
               <button
                 onClick={() => setTickerSpeed('fast')}
                 className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
                   tickerSpeed === 'fast' ? 'bg-[#1E3E62] text-[#D4AF37] font-bold shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
-                title="Velocidade Dinâmica / Rápida (25s)"
+                title="Velocidade Máxima (0.5x - 90s)"
               >
-                1.8x
+                0.5x
               </button>
             </div>
 
