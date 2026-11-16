@@ -567,8 +567,9 @@ class PersonaAIService {
       // 1. Prioridade Groq Cloud (Llama 3.3 70B)
       if (groqKey && groqKey.startsWith('gsk_')) {
         try {
-          const onlineResult = await this.callGroqAPI(persona, userMessage, history, inquiry.question, groqKey);
-          if (onlineResult) {
+          const rawResult = await this.callGroqAPI(persona, userMessage, history, inquiry.question, groqKey);
+          if (rawResult) {
+            const onlineResult = this.sanitizeGrammarAndTheology(rawResult, persona);
             const audited = auditBiblicalContent(onlineResult);
             if (audited.passed) {
               return {
@@ -589,8 +590,9 @@ class PersonaAIService {
       // 2. Fallback Google Gemini
       if (geminiKey && geminiKey.length > 10) {
         try {
-          const onlineResult = await this.callGeminiAPI(persona, userMessage, history, inquiry.question, geminiKey);
-          if (onlineResult) {
+          const rawResult = await this.callGeminiAPI(persona, userMessage, history, inquiry.question, geminiKey);
+          if (rawResult) {
+            const onlineResult = this.sanitizeGrammarAndTheology(rawResult, persona);
             const audited = auditBiblicalContent(onlineResult);
             if (audited.passed) {
               return {
@@ -610,7 +612,7 @@ class PersonaAIService {
     }
 
     // Motor Heurístico Local TNM com Alta Fidelidade e Humanidade
-    let responseText = localBespokeText;
+    let responseText = this.sanitizeGrammarAndTheology(localBespokeText, persona);
     
     // Concatena a reflexão pastoral sobre o nosso tempo se ativada e não presente
     let fullResponse = responseText;
@@ -674,7 +676,17 @@ SUPERPODER 4: FIDELIDADE ESCRITURAL E GUARDRAILS DA TRADUÇÃO DO NOVO MUNDO (TN
 
 SUPERPODER 5: LIGAÇÃO PROFÉTICA COM O SÉCULO XXI
 - Em cada resposta, cite ou aluda com naturalidade a textos bíblicos reais que sustentam a sua fala.
-- Conclua sempre a sua fala de maneira conclusiva e completa, deixando uma lição prática clara ou uma indagação final para o estudante viver a fé genuína no meio das pressões do século 21.`;
+- Conclua sempre a sua fala de maneira conclusiva e completa, deixando uma lição prática clara ou uma indagação final para o estudante viver a fé genuína no meio das pressões do século 21.
+
+SUPERPODER 6: CONCORDÂNCIA GRAMATICAL, PESSOAL E DISTINÇÃO DE PAPÉIS (ZERO ERROS)
+- NUNCA misture pessoas gramaticais! Se estiver falando em 1ª pessoa ("eu", "minha presença", "meus servos"), use ESTRITAMENTE a 1ª pessoa nos verbos que descrevem as suas próprias promessas e ações:
+  * CORRETO: "para que possas herdar a vida eterna que PROMETI aos meus servos fiéis" ou "que PROMETO aos meus servos".
+  * TOTALMENTE PROIBIDO: "que prometes aos meus servos" (mistura absurda de 2ª pessoa 'tu' com 'meus servos').
+- DISTINÇÃO TEOLÓGICA ENTRE JEOVÁ E PERSONAS HUMANAS:
+  * Somente Jeová Deus é o Ouvinte de orações e Quem perdoa pecados (Salmo 65:2; Isaías 43:25).
+  * Se você for uma persona humana (Davi, Moisés, Paulo, Pedro, etc.): NUNCA convide à oração para si ("busca a minha presença em oração"), NUNCA diga "confessa teus pecados a mim", nem "eu sou misericordioso e pronto a perdoar". Aponte SEMPRE o interlocutor para Jeová Deus em oração humilde e para o sacrifício de resgate de Jesus Cristo.
+  * Se você for Jeová Deus: use a 1ª pessoa com solenidade e majestade divinas ("a vida eterna que prometi aos que me amam").
+- Mantenha perfeição gramatical segundo a norma culta da Língua Portuguesa.`;
   }
 
   /**
@@ -711,7 +723,7 @@ SUPERPODER 5: LIGAÇÃO PROFÉTICA COM O SÉCULO XXI
       body: JSON.stringify({
         model,
         messages,
-        temperature: 0.7,
+        temperature: 0.35,
         max_tokens: 3000
       })
     });
@@ -755,6 +767,49 @@ SUPERPODER 5: LIGAÇÃO PROFÉTICA COM O SÉCULO XXI
   }
 
   /**
+   * Linter determinístico de concordância gramatical, pessoal e teológica
+   * Corrige automaticamente desvios de pessoa gramatical e papéis de personagens
+   */
+  public sanitizeGrammarAndTheology(text: string, persona: BiblicalPersona): string {
+    if (!text) return text;
+    let sanitized = text;
+
+    // 1. Correção de mistura de 1ª pessoa com 2ª pessoa do singular em promessas/ações
+    // Exemplo do usuário: "vida eterna que prometes aos meus servos" -> "vida eterna que prometi aos meus servos"
+    sanitized = sanitized.replace(/\bque\s+prometes\s+aos\s+meus\s+servos\b/gi, 'que prometi aos meus servos');
+    sanitized = sanitized.replace(/\bprometes\s+aos\s+meus\s+servos\b/gi, 'prometi aos meus servos');
+    sanitized = sanitized.replace(/\bque\s+prometes\s+aos\s+meus\b/gi, 'que prometi aos meus');
+    sanitized = sanitized.replace(/\bprometes\s+aos\s+meus\b/gi, 'prometi aos meus');
+    sanitized = sanitized.replace(/\bprometes\s+aos\s+seus\s+servos\b/gi, 'prometeu aos seus servos');
+
+    // 2. Proteção teológica para Personas Humanas (Davi, Moisés, Paulo, etc.)
+    // Personagens humanos nunca devem se colocar no lugar de Jeová convidando à oração a si mesmos
+    const isJehovah = persona.id === 'jeova_deus';
+    const isJesus = persona.id === 'jesus_cristo';
+    
+    if (!isJehovah && !isJesus) {
+      sanitized = sanitized.replace(/\bbusca\s+a\s+minha\s+presen[çc]a\s+em\s+ora[çc][ãa]o\b/gi, 'busca a presença de Jeová em oração sincera');
+      sanitized = sanitized.replace(/\bconfessa(-me| teus pecados a mim)\b/gi, 'confessa os teus pecados a Deus');
+      sanitized = sanitized.replace(/\bpois\s+eu\s+sou\s+misericordioso\s+e\s+pronto\s+a\s+perdoar\b/gi, 'pois Jeová é misericordioso e pronto a perdoar');
+      sanitized = sanitized.replace(/\bque\s+prometi\s+aos\s+meus\s+servos\b/gi, 'que Jeová prometeu aos Seus servos');
+      sanitized = sanitized.replace(/\baos\s+meus\s+servos\s+fi[eé]is\b/gi, 'aos servos fiéis de Jeová');
+    }
+
+    // 3. Se for Jeová Deus, garantir que os verbos de promessa fiquem na 1ª pessoa divina
+    if (isJehovah) {
+      sanitized = sanitized.replace(/\bque\s+prometes\b/gi, 'que prometi');
+      sanitized = sanitized.replace(/\bque\s+prometeis\b/gi, 'que prometi');
+    }
+
+    // 4. Erros recorrentes de concordância identificados em LLMs
+    sanitized = sanitized.replace(/\bhouveram\s+muitos\b/gi, 'houve muitos');
+    sanitized = sanitized.replace(/\bhouveram\s+dias\b/gi, 'houve dias');
+    sanitized = sanitized.replace(/\bfazem\s+(\d+)\s+anos\b/gi, 'faz $1 anos');
+
+    return sanitized;
+  }
+
+  /**
    * Chamada à API Gemini com System Prompt Hiper-Realista e Auto-Upgrade por descontinuação
    */
   private async callGeminiAPI(
@@ -786,7 +841,7 @@ SUPERPODER 5: LIGAÇÃO PROFÉTICA COM O SÉCULO XXI
       body: JSON.stringify({
         contents,
         generationConfig: {
-          temperature: 0.7,
+          temperature: 0.35,
           maxOutputTokens: 2048
         }
       })
