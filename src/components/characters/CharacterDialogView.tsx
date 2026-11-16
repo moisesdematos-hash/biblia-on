@@ -5,7 +5,7 @@ import {
   Copy, Check, ShieldCheck, Search, Filter, RefreshCw, UserCheck, 
   Info, ChevronRight, X, HeartHandshake, Compass, Flame, Crown, Scale, Tent, Anchor,
   Sliders, Mic, MicOff, Zap, Play, Pause, Tv, FastForward, ChevronLeft, Grid, Star, Users, Bot, Cpu, Settings2, Key, CheckCircle2,
-  Trash2, Eye, EyeOff, Share2, Download, ExternalLink, Printer
+  Trash2, Eye, EyeOff, Share2, Download, ExternalLink, Printer, UserPlus, Layers
 } from 'lucide-react';
 import { SAMPLE_VERSES } from '../../data/bibleVerses';
 import { 
@@ -36,7 +36,63 @@ interface DialogMessage {
   text: string;
   scriptures?: string[];
   timestamp: number;
+  personaId?: string;
+  personaName?: string;
+  avatarSymbol?: string;
 }
+
+export interface RoundtablePreset {
+  id: string;
+  name: string;
+  description: string;
+  memberIds: string[];
+  themeIcon: string;
+}
+
+export const ROUNDTABLE_PRESETS: RoundtablePreset[] = [
+  {
+    id: 'provacoes_paciencia',
+    name: 'Paciência & Fé nas Provações',
+    description: 'Jó, Abraão e Paulo ensinam como perseverar e manter a confiança inabalável nas tribulações.',
+    memberIds: ['jo', 'abraao', 'paulo'],
+    themeIcon: '🕊️'
+  },
+  {
+    id: 'coragem_batalhas',
+    name: 'Coragem & Força em Deus',
+    description: 'Davi, Josué e Gideão mostram como vencer gigantes, medos e incertezas com a ajuda divina.',
+    memberIds: ['davi', 'josue', 'gideao'],
+    themeIcon: '🛡️'
+  },
+  {
+    id: 'sabedoria_lideranca',
+    name: 'Sabedoria & Boas Decisões',
+    description: 'Salomão, Moisés e Daniel ensinam discernimento, liderança humilde e justiça prática.',
+    memberIds: ['salomao', 'moises', 'daniel'],
+    themeIcon: '👑'
+  },
+  {
+    id: 'mestre_apostolos',
+    name: 'Amor & Graça do Reino',
+    description: 'Jesus Cristo, Pedro e o Apóstolo João explicam o coração do Evangelho e o perdão.',
+    memberIds: ['jesus_cristo', 'pedro', 'joao_apostolo'],
+    themeIcon: '✨'
+  },
+  {
+    id: 'heroinas_da_fe',
+    name: 'Heroínas de Fé Inabalável',
+    description: 'Ester, Rute e Débora inspiram lealdade familiar, bravura e confiança no livramento divino.',
+    memberIds: ['ester', 'rute', 'debora'],
+    themeIcon: '🌸'
+  },
+  {
+    id: 'profetas_avivamento',
+    name: 'Voz dos Profetas & Esperança',
+    description: 'Elias, Isaías e Jeremias proclamam a justiça, as promessas eternas e a fidelidade divina.',
+    memberIds: ['elias', 'isaias', 'jeremias'],
+    themeIcon: '📜'
+  }
+];
 
 export interface SavedTeaching {
   id: string;
@@ -146,6 +202,55 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
   });
   const [showFavoritesModal, setShowFavoritesModal] = useState(false);
   const [favoriteToast, setFavoriteToast] = useState<string | null>(null);
+
+  // Capacidade Revolucionária 1: 🏛️ Mesa Redonda Bíblica (Diálogo Simultâneo entre Testemunhas da Fé)
+  const [isRoundtableActive, setIsRoundtableActive] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('biblia_on_roundtable_active') === 'true';
+    }
+    return false;
+  });
+  const [roundtableMembers, setRoundtableMembers] = useState<BiblicalPersona[]>(() => {
+    const defaultIds = ['jo', 'abraao', 'paulo'];
+    return defaultIds.map(id => resolveBiblicalPersona(id)).filter(Boolean) as BiblicalPersona[];
+  });
+  const [showRoundtableModal, setShowRoundtableModal] = useState<boolean>(false);
+  const [roundtableSearchTerm, setRoundtableSearchTerm] = useState<string>('');
+
+  const toggleRoundtableMode = () => {
+    setIsRoundtableActive(prev => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('biblia_on_roundtable_active', String(next));
+      }
+      return next;
+    });
+  };
+
+  const handleSelectRoundtablePreset = (preset: RoundtablePreset) => {
+    const resolved = preset.memberIds.map(id => resolveBiblicalPersona(id)).filter(Boolean) as BiblicalPersona[];
+    if (resolved.length > 0) {
+      setRoundtableMembers(resolved);
+      setIsRoundtableActive(true);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('biblia_on_roundtable_active', 'true');
+      }
+      setShowRoundtableModal(false);
+    }
+  };
+
+  const handleToggleRoundtableMember = (persona: BiblicalPersona) => {
+    setRoundtableMembers(prev => {
+      const exists = prev.some(p => p.id === persona.id);
+      if (exists) {
+        if (prev.length <= 2) return prev; // Mantém no mínimo 2 participantes
+        return prev.filter(p => p.id !== persona.id);
+      } else {
+        if (prev.length >= 4) return prev; // No máximo 4 participantes na mesa
+        return [...prev, persona];
+      }
+    });
+  };
 
   const handleToggleFavorite = (msg: DialogMessage) => {
     setSavedFavorites(prev => {
@@ -567,7 +672,59 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
     setSuggestedReplies([]);
     setIsGeneratingAI(true);
 
-    // Gera resposta bíblica realista em 1ª pessoa com mentoria profunda e indagação sobre o século XXI
+    // Mesa Redonda Bíblica: Diálogo Simultâneo e Fraternal entre 2 a 3 Testemunhas
+    if (isRoundtableActive) {
+      setTimeout(async () => {
+        try {
+          const activeMembers = roundtableMembers.length > 0 ? roundtableMembers : [selectedPersona];
+          const priorTurns: { personaName: string; text: string }[] = [];
+
+          for (let i = 0; i < activeMembers.length; i++) {
+            const member = activeMembers[i];
+            const localBase = generatePersonaResponse(member, q);
+            const historyForAI = messages.map(m => ({ sender: m.sender, text: m.text }));
+
+            const interactive = await personaAIService.generateInteractiveResponse(
+              member,
+              q,
+              historyForAI,
+              localBase.responseText,
+              localBase.scriptureBasis,
+              {
+                participants: activeMembers,
+                turnIndex: i,
+                priorTurns: [...priorTurns]
+              }
+            );
+
+            const personaMsg: DialogMessage = {
+              id: `roundtable_${member.id}_${Date.now()}_${i}`,
+              sender: 'persona',
+              text: interactive.fullResponseWithQuestion,
+              scriptures: interactive.scriptureBasis,
+              timestamp: Date.now() + i * 30,
+              personaId: member.id,
+              personaName: member.name,
+              avatarSymbol: member.avatarSymbol
+            };
+
+            priorTurns.push({ personaName: member.name, text: interactive.fullResponseWithQuestion });
+            setMessages(prev => [...prev, personaMsg]);
+
+            if (i < activeMembers.length - 1) {
+              await new Promise(r => setTimeout(r, 450));
+            }
+          }
+        } catch (err) {
+          console.error('Erro na Mesa Redonda Bíblica:', err);
+        } finally {
+          setIsGeneratingAI(false);
+        }
+      }, 350);
+      return;
+    }
+
+    // Modo Individual (Solo): Resposta com o Mentor Selecionado
     setTimeout(async () => {
       try {
         const localBase = generatePersonaResponse(selectedPersona, q);
@@ -665,15 +822,18 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
     setMessages([]);
   };
 
-  const handleSpeak = (id: string, text: string) => {
+  const handleSpeak = (id: string, text: string, speakerPersonaId?: string) => {
     if (isSpeakingId === id) {
       speechService.stop();
       setIsSpeakingId(null);
     } else {
+      const personaToUse = speakerPersonaId 
+        ? (resolveBiblicalPersona(speakerPersonaId) || selectedPersona) 
+        : selectedPersona;
       const speedMultiplier = 
         aiConfig.speedLevel === 'slow' ? 0.85 :
         aiConfig.speedLevel === 'fast' ? 1.22 : 1.0;
-      speechService.speakPersona(text, selectedPersona, () => setIsSpeakingId(null), undefined, speedMultiplier);
+      speechService.speakPersona(text, personaToUse, () => setIsSpeakingId(null), undefined, speedMultiplier);
       setIsSpeakingId(id);
     }
   };
@@ -1276,6 +1436,39 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
 
             {/* Barra de Ações Compacta & Sem Poluição Visual */}
             <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
+              {/* Alternador de Modo: 👤 Solo vs 🏛️ Mesa Redonda Bíblica */}
+              <div className="flex items-center bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700/80 rounded-xl p-0.5 text-xs">
+                <button
+                  onClick={() => {
+                    setIsRoundtableActive(false);
+                    if (typeof window !== 'undefined') localStorage.setItem('biblia_on_roundtable_active', 'false');
+                  }}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center space-x-1 ${
+                    !isRoundtableActive
+                      ? 'bg-[#1E3E62] text-[#D4AF37] font-bold shadow-xs'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Modo Solo: Diálogo individual focado"
+                >
+                  <span>👤 Solo</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsRoundtableActive(true);
+                    if (typeof window !== 'undefined') localStorage.setItem('biblia_on_roundtable_active', 'true');
+                  }}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center space-x-1 ${
+                    isRoundtableActive
+                      ? 'bg-[#1E3E62] text-[#D4AF37] font-bold shadow-xs ring-1 ring-[#D4AF37]/50'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Mesa Redonda: Diálogo simultâneo com 2 a 3 testemunhas bíblicas"
+                >
+                  <span>🏛️ Mesa Redonda</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                </button>
+              </div>
+
               {/* Botão de Estado da IA */}
               <button
                 onClick={() => setShowAIModal(true)}
@@ -1356,6 +1549,54 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
               </button>
             </div>
           </div>
+
+          {/* BARRA DA MESA REDONDA BÍBLICA (COMUNHÃO FRATERNAL ENTRE TESTEMUNHAS) */}
+          {isRoundtableActive && (
+            <div className="mb-3 p-3 rounded-2xl bg-gradient-to-r from-[#0B192C] via-[#1E3E62]/90 to-[#0B192C] border border-[#D4AF37]/50 shadow-md animate-in fade-in space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center space-x-2">
+                  <span className="text-xl">🏛️</span>
+                  <div>
+                    <h4 className="font-title text-xs sm:text-sm font-bold text-white flex items-center space-x-2">
+                      <span>Mesa Redonda Bíblica</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-[#D4AF37] border border-[#D4AF37]/30 font-mono">
+                        {roundtableMembers.length} Testemunhas Reunidas
+                      </span>
+                    </h4>
+                    <p className="text-[10px] text-slate-300">
+                      As testemunhas responderão juntas e em harmonia fraterna à tua dúvida.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-1.5">
+                  <button
+                    onClick={() => setShowRoundtableModal(true)}
+                    className="px-2.5 py-1 rounded-xl bg-[#0B192C] hover:bg-[#1E3E62] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-semibold flex items-center space-x-1.5 transition-all cursor-pointer shadow-xs"
+                    title="Escolher grupos temáticos ou trocar participantes da mesa"
+                  >
+                    <Layers className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span>Temas & Grupos</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Chips dos Membros Participantes na Mesa */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-slate-700/60">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider mr-1">À mesa:</span>
+                {roundtableMembers.map((member, mIdx) => (
+                  <div
+                    key={member.id}
+                    className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-xl bg-slate-900/90 border border-slate-700 text-xs text-white shadow-xs"
+                  >
+                    <span className="text-sm">{member.avatarSymbol}</span>
+                    <span className="font-semibold text-slate-200">{member.name}</span>
+                    <span className="text-[9px] text-[#D4AF37] font-mono">#{mIdx + 1}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Tarja Discreta de Reverência para Jeová Deus */}
           {selectedPersona.id === 'jeova_deus' && (
@@ -1828,6 +2069,23 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
                 key={msg.id}
                 className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} mb-2`}
               >
+                {/* Cabeçalho da Mensagem da Personagem / Mesa Redonda */}
+                {msg.sender === 'persona' && (
+                  <div className="flex items-center space-x-2 mb-1.5 ml-1">
+                    <span className="w-6 h-6 rounded-lg bg-amber-500/20 border border-[#D4AF37]/50 flex items-center justify-center text-sm shadow-xs shrink-0">
+                      {msg.avatarSymbol || selectedPersona.avatarSymbol}
+                    </span>
+                    <span className="text-xs font-bold text-[#D4AF37] tracking-wide">
+                      {msg.personaName || selectedPersona.name}
+                    </span>
+                    {msg.personaId && (
+                      <span className="text-[10px] px-2 py-0.2 rounded-full bg-[#1E3E62] text-slate-300 font-mono">
+                        {isRoundtableActive ? 'Mesa Redonda' : 'Testemunha da Fé'}
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 <div
                   className={`max-w-2xl rounded-2xl p-4 sm:p-5 ${
                     msg.sender === 'user'
@@ -1867,15 +2125,15 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
 
                       {/* Controles: Ouvir | Partilhar WhatsApp | Favoritar | Copiar */}
                       <div className="flex items-center space-x-1 ml-auto shrink-0">
-                        {/* 1. Ouvir com voz diferenciada */}
+                        {/* 1. Ouvir com voz diferenciada da personagem específica */}
                         <button
-                          onClick={() => handleSpeak(msg.id, msg.text)}
+                          onClick={() => handleSpeak(msg.id, msg.text, msg.personaId)}
                           className={`p-1.5 rounded-lg transition-colors flex items-center space-x-1 text-xs cursor-pointer ${
                             isSpeakingId === msg.id 
                               ? 'bg-rose-500/20 text-rose-400 animate-pulse' 
                               : 'text-slate-400 hover:text-[#D4AF37] hover:bg-slate-200 dark:hover:bg-slate-700'
                           }`}
-                          title={`Ouvir com a voz personalizada de ${selectedPersona.name} (${acousticPreset.descriptor})`}
+                          title={msg.personaName ? `Ouvir com a voz personalizada de ${msg.personaName}` : `Ouvir com a voz personalizada de ${selectedPersona.name} (${acousticPreset.descriptor})`}
                         >
                           {isSpeakingId === msg.id ? (
                             <>
@@ -2240,6 +2498,187 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
                 className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white text-xs font-medium transition-colors cursor-pointer"
               >
                 Concluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal da Mesa Redonda Bíblica (Capacidade Revolucionária 1) */}
+      {showRoundtableModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="max-w-2xl w-full max-h-[90vh] bg-white dark:bg-[#0B192C] border-2 border-[#D4AF37]/70 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col animate-in zoom-in-95 space-y-4">
+            {/* Cabeçalho */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 shrink-0">
+              <div className="flex items-center space-x-2.5">
+                <span className="text-2xl p-1.5 rounded-xl bg-amber-500/15 border border-[#D4AF37]/30">🏛️</span>
+                <div>
+                  <h3 className="font-title text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                    <span>Mesa Redonda Bíblica</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#1E3E62] text-[#D4AF37] font-mono">
+                      Comunhão de Testemunhas
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Converse com 2 a 3 figuras sagradas simultaneamente. Cada uma complementará a reflexão com sua vivência.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowRoundtableModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Conteúdo com Scroll */}
+            <div className="overflow-y-auto space-y-5 flex-1 pr-1 scrollbar-thin">
+              {/* Seção 1: Predefinições Temáticas em 1 Toque */}
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#D4AF37] flex items-center space-x-1.5 mb-2.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>Predefinições Prontas (1 Toque para Ativar)</span>
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {ROUNDTABLE_PRESETS.map(preset => {
+                    const presetMembers = preset.memberIds.map(id => resolveBiblicalPersona(id)).filter(Boolean) as BiblicalPersona[];
+                    const isCurrent = presetMembers.length === roundtableMembers.length &&
+                      presetMembers.every(m => roundtableMembers.some(r => r.id === m.id));
+
+                    return (
+                      <button
+                        key={preset.id}
+                        onClick={() => handleSelectRoundtablePreset(preset)}
+                        className={`text-left p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-2 ${
+                          isCurrent
+                            ? 'bg-[#1E3E62] border-[#D4AF37] shadow-md ring-2 ring-[#D4AF37]/40'
+                            : 'bg-slate-50 dark:bg-slate-800/60 hover:bg-[#1E3E62]/40 border-slate-200 dark:border-slate-700/80 hover:border-[#D4AF37]/50'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xl">{preset.themeIcon}</span>
+                          <span className="text-[10px] font-mono text-slate-400 bg-slate-900/60 px-2 py-0.5 rounded-full">
+                            {presetMembers.length} Testemunhas
+                          </span>
+                        </div>
+                        <div>
+                          <h5 className="font-title text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                            {preset.name}
+                          </h5>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                            {preset.description}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-1.5 pt-1.5 border-t border-slate-200 dark:border-slate-700/50">
+                          {presetMembers.map(m => (
+                            <span key={m.id} className="text-xs bg-slate-900/80 px-2 py-0.5 rounded-lg border border-slate-700 text-slate-200 flex items-center space-x-1">
+                              <span>{m.avatarSymbol}</span>
+                              <span className="font-medium text-[10px]">{m.name}</span>
+                            </span>
+                          ))}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Seção 2: Personalizar os Participantes da Mesa */}
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#D4AF37] flex items-center space-x-1.5">
+                    <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span>Personalizar Testemunhas à Mesa ({roundtableMembers.length}/4)</span>
+                  </h4>
+                  <span className="text-[11px] text-slate-400">
+                    Toque para adicionar ou remover (entre 2 e 4)
+                  </span>
+                </div>
+
+                {/* Lista Atual de Participantes */}
+                <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-900/90 border border-slate-300 dark:border-slate-800">
+                  {roundtableMembers.map((m, mIdx) => (
+                    <div
+                      key={m.id}
+                      className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-[#1E3E62] border border-[#D4AF37]/50 text-white text-xs shadow-xs"
+                    >
+                      <span className="text-base">{m.avatarSymbol}</span>
+                      <span className="font-bold">{m.name}</span>
+                      <span className="text-[10px] text-[#D4AF37] font-mono">#{mIdx + 1}</span>
+                      {roundtableMembers.length > 2 && (
+                        <button
+                          onClick={() => handleToggleRoundtableMember(m)}
+                          className="p-0.5 rounded hover:bg-rose-500/30 text-rose-300 transition-colors ml-1 cursor-pointer"
+                          title={`Remover ${m.name} da mesa`}
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Campo de Busca Rápida de Personagens */}
+                <div className="relative">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                  <input
+                    type="text"
+                    value={roundtableSearchTerm}
+                    onChange={(e) => setRoundtableSearchTerm(e.target.value)}
+                    placeholder="Pesquise entre as 106 personagens (ex: Moisés, Davi, Paulo, Maria, Ester, Rute)..."
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+
+                {/* Grade Compacta de Personagens Bíblicas para Seleção */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto pr-1">
+                  {BIBLICAL_PERSONAS
+                    .filter(p => !roundtableSearchTerm.trim() || 
+                      p.name.toLowerCase().includes(roundtableSearchTerm.toLowerCase()) || 
+                      p.title.toLowerCase().includes(roundtableSearchTerm.toLowerCase()))
+                    .map(persona => {
+                      const isSelected = roundtableMembers.some(m => m.id === persona.id);
+                      return (
+                        <button
+                          key={persona.id}
+                          onClick={() => handleToggleRoundtableMember(persona)}
+                          className={`text-left p-2 rounded-xl text-xs transition-all flex items-center space-x-2 border cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#1E3E62] text-[#D4AF37] border-[#D4AF37] font-bold shadow-xs'
+                              : 'bg-slate-50 dark:bg-slate-800/70 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700/60'
+                          }`}
+                        >
+                          <span className="text-base shrink-0">{persona.avatarSymbol}</span>
+                          <span className="truncate flex-1">{persona.name}</span>
+                          {isSelected ? (
+                            <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                          ) : (
+                            <UserPlus className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                          )}
+                        </button>
+                      );
+                    })}
+                </div>
+              </div>
+            </div>
+
+            {/* Rodapé do Modal */}
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <span className="text-[11px] text-slate-400">
+                A mesa atual conta com <strong>{roundtableMembers.length}</strong> testemunhas.
+              </span>
+              <button
+                onClick={() => {
+                  setIsRoundtableActive(true);
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('biblia_on_roundtable_active', 'true');
+                  }
+                  setShowRoundtableModal(false);
+                }}
+                className="px-5 py-2 rounded-xl bg-[#D4AF37] hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all shadow-md cursor-pointer"
+              >
+                Confirmar Mesa Redonda
               </button>
             </div>
           </div>

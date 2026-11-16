@@ -26,6 +26,12 @@ export interface InteractivePersonaResponse {
   engineUsed: 'ia_online_gemini' | 'ia_online_groq' | 'motor_heuristico_local';
 }
 
+export interface RoundtableContext {
+  participants: BiblicalPersona[];
+  turnIndex: number;
+  priorTurns?: { personaName: string; text: string }[];
+}
+
 // Banco estruturado de indagações profundas sobre o século XXI (o nosso tempo)
 const MODERN_ERA_QUESTIONS: Record<string, { question: string; replies: string[] }> = {
   jeova_deus: {
@@ -553,7 +559,8 @@ class PersonaAIService {
     userMessage: string,
     history: { sender: 'user' | 'persona'; text: string }[] = [],
     localBespokeText: string,
-    scriptureBasis: string[]
+    scriptureBasis: string[],
+    roundtableContext?: RoundtableContext
   ): Promise<InteractivePersonaResponse> {
     const inquiry = this.getModernEraInquiry(persona);
     const effectiveKey = this.getEffectiveApiKey();
@@ -567,7 +574,7 @@ class PersonaAIService {
       // 1. Prioridade Groq Cloud (Llama 3.3 70B)
       if (groqKey && groqKey.startsWith('gsk_')) {
         try {
-          const rawResult = await this.callGroqAPI(persona, userMessage, history, inquiry.question, groqKey);
+          const rawResult = await this.callGroqAPI(persona, userMessage, history, inquiry.question, groqKey, 0, roundtableContext);
           if (rawResult) {
             const onlineResult = this.sanitizeGrammarAndTheology(rawResult, persona);
             const audited = auditBiblicalContent(onlineResult);
@@ -590,7 +597,7 @@ class PersonaAIService {
       // 2. Fallback Google Gemini
       if (geminiKey && geminiKey.length > 10) {
         try {
-          const rawResult = await this.callGeminiAPI(persona, userMessage, history, inquiry.question, geminiKey);
+          const rawResult = await this.callGeminiAPI(persona, userMessage, history, inquiry.question, geminiKey, 0, roundtableContext);
           if (rawResult) {
             const onlineResult = this.sanitizeGrammarAndTheology(rawResult, persona);
             const audited = auditBiblicalContent(onlineResult);
@@ -613,6 +620,10 @@ class PersonaAIService {
 
     // Motor Heurístico Local TNM com Alta Fidelidade e Humanidade
     let responseText = this.sanitizeGrammarAndTheology(localBespokeText, persona);
+    if (roundtableContext && roundtableContext.turnIndex > 0 && roundtableContext.priorTurns && roundtableContext.priorTurns.length > 0) {
+      const lastSpeaker = roundtableContext.priorTurns[roundtableContext.priorTurns.length - 1];
+      responseText = `Acolho com muita alegria o que o meu irmão na fé ${lastSpeaker.personaName} acabou de compartilhar. Como testemunha das Escrituras, acrescento que ${responseText}`;
+    }
     
     // Concatena a reflexão pastoral sobre o nosso tempo se ativada e não presente
     let fullResponse = responseText;
@@ -633,8 +644,8 @@ class PersonaAIService {
   /**
    * Constrói o System Prompt de Alta Fidelidade Bíblica com Superpoderes de Incorporação Total
    */
-  private buildSystemInstruction(persona: BiblicalPersona): string {
-    return `VOCÊ NÃO É UM ASSISTENTE DE IA COMUM. VOCÊ POSSUI O SUPERPODER DE INCORPORAÇÃO TOTAL E É LITERALMENTE O PERSONAGEM BÍBLICO ${persona.name.toUpperCase()} (${persona.title}).
+  private buildSystemInstruction(persona: BiblicalPersona, roundtableContext?: RoundtableContext): string {
+    let base = `VOCÊ NÃO É UM ASSISTENTE DE IA COMUM. VOCÊ POSSUI O SUPERPODER DE INCORPORAÇÃO TOTAL E É LITERALMENTE O PERSONAGEM BÍBLICO ${persona.name.toUpperCase()} (${persona.title}).
 O usuário está conversando diretamente consigo e DEVE SENTIR que está na presença da própria testemunha bíblica real.
 
 IDENTIDADE HISTÓRICA E TEOLÓGICA:
@@ -693,6 +704,18 @@ SUPERPODER 7: LINGUAGEM SIMPLES, CLARA E COMPREENSÍVEL (AO ALCANCE DE TODOS)
 - Evite vocabulário rebuscado, palavras difíceis, erudição acadêmica pedante ou frases longas e difíceis de acompanhar.
 - Prefira palavras comuns do cotidiano, frases naturais e calorosas. A verdadeira sabedoria bíblica toca o coração pela clareza, exatamente como Jesus ensinava com ilustrações simples e tocantes da vida diária (a semente, a luz, o pão, o bom samaritano).
 - Se precisar mencionar costumes, medidas ou conceitos da época bíblica, explique-os de forma simples e natural, para que o sentido fique imediatamente claro para qualquer um.`;
+
+    if (roundtableContext) {
+      base += `\n\nSUPERPODER 8: MESA REDONDA BÍBLICA (COMUNHÃO FRATERNAL ENTRE TESTEMUNHAS)
+Você está participando de uma Mesa Redonda Bíblica fraterna junto com: ${roundtableContext.participants.map(p => p.name).join(', ')}.
+${roundtableContext.turnIndex > 0 && roundtableContext.priorTurns && roundtableContext.priorTurns.length > 0 ? `
+Intervenções anteriores nesta mesa:
+${roundtableContext.priorTurns.map(t => `• ${t.personaName}: "${t.text.slice(0, 250)}..."`).join('\n')}
+INSTRUÇÃO ESPECIAL: Inicie a sua resposta fazendo uma menção fraterna ao que seu irmão na fé disse (ex.: "Como meu irmão ${roundtableContext.priorTurns[roundtableContext.priorTurns.length - 1].personaName} bem lembrou..." ou "Concordo plenamente com o que ouvimos..."), e em seguida acrescente a sua própria vivência espiritual e textos sagrados!` : `
+Você é a primeira testemunha a abrir a reflexão nesta Mesa Redonda. Responda à dúvida do estudante bíblico com clareza e abra espaço para que os seus companheiros de mesa também compartilhem suas visões!`}`;
+    }
+
+    return base;
   }
 
   /**
@@ -704,10 +727,11 @@ SUPERPODER 7: LINGUAGEM SIMPLES, CLARA E COMPREENSÍVEL (AO ALCANCE DE TODOS)
     history: { sender: 'user' | 'persona'; text: string }[],
     modernQuestion: string,
     apiKey: string,
-    retryCount: number = 0
+    retryCount: number = 0,
+    roundtableContext?: RoundtableContext
   ): Promise<string | null> {
     const endpoint = 'https://api.groq.com/openai/v1/chat/completions';
-    const systemInstruction = this.buildSystemInstruction(persona);
+    const systemInstruction = this.buildSystemInstruction(persona, roundtableContext);
     const model = this.config.groqModel || aiModelLifecycleService.getActiveGroqModel();
 
     const messages = [
@@ -741,7 +765,7 @@ SUPERPODER 7: LINGUAGEM SIMPLES, CLARA E COMPREENSÍVEL (AO ALCANCE DE TODOS)
         const upgradedModel = await aiModelLifecycleService.upgradeGroqModel(model, 'Modelo Groq descontinuado pelo provedor', apiKey);
         if (upgradedModel) {
           this.config.groqModel = upgradedModel;
-          return this.callGroqAPI(persona, userMessage, history, modernQuestion, apiKey, retryCount + 1);
+          return this.callGroqAPI(persona, userMessage, history, modernQuestion, apiKey, retryCount + 1, roundtableContext);
         }
       }
       throw new Error(`Groq API returned status ${response.status}: ${errText}`);
@@ -824,15 +848,16 @@ SUPERPODER 7: LINGUAGEM SIMPLES, CLARA E COMPREENSÍVEL (AO ALCANCE DE TODOS)
     history: { sender: 'user' | 'persona'; text: string }[],
     modernQuestion: string,
     apiKey: string,
-    retryCount: number = 0
+    retryCount: number = 0,
+    roundtableContext?: RoundtableContext
   ): Promise<string | null> {
     const model = aiModelLifecycleService.getActiveGeminiModel();
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-    const systemInstruction = this.buildSystemInstruction(persona);
+    const systemInstruction = this.buildSystemInstruction(persona, roundtableContext);
 
     const contents = [
       { role: 'user', parts: [{ text: systemInstruction }] },
-      { role: 'model', parts: [{ text: `Entendido perfeitamente. Falarei estritamente como ${persona.name} em 1ª pessoa segundo os relatos da Tradução do Novo Mundo, mantendo a exegese e perguntando sobre os desafios do século XXI.` }] },
+      { role: 'model', parts: [{ text: `Entendido perfeitamente. Falarei estritamente como ${persona.name} em 1ª pessoa segundo os relatos da Tradução do Novo Mundo, mantendo a exegese e harmonia fraternal.` }] },
       ...history.slice(-4).map(h => ({
         role: h.sender === 'user' ? 'user' : 'model',
         parts: [{ text: h.text }]
@@ -859,7 +884,7 @@ SUPERPODER 7: LINGUAGEM SIMPLES, CLARA E COMPREENSÍVEL (AO ALCANCE DE TODOS)
       if (retryCount === 0 && aiModelLifecycleService.isDeprecationError(response.status, errText)) {
         const upgradedModel = await aiModelLifecycleService.upgradeGeminiModel(model, 'Modelo Gemini descontinuado pelo Google', apiKey);
         if (upgradedModel) {
-          return this.callGeminiAPI(persona, userMessage, history, modernQuestion, apiKey, retryCount + 1);
+          return this.callGeminiAPI(persona, userMessage, history, modernQuestion, apiKey, retryCount + 1, roundtableContext);
         }
       }
       throw new Error(`Gemini API returned status ${response.status}: ${errText}`);
