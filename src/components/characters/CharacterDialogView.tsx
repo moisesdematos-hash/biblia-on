@@ -5,8 +5,9 @@ import {
   Copy, Check, ShieldCheck, Search, Filter, RefreshCw, UserCheck, 
   Info, ChevronRight, X, HeartHandshake, Compass, Flame, Crown, Scale, Tent, Anchor,
   Sliders, Mic, MicOff, Zap, Play, Pause, Tv, FastForward, ChevronLeft, Grid, Star, Users, Bot, Cpu, Settings2, Key, CheckCircle2,
-  Trash2, Eye, EyeOff
+  Trash2, Eye, EyeOff, Share2, Download, ExternalLink, Printer
 } from 'lucide-react';
+import { SAMPLE_VERSES } from '../../data/bibleVerses';
 import { 
   BIBLICAL_PERSONAS, 
   MOST_REQUESTED_PERSONA_IDS,
@@ -37,11 +38,22 @@ interface DialogMessage {
   timestamp: number;
 }
 
-interface CharacterDialogViewProps {
-  initialPersonaId?: string;
+export interface SavedTeaching {
+  id: string;
+  personaId: string;
+  personaName: string;
+  avatarSymbol: string;
+  text: string;
+  scriptures?: string[];
+  savedAt: number;
 }
 
-export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initialPersonaId }) => {
+interface CharacterDialogViewProps {
+  initialPersonaId?: string;
+  onNavigate?: (tab: string, ctx?: any) => void;
+}
+
+export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initialPersonaId, onNavigate }) => {
   const [selectedPersona, setSelectedPersona] = useState<BiblicalPersona>(() => {
     if (initialPersonaId) {
       const found = resolveBiblicalPersona(initialPersonaId);
@@ -122,6 +134,163 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
   const [streamedText, setStreamedText] = useState<string>('');
   const streamingIntervalRef = useRef<any>(null);
   const fullTextPendingRef = useRef<string>('');
+
+  // Capacidade 5: Guardar nos Favoritos / Meu Caderno de Fé
+  const [savedFavorites, setSavedFavorites] = useState<SavedTeaching[]>(() => {
+    try {
+      const stored = localStorage.getItem('biblia_on_saved_teachings');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [showFavoritesModal, setShowFavoritesModal] = useState(false);
+  const [favoriteToast, setFavoriteToast] = useState<string | null>(null);
+
+  const handleToggleFavorite = (msg: DialogMessage) => {
+    setSavedFavorites(prev => {
+      const exists = prev.some(f => f.id === msg.id);
+      let updated: SavedTeaching[];
+      if (exists) {
+        updated = prev.filter(f => f.id !== msg.id);
+        setFavoriteToast('Ensinamento removido dos favoritos');
+      } else {
+        const item: SavedTeaching = {
+          id: msg.id,
+          personaId: selectedPersona.id,
+          personaName: selectedPersona.name,
+          avatarSymbol: selectedPersona.avatarSymbol,
+          text: msg.text,
+          scriptures: msg.scriptures,
+          savedAt: Date.now()
+        };
+        updated = [item, ...prev];
+        setFavoriteToast('⭐ Salvo no seu Caderno de Favoritos!');
+      }
+      try {
+        localStorage.setItem('biblia_on_saved_teachings', JSON.stringify(updated));
+      } catch {}
+      setTimeout(() => setFavoriteToast(null), 3000);
+      return updated;
+    });
+  };
+
+  const isFavorite = (msgId: string) => savedFavorites.some(f => f.id === msgId);
+
+  // Capacidade 2: Bíblia Interativa com 1 Clique (Visualizador de Versículo)
+  const [activeVersePreview, setActiveVersePreview] = useState<{
+    reference: string;
+    text: string;
+    bookId?: string;
+    chapter?: number;
+  } | null>(null);
+
+  const handleOpenVerse = (refString: string) => {
+    const clean = refString.trim();
+    const matched = SAMPLE_VERSES.find(v => {
+      const fullName = `${v.bookName} ${v.chapter}:${v.verse}`.toLowerCase();
+      return clean.toLowerCase().includes(fullName) || fullName.includes(clean.toLowerCase());
+    });
+
+    if (matched) {
+      setActiveVersePreview({
+        reference: `${matched.bookName} ${matched.chapter}:${matched.verse}`,
+        text: matched.text,
+        bookId: matched.bookId,
+        chapter: matched.chapter
+      });
+    } else {
+      const parts = clean.split(' ');
+      const chapVer = parts[parts.length - 1] || '1';
+      const chapNum = parseInt(chapVer.split(':')[0] || '1', 10) || 1;
+
+      setActiveVersePreview({
+        reference: clean,
+        text: `Texto sagrado registrado nas Escrituras Sagradas segundo a Tradução do Novo Mundo (TNM). Clique abaixo para ler o relato completo no Explorador Bíblico.`,
+        bookId: 'gen',
+        chapter: chapNum
+      });
+    }
+  };
+
+  // Capacidade 3: Partilhar no WhatsApp com 1 Toque
+  const handleShareWhatsApp = (text: string, scriptures?: string[]) => {
+    const cleanText = text.replace(/\*\*/g, '').slice(0, 950);
+    const scriptureText = scriptures && scriptures.length > 0 ? `\n\n📖 *Base Bíblica:* ${scriptures.join('; ')}` : '';
+    const shareMsg = `✨ *Palavra de Fé com ${selectedPersona.name}* (${selectedPersona.title})\n\n"${cleanText}"${scriptureText}\n\n🌟 *BIBLIA ON:* https://biblia-on.vercel.app`;
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMsg)}`;
+    window.open(url, '_blank');
+  };
+
+  // Capacidade 4: Troca Rápida de Ponto de Vista (Perguntar a Outra Personagem)
+  const getCompanionPersonas = (personaId: string): BiblicalPersona[] => {
+    const companionsMap: Record<string, string[]> = {
+      jeova_deus: ['jesus_cristo', 'abraao', 'moises'],
+      jesus_cristo: ['pedro', 'joao_apostolo', 'paulo'],
+      moises: ['josue', 'arao', 'elias'],
+      davi: ['jonatas', 'salomao', 'samuel'],
+      salomao: ['davi', 'daniel', 'paulo'],
+      pedro: ['paulo', 'joao_apostolo', 'andre_apostolo'],
+      paulo: ['pedro', 'timoteo', 'silas'],
+      abraao: ['sara', 'isaque', 'melquisedeque'],
+      elias: ['eliseu', 'moises', 'joao_batista'],
+      daniel: ['sadraque_mesaque_abednego', 'ezequiel', 'jeremias'],
+      ester: ['mardoqueu', 'rute', 'abigail'],
+      noe: ['sem', 'matusalem', 'enoque'],
+      lo: ['abraao', 'noe', 'pedro'],
+      zaqueu: ['mateus_apostolo', 'nicodemos', 'jesus_cristo'],
+      nicodemos: ['jose_egito', 'zaqueu', 'jesus_cristo'],
+      apolo_pregador: ['priscila_aquila', 'paulo', 'silas'],
+      naama_sirio: ['eliseu', 'cornelio', 'davi']
+    };
+
+    const ids = companionsMap[personaId] || ['jesus_cristo', 'abraao', 'davi'];
+    return ids
+      .map(id => BIBLICAL_PERSONAS.find(p => p.id === id))
+      .filter((p): p is BiblicalPersona => Boolean(p));
+  };
+
+  const handleSwitchToCompanion = (comp: BiblicalPersona) => {
+    setSelectedPersona(comp);
+    const followUp = `Paz seja contigo, ${comp.name}. Estava a refletir sobre as Escrituras e gostaria de ouvir também a tua perspectiva sobre este assunto.`;
+    handleSendMessage(followUp);
+  };
+
+  // Capacidade 6: Baixar / Imprimir Estudo Bíblico
+  const handleExportStudy = () => {
+    if (messages.length === 0) return;
+    const lines: string[] = [
+      `=============================================================`,
+      `📖 BIBLIA ON — ESTUDO BÍBLICO E DIÁLOGO COM PERSONAGENS`,
+      `Personagem: ${selectedPersona.name} (${selectedPersona.title})`,
+      `Período Bíblico: ${selectedPersona.historicalPeriod} (${selectedPersona.eraLabel})`,
+      `Data do Registro: ${new Date().toLocaleDateString('pt-BR')}`,
+      `=============================================================\n`
+    ];
+
+    messages.forEach(m => {
+      const senderName = m.sender === 'user' ? 'ESTUDANTE' : selectedPersona.name.toUpperCase();
+      const time = new Date(m.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      lines.push(`[${time}] ${senderName}:`);
+      lines.push(m.text.replace(/\*\*/g, ''));
+      if (m.scriptures && m.scriptures.length > 0) {
+        lines.push(`Base Bíblica: ${m.scriptures.join('; ')}`);
+      }
+      lines.push('\n-------------------------------------------------------------\n');
+    });
+
+    lines.push(`\nEstudo gerado na plataforma BIBLIA ON: https://biblia-on.vercel.app\nO Conhecimento Bíblico ao alcance de todos.`);
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Estudo_Biblico_${selectedPersona.id}_${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -1136,6 +1305,34 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
                 <Sliders className="w-4 h-4" />
               </button>
 
+              {/* Botão Meus Favoritos / Caderno de Fé */}
+              <button
+                onClick={() => setShowFavoritesModal(true)}
+                className={`p-2 rounded-xl transition-colors relative cursor-pointer ${
+                  savedFavorites.length > 0
+                    ? 'text-amber-400 hover:bg-amber-400/10'
+                    : 'text-slate-400 hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+                title={`Ver ensinamentos favoritados (${savedFavorites.length})`}
+              >
+                <Star className={`w-4 h-4 ${savedFavorites.length > 0 ? 'fill-amber-400' : ''}`} />
+                {savedFavorites.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#D4AF37] text-slate-950 text-[9px] font-bold flex items-center justify-center shadow-xs">
+                    {savedFavorites.length}
+                  </span>
+                )}
+              </button>
+
+              {/* Botão Baixar / Imprimir Estudo */}
+              <button
+                onClick={handleExportStudy}
+                disabled={messages.length === 0}
+                className="p-2 rounded-xl text-slate-400 hover:text-[#D4AF37] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                title="Descarregar ou imprimir registro do estudo bíblico (.txt)"
+              >
+                <Download className="w-4 h-4" />
+              </button>
+
               {/* Botão Limpar Chat */}
               <button
                 onClick={handleClearChat}
@@ -1626,35 +1823,54 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
                 </div>
               </div>
             )}
-            {messages.map((msg) => (
+            {messages.map((msg, idx) => (
               <div
                 key={msg.id}
-                className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
+                className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} mb-2`}
               >
                 <div
                   className={`max-w-2xl rounded-2xl p-4 sm:p-5 ${
                     msg.sender === 'user'
                       ? 'bg-[#1E3E62] text-white border border-[#D4AF37]/30 shadow-md'
-                      : 'bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700/80 shadow-xs'
+                      : 'bg-slate-50 dark:bg-slate-800/75 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700/80 shadow-xs'
                   }`}
                 >
                   <div className="font-serif text-sm sm:text-base leading-relaxed">
                     {renderFormattedMessage(msg.text, msg.sender === 'persona')}
                   </div>
 
-                  {/* Base Bíblica Explícita */}
-                  {msg.scriptures && msg.scriptures.length > 0 && (
-                    <div className="mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-700/60 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-[#D4AF37]">
-                      <div className="flex items-center space-x-1.5">
-                        <BookOpen className="w-3.5 h-3.5" />
-                        <span>Base Bíblica: {msg.scriptures.join('; ')}</span>
-                      </div>
+                  {/* Rodapé da Mensagem da Personagem: Base Bíblica Clicável & Ações */}
+                  {msg.sender === 'persona' && (
+                    <div className="mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-700/60 flex flex-wrap items-center justify-between gap-2 text-xs">
+                      {/* Capacidade 2: Versículos Clicáveis */}
+                      {msg.scriptures && msg.scriptures.length > 0 ? (
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-wider flex items-center space-x-1 mr-0.5">
+                            <BookOpen className="w-3 h-3 text-[#D4AF37]" />
+                            <span>Escrituras:</span>
+                          </span>
+                          {msg.scriptures.map((ref, rIdx) => (
+                            <button
+                              key={rIdx}
+                              onClick={() => handleOpenVerse(ref)}
+                              className="px-2 py-0.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/25 border border-[#D4AF37]/40 text-[#D4AF37] text-[11px] font-medium transition-all cursor-pointer inline-flex items-center space-x-1"
+                              title={`Clique para ler o texto de ${ref} agora`}
+                            >
+                              <span>{ref}</span>
+                              <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div />
+                      )}
 
-                      {/* Controles: Ouvir com voz diferenciada / Copiar */}
-                      <div className="flex items-center space-x-2">
+                      {/* Controles: Ouvir | Partilhar WhatsApp | Favoritar | Copiar */}
+                      <div className="flex items-center space-x-1 ml-auto shrink-0">
+                        {/* 1. Ouvir com voz diferenciada */}
                         <button
                           onClick={() => handleSpeak(msg.id, msg.text)}
-                          className={`p-1.5 rounded-lg transition-colors flex items-center space-x-1 text-xs ${
+                          className={`p-1.5 rounded-lg transition-colors flex items-center space-x-1 text-xs cursor-pointer ${
                             isSpeakingId === msg.id 
                               ? 'bg-rose-500/20 text-rose-400 animate-pulse' 
                               : 'text-slate-400 hover:text-[#D4AF37] hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -1673,9 +1889,33 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
                             </>
                           )}
                         </button>
+
+                        {/* 2. Capacidade 3: Partilhar no WhatsApp */}
+                        <button
+                          onClick={() => handleShareWhatsApp(msg.text, msg.scriptures)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors cursor-pointer"
+                          title="Partilhar este conselho bíblico no WhatsApp"
+                        >
+                          <Share2 className="w-4 h-4 text-emerald-400" />
+                        </button>
+
+                        {/* 3. Capacidade 5: Guardar nos Favoritos */}
+                        <button
+                          onClick={() => handleToggleFavorite(msg)}
+                          className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                            isFavorite(msg.id)
+                              ? 'text-amber-400 bg-amber-400/15'
+                              : 'text-slate-400 hover:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                          }`}
+                          title={isFavorite(msg.id) ? 'Remover dos favoritos' : 'Guardar nos meus favoritos'}
+                        >
+                          <Star className={`w-4 h-4 ${isFavorite(msg.id) ? 'fill-amber-400 text-amber-400' : ''}`} />
+                        </button>
+
+                        {/* 4. Copiar Texto */}
                         <button
                           onClick={() => handleCopy(msg.id, msg.text)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                           title="Copiar texto"
                         >
                           {copiedId === msg.id ? (
@@ -1688,6 +1928,27 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
                     </div>
                   )}
                 </div>
+
+                {/* Capacidade 4: Perguntar a Outra Personagem (Última Mensagem da Personagem) */}
+                {msg.sender === 'persona' && idx === messages.length - 1 && !streamingMessageId && (
+                  <div className="mt-2 pl-2 flex flex-wrap items-center gap-1.5 animate-in fade-in">
+                    <span className="text-[10px] text-slate-400 flex items-center space-x-1 mr-1">
+                      <RefreshCw className="w-3 h-3 text-[#D4AF37]" />
+                      <span>Perguntar também a:</span>
+                    </span>
+                    {getCompanionPersonas(selectedPersona.id).map(comp => (
+                      <button
+                        key={comp.id}
+                        onClick={() => handleSwitchToCompanion(comp)}
+                        className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-white dark:bg-slate-800/90 hover:bg-[#1E3E62] text-slate-700 dark:text-slate-300 hover:text-[#D4AF37] border border-slate-200 dark:border-slate-700 hover:border-[#D4AF37] text-[11px] font-medium transition-all cursor-pointer shadow-2xs"
+                        title={`Ouvir a perspectiva de ${comp.name} sobre este tema`}
+                      >
+                        <span>{comp.avatarSymbol}</span>
+                        <span>{comp.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
             {/* Mensagem em Digitação / Transmissão Dinâmica em Tempo Real */}
@@ -1819,6 +2080,171 @@ export const CharacterDialogView: React.FC<CharacterDialogViewProps> = ({ initia
           </div>
         </div>
       </div>
+
+      {/* Toast Notificador de Ação Rápida */}
+      {favoriteToast && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-slate-900/95 text-white border border-[#D4AF37]/50 shadow-xl text-xs font-medium flex items-center space-x-2 animate-in fade-in slide-in-from-bottom-2">
+          <span>{favoriteToast}</span>
+        </div>
+      )}
+
+      {/* Modal / Visualizador de Versículo da Bíblia (Capacidade 2) */}
+      {activeVersePreview && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="max-w-md w-full bg-white dark:bg-[#0B192C] border border-[#D4AF37]/60 rounded-3xl p-5 sm:p-6 shadow-2xl animate-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center space-x-2 text-[#D4AF37]">
+                <BookOpen className="w-5 h-5 text-[#D4AF37]" />
+                <h3 className="font-title text-base font-bold text-slate-900 dark:text-white">
+                  {activeVersePreview.reference}
+                </h3>
+              </div>
+              <button
+                onClick={() => setActiveVersePreview(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="py-4">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-amber-500/90 block mb-1">
+                Tradução do Novo Mundo (TNM)
+              </span>
+              <p className="font-serif text-base sm:text-lg leading-relaxed text-slate-800 dark:text-slate-100 italic bg-amber-500/5 dark:bg-[#1E3E62]/20 p-4 rounded-2xl border border-[#D4AF37]/20">
+                “{activeVersePreview.text}”
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+              <button
+                onClick={() => {
+                  const target = activeVersePreview;
+                  setActiveVersePreview(null);
+                  if (onNavigate) {
+                    onNavigate('explorer', { bookId: target.bookId || 'gen', chapter: target.chapter || 1 });
+                  }
+                }}
+                className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-[#1E3E62] text-[#D4AF37] border border-[#D4AF37]/40 hover:bg-[#1E3E62]/80 text-xs font-semibold transition-all cursor-pointer"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Ler Capítulo no Explorador</span>
+              </button>
+
+              <button
+                onClick={() => setActiveVersePreview(null)}
+                className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white text-xs font-medium transition-colors cursor-pointer"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Ensinamentos Favoritados / Caderno de Fé (Capacidade 5) */}
+      {showFavoritesModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="max-w-xl w-full max-h-[85vh] bg-white dark:bg-[#0B192C] border border-[#D4AF37]/60 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col animate-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 shrink-0">
+              <div className="flex items-center space-x-2 text-amber-400">
+                <Star className="w-5 h-5 fill-amber-400" />
+                <h3 className="font-title text-base font-bold text-slate-900 dark:text-white">
+                  Meu Caderno de Ensinamentos ({savedFavorites.length})
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowFavoritesModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto py-3 space-y-3 flex-1 pr-1">
+              {savedFavorites.length === 0 ? (
+                <div className="text-center py-12 text-slate-400 text-xs">
+                  <Star className="w-8 h-8 text-slate-600 mx-auto mb-2 opacity-50" />
+                  <p className="font-medium text-sm text-slate-300">Ainda não guardou nenhum ensinamento</p>
+                  <p className="text-slate-500 mt-1">Toque na estrelinha ⭐ de qualquer conselho bíblico para guardá-lo aqui.</p>
+                </div>
+              ) : (
+                savedFavorites.map(fav => (
+                  <div key={fav.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-[#D4AF37] flex items-center space-x-1.5">
+                        <span>{fav.avatarSymbol}</span>
+                        <span>{fav.personaName}</span>
+                      </span>
+                      <span className="text-[10px] text-slate-500 font-mono">
+                        {new Date(fav.savedAt).toLocaleDateString('pt-BR')}
+                      </span>
+                    </div>
+
+                    <p className="font-serif text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed italic">
+                      “{fav.text.replace(/\*\*/g, '').slice(0, 320)}{fav.text.length > 320 ? '...' : ''}”
+                    </p>
+
+                    {fav.scriptures && fav.scriptures.length > 0 && (
+                      <div className="text-[10px] text-[#D4AF37] font-mono">
+                        Base: {fav.scriptures.join('; ')}
+                      </div>
+                    )}
+
+                    <div className="pt-2 border-t border-slate-200 dark:border-slate-700/50 flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => handleShareWhatsApp(fav.text, fav.scriptures)}
+                          className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[11px] font-medium transition-colors flex items-center space-x-1 cursor-pointer"
+                          title="Partilhar no WhatsApp"
+                        >
+                          <Share2 className="w-3 h-3" />
+                          <span>WhatsApp</span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(fav.text.replace(/\*\*/g, ''));
+                            setFavoriteToast('Copiado para a área de transferência!');
+                            setTimeout(() => setFavoriteToast(null), 2500);
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-700 hover:text-white text-slate-400 text-[11px] font-medium transition-colors flex items-center space-x-1 cursor-pointer"
+                        >
+                          <Copy className="w-3 h-3" />
+                          <span>Copiar</span>
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          const updated = savedFavorites.filter(f => f.id !== fav.id);
+                          setSavedFavorites(updated);
+                          try {
+                            localStorage.setItem('biblia_on_saved_teachings', JSON.stringify(updated));
+                          } catch {}
+                        }}
+                        className="p-1 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 text-xs transition-colors cursor-pointer"
+                        title="Remover este favorito"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end shrink-0">
+              <button
+                onClick={() => setShowFavoritesModal(false)}
+                className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-white text-xs font-medium transition-colors cursor-pointer"
+              >
+                Concluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

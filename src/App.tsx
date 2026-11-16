@@ -146,7 +146,12 @@ export const App: React.FC = () => {
             {activeTab === 'codex' && <LivingCodexView />}
 
             {/* Mecanismo de Diálogo com Personagens Bíblicos */}
-            {activeTab === 'personas' && <CharacterDialogView initialPersonaId={selectedPersonaTarget} />}
+            {activeTab === 'personas' && (
+              <CharacterDialogView
+                initialPersonaId={selectedPersonaTarget}
+                onNavigate={handleNavigate}
+              />
+            )}
 
             {activeTab === 'explorer' && (
               <BibleExplorer
